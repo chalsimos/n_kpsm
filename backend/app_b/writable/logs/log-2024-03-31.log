@@ -1,0 +1,102 @@
+ERROR - 2024-03-31 12:36:23 --> Error connecting to the database: ErrorException: mysqli::real_connect(): php_network_getaddresses: getaddrinfo for mysql failed: Name or service not known in /var/www/html/system/Database/MySQLi/Connection.php:184
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli::real_co...', '/var/www/html/s...', 184)
+#1 /var/www/html/system/Database/MySQLi/Connection.php(184): mysqli->real_connect('mysql', 'root', Object(SensitiveParameterValue), 'kpsm', 3306, '', 0)
+#2 /var/www/html/system/Database/BaseConnection.php(392): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#3 /var/www/html/system/Database/BaseConnection.php(575): CodeIgniter\Database\BaseConnection->initialize()
+#4 /var/www/html/system/Database/BaseConnection.php(1410): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#5 /var/www/html/system/Database/BaseConnection.php(1429): CodeIgniter\Database\BaseConnection->listTables()
+#6 /var/www/html/system/Database/MigrationRunner.php(757): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#7 /var/www/html/system/Database/MigrationRunner.php(161): CodeIgniter\Database\MigrationRunner->ensureTable()
+#8 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#9 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#10 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#11 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#12 {main}
+
+Next mysqli_sql_exception: php_network_getaddresses: getaddrinfo for mysql failed: Name or service not known in /var/www/html/system/Database/MySQLi/Connection.php:184
+Stack trace:
+#0 /var/www/html/system/Database/MySQLi/Connection.php(184): mysqli->real_connect('mysql', 'root', Object(SensitiveParameterValue), 'kpsm', 3306, '', 0)
+#1 /var/www/html/system/Database/BaseConnection.php(392): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /var/www/html/system/Database/BaseConnection.php(575): CodeIgniter\Database\BaseConnection->initialize()
+#3 /var/www/html/system/Database/BaseConnection.php(1410): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 /var/www/html/system/Database/BaseConnection.php(1429): CodeIgniter\Database\BaseConnection->listTables()
+#5 /var/www/html/system/Database/MigrationRunner.php(757): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#6 /var/www/html/system/Database/MigrationRunner.php(161): CodeIgniter\Database\MigrationRunner->ensureTable()
+#7 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#11 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: php_network_getaddresses: getaddrinfo for mysql failed: Name or service not known in /var/www/html/system/Database/MySQLi/Connection.php:229
+Stack trace:
+#0 /var/www/html/system/Database/BaseConnection.php(392): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /var/www/html/system/Database/BaseConnection.php(575): CodeIgniter\Database\BaseConnection->initialize()
+#2 /var/www/html/system/Database/BaseConnection.php(1410): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 /var/www/html/system/Database/BaseConnection.php(1429): CodeIgniter\Database\BaseConnection->listTables()
+#4 /var/www/html/system/Database/MigrationRunner.php(757): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#5 /var/www/html/system/Database/MigrationRunner.php(161): CodeIgniter\Database\MigrationRunner->ensureTable()
+#6 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#7 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#8 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#9 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#10 {main}
+ERROR - 2024-03-31 12:37:51 --> Error connecting to the database: ErrorException: mysqli::real_connect(): php_network_getaddresses: getaddrinfo for mysql_db-1 failed: Name or service not known in /var/www/html/system/Database/MySQLi/Connection.php:184
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli::real_co...', '/var/www/html/s...', 184)
+#1 /var/www/html/system/Database/MySQLi/Connection.php(184): mysqli->real_connect('mysql_db-1', 'root', Object(SensitiveParameterValue), 'kpsm', 3306, '', 0)
+#2 /var/www/html/system/Database/BaseConnection.php(392): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#3 /var/www/html/system/Database/BaseConnection.php(575): CodeIgniter\Database\BaseConnection->initialize()
+#4 /var/www/html/system/Database/BaseConnection.php(1410): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#5 /var/www/html/system/Database/BaseConnection.php(1429): CodeIgniter\Database\BaseConnection->listTables()
+#6 /var/www/html/system/Database/MigrationRunner.php(757): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#7 /var/www/html/system/Database/MigrationRunner.php(161): CodeIgniter\Database\MigrationRunner->ensureTable()
+#8 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#9 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#10 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#11 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#12 {main}
+
+Next mysqli_sql_exception: php_network_getaddresses: getaddrinfo for mysql_db-1 failed: Name or service not known in /var/www/html/system/Database/MySQLi/Connection.php:184
+Stack trace:
+#0 /var/www/html/system/Database/MySQLi/Connection.php(184): mysqli->real_connect('mysql_db-1', 'root', Object(SensitiveParameterValue), 'kpsm', 3306, '', 0)
+#1 /var/www/html/system/Database/BaseConnection.php(392): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /var/www/html/system/Database/BaseConnection.php(575): CodeIgniter\Database\BaseConnection->initialize()
+#3 /var/www/html/system/Database/BaseConnection.php(1410): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 /var/www/html/system/Database/BaseConnection.php(1429): CodeIgniter\Database\BaseConnection->listTables()
+#5 /var/www/html/system/Database/MigrationRunner.php(757): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#6 /var/www/html/system/Database/MigrationRunner.php(161): CodeIgniter\Database\MigrationRunner->ensureTable()
+#7 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#11 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: php_network_getaddresses: getaddrinfo for mysql_db-1 failed: Name or service not known in /var/www/html/system/Database/MySQLi/Connection.php:229
+Stack trace:
+#0 /var/www/html/system/Database/BaseConnection.php(392): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /var/www/html/system/Database/BaseConnection.php(575): CodeIgniter\Database\BaseConnection->initialize()
+#2 /var/www/html/system/Database/BaseConnection.php(1410): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 /var/www/html/system/Database/BaseConnection.php(1429): CodeIgniter\Database\BaseConnection->listTables()
+#4 /var/www/html/system/Database/MigrationRunner.php(757): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#5 /var/www/html/system/Database/MigrationRunner.php(161): CodeIgniter\Database\MigrationRunner->ensureTable()
+#6 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#7 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#8 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#9 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#10 {main}
+ERROR - 2024-03-31 12:38:55 --> mysqli_sql_exception: Can't create database 'kpsm'; database exists in /var/www/html/system/Database/MySQLi/Connection.php:306
+Stack trace:
+#0 /var/www/html/system/Database/MySQLi/Connection.php(306): mysqli->query('CREATE DATABASE...', 0)
+#1 /var/www/html/system/Database/BaseConnection.php(693): CodeIgniter\Database\MySQLi\Connection->execute('CREATE DATABASE...')
+#2 /var/www/html/system/Database/BaseConnection.php(607): CodeIgniter\Database\BaseConnection->simpleQuery('CREATE DATABASE...')
+#3 /var/www/html/system/Database/Forge.php(230): CodeIgniter\Database\BaseConnection->query('CREATE DATABASE...')
+#4 /var/www/html/app/Database/Migrations/2024-03-30-170938_CreateDatabase.php(12): CodeIgniter\Database\Forge->createDatabase('kpsm')
+#5 /var/www/html/system/Database/MigrationRunner.php(865): App\Database\Migrations\CreateDatabase->up()
+#6 /var/www/html/system/Database/MigrationRunner.php(181): CodeIgniter\Database\MigrationRunner->migrate('up', Object(stdClass))
+#7 /var/www/html/system/Commands/Database/Migrate.php(84): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 /var/www/html/system/CLI/Commands.php(65): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 /var/www/html/system/CLI/Console.php(46): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 /var/www/html/spark(102): CodeIgniter\CLI\Console->run()
+#11 {main}
