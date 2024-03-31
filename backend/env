@@ -30,14 +30,13 @@
 # DATABASE
 #--------------------------------------------------------------------
 
-
- database.default.hostname = kpsm-vibrant_fermi-mysql_db-1 #to get this just run docker and then put docker ps in terminal and get the name of mysql image
- database.default.database = kpsm
- database.default.username = root
- database.default.password = root
- database.default.DBDriver = MySQLi
- database.default.DBPrefix =
- database.default.port = 3306
+# database.default.hostname = localhost
+# database.default.database = ci4
+# database.default.username = root
+# database.default.password = root
+# database.default.DBDriver = MySQLi
+# database.default.DBPrefix =
+# database.default.port = 3306
 
 # database.tests.hostname = localhost
 # database.tests.database = ci4_test
