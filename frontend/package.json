@@ -12,7 +12,11 @@
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
+<<<<<<< HEAD
     "vuetify": "^3.5.13"
+=======
+    "vuex": "^4.1.0"
+>>>>>>> carpel
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
