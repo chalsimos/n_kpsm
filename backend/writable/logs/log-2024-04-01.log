@@ -103,3 +103,11 @@ in APPPATH\Controllers\RequestController.php on line 24.
  4 SYSTEMPATH\CodeIgniter.php(361): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
  5 FCPATH\index.php(79): CodeIgniter\CodeIgniter->run()
  6 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('C:\\laragon\\www\\n_kpsm\\backend\\public\\index.php')
+CRITICAL - 2024-04-01 13:23:07 --> ErrorException: Array to string conversion
+in APPPATH\Controllers\RequestController.php on line 24.
+ 1 APPPATH\Controllers\RequestController.php(24): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Array to string conversion', 'C:\\laragon\\www\\n_kpsm\\backend\\app\\Controllers\\RequestController.php', 24)
+ 2 SYSTEMPATH\CodeIgniter.php(943): App\Controllers\RequestController->getRequest()
+ 3 SYSTEMPATH\CodeIgniter.php(503): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\RequestController))
+ 4 SYSTEMPATH\CodeIgniter.php(361): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(79): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('C:\\laragon\\www\\n_kpsm\\backend\\public\\index.php')

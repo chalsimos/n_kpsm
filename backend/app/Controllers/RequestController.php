@@ -21,7 +21,7 @@ class RequestController extends ResourceController
         // applicable to execute all data and return to superadmin and admin
         //generate 4.1.2024 8.06P
         $data = $this->requestModel->findAll();
-        var_dump($data);
+        print_r($data);
     }
     public function index()
     {
