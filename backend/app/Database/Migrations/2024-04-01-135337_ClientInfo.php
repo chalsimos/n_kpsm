@@ -9,7 +9,7 @@ class ClientInfo extends Migration
     public function up()
     {
         $this->forge->addField([
-            'id' => [
+            'id' => [   
                 'type' => 'INT',
                 'constraint' => 5,
                 'unsigned' =>true,
