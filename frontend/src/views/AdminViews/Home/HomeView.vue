@@ -6,7 +6,7 @@
 
 <script>
 // @ is an alias to /src
-import Side from '@/views/Sidebar.vue'
+import Side from '@/views/AdminViews/Home/Sidebar.vue'
 
 export default {
   components: {
