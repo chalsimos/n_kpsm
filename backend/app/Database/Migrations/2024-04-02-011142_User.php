@@ -28,6 +28,9 @@ class User extends Migration
                 'type' =>'TEXT',
                 'null' =>true
             ],
+            'type' => [
+                'type' => 'TEXT'
+            ],
             'status' =>[
                 'type' =>'TEXT',
             ],
