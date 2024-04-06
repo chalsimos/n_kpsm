@@ -9,8 +9,10 @@
 import Side from '@/views/AdminViews/Home/Sidebar.vue'
 
 export default {
-  components: {
-    Side
-  }
-}
+	components: {
+		Side
+	},
+	mounted() {
+		document.title = "Home";
+			},};
 </script>
