@@ -90,7 +90,7 @@ onMounted(() => {
                           data-modal-target="static-modal"
                           data-modal-toggle="static-modal"
                           class="text-blue-600 hover:underline dark:text-blue-500"
-                          >terms and conditions</a
+                          >Terms and Conditions</a
                         ></label
                       >
                     </div>
@@ -98,8 +98,10 @@ onMounted(() => {
                       type="submit"
                       class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     >
-                      Register new account
+                      Register New Account
                     </button>
+                    <a href="/login" class="text-white bg-success ml-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >Already Have Account </a>
                   </form>
                 </div>
               </div>

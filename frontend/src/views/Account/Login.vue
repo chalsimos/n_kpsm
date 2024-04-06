@@ -67,7 +67,7 @@ onMounted(() => {
                           type="checkbox"
                           value=""
                           id="exampleCheck3"
-                          checked
+                          
                         />
                         <label
                           class="inline-block ps-[0.15rem] hover:cursor-pointer"
@@ -77,7 +77,7 @@ onMounted(() => {
                         </label>
                       </div>
                       <a
-                        href="#!"
+                        href="forgot-password"
                         class="text-primary focus:outline-none dark:text-primary-400"
                         >Forgot password?</a
                       >
@@ -90,17 +90,25 @@ onMounted(() => {
                     >
                       Sign in
                     </button>
+                    <a
+                      href="/register"
+                      class="inline-block w-full rounded bg-success px-7 pb-2.5 pt-3 mt-2 text-center text-sm font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
+                      data-twe-ripple-init
+                      data-twe-ripple-color="light"
+                    >
+                      Register</a
+                    >
                   </form>
                 </div>
               </div>
               <div
                 class="right-card mt-1 flex items-center rounded-b-lg lg:w-6/12 lg:rounded-e-lg lg:rounded-bl-none"
               >
-                  <img
-                      class="mx-auto h-[62vh] w-[65vh]"
-                      src="../../assets/congPA.jpg"
-                      alt="logo"
-                    />
+                <img
+                  class="mx-auto h-[62vh] w-[65vh]"
+                  src="../../assets/congPA.jpg"
+                  alt="logo"
+                />
               </div>
             </div>
           </div>
