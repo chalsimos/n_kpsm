@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-	{path:'/', name:'Home Page', component:() => import('../views/UserView/Home/HomePage.vue')},
+	{ path:'/', name:'Home Page', component:() => import('../views/UserView/Home/HomePage.vue')},
+	{ path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
 	{ path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') },
 	{ path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') }, 
 	{ path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') }, 
