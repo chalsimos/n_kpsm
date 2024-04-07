@@ -76,11 +76,9 @@ onMounted(() => {
                           Remember me
                         </label>
                       </div>
-                      <a
-                        href="forgot-password"
+                      <router-link to="/forgot-password"
                         class="text-primary focus:outline-none dark:text-primary-400"
-                        >Forgot password?</a
-                      >
+                        >Forgot password?</router-link>
                     </div>
                     <button
                       type="submit"
@@ -90,14 +88,12 @@ onMounted(() => {
                     >
                       Sign in
                     </button>
-                    <a
-                      href="/register"
+                    <router-link to="/register"
                       class="inline-block w-full rounded bg-success px-7 pb-2.5 pt-3 mt-2 text-center text-sm font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
                       data-twe-ripple-init
                       data-twe-ripple-color="light"
                     >
-                      Register</a
-                    >
+                      Register</router-link>
                   </form>
                 </div>
               </div>

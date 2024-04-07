@@ -85,14 +85,11 @@ onMounted(() => {
                         for="terms"
                         class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                         >I agree with the
-                        <a
-                          href="#"
+                        <router-link to="#"
                           data-modal-target="static-modal"
                           data-modal-toggle="static-modal"
                           class="text-blue-600 hover:underline dark:text-blue-500"
-                          >Terms and Conditions</a
-                        ></label
-                      >
+                          >Terms and Conditions</router-link></label>
                     </div>
                     <button
                       type="submit"
@@ -100,8 +97,8 @@ onMounted(() => {
                     >
                       Register New Account
                     </button>
-                    <a href="/login" class="text-white bg-success ml-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    >Already Have Account </a>
+                    <router-link to="/login" class="text-white bg-success ml-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >Already Have Account </router-link>
                   </form>
                 </div>
               </div>
