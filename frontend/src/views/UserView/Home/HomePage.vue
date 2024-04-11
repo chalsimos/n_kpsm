@@ -298,7 +298,7 @@ export default {
     Foot
   },
   mounted() {
-    document.title = "KPSM - kongreso para sa mamamayan";
+    document.title = "KPSM - Kongreso para sa Mamamayan";
   },
 };
 </script>

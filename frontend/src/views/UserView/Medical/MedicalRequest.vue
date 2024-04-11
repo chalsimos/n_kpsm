@@ -35,7 +35,7 @@
                                 <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                             </svg>
                         </div>
-                        <input id="datepicker" type="text" class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Select date">
+                        <input id="Birthday" type="text" class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Select date">
                     </div>
 
                 </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="mb-5">
                     <label for="Hospital" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hospital</label>
-                    <select id="Gender" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                    <select id="Hospital" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                         <option disabled selected>Choose Hospital</option>
                         <option value="Maes">Maria Estrella General Hospital (MAES)</option>
                         <option value="MMG">Medical Mission Group Hospital Multi Purpose Cooperative of Oriental Mindoro (MMG)</option>
@@ -107,9 +107,9 @@
                     </select>
                 </div>
                 <div class="mb-5">
-                    <label for="Type Of Request" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type Of Request</label>
-                    <select id="Gender" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
-                        <option disabled selected>Choose Request</option>
+                    <label for="TypeOfRequest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type of Request</label>
+                    <select v-model="typeOfRequest" @change="handleTypeOfRequestChange" id="TypeOfRequest" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                        <option value="" disabled selected>Choose Request</option>
                         <option value="LABORATORY">Laboratory</option>
                         <option value="BONE MARROW">Bone Marrow</option>
                         <option value="MEDICINE">Medicine</option>
@@ -125,18 +125,23 @@
                         <option value="FOR EGD">For EGD</option>
                         <option value="BRONCOSCOPY">Broncoscopy</option>
                         <option value="LARYNGOSCOPY">Laryngoscopy</option>
-                        <option value="">Others</option>
+                        <option value="OTHERS">Others</option>
                     </select>
+                </div>
+                <div class="mb-4" v-if="typeOfRequest === 'OTHERS'">
+                    <label for="OtherRequest" class="block text-sm font-medium text-gray-900 dark:text-white">Other Type of Request</label>
+                    <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Flu" required />
                 </div>
             </div>
             <div class="flex justify-end">
-                <button type="submit" class="text-white bg-orange-900 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-auto px-15 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 lg:w-auto lg:ml-auto">
+                <button type="submit" class="text-white bg-orange-900 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 lg:w-40 lg:ml-auto">
                     Submit
                 </button>
             </div>
         </form>
     </div>
 </div>
+
 <Foot />
 </template>
 
@@ -169,13 +174,12 @@ export default {
             province: '1752',
             city: null,
             barangay: null,
+            typeOfRequest: '',
+            otherRequestValue: '',
         };
     },
-    setup() {
-
-    },
     mounted() {
-        Flatpickr('#datepicker', {});
+        Flatpickr('#Birthday', {});
         document.title = "Medical Request";
         this.fetchCities();
     },
@@ -204,6 +208,30 @@ export default {
                 .catch(error => {
                     console.error('Error fetching barangays:', error);
                 });
+        },
+        handleTypeOfRequestChange() {
+            if (this.typeOfRequest !== 'OTHERS') {
+                this.otherRequestValue = '';
+            }
+        },
+        saveToDatabase() {
+            let dataToSave = {};
+
+            if (this.typeOfRequest === 'OTHERS') {
+                dataToSave = {
+                    TypeofRequest: this.otherRequestValue,
+                };
+            } else {
+                dataToSave = {
+                    TypeofRequest: this.typeOfRequest,
+                };
+            }
+        }
+    },
+
+    computed: {
+        isOtherRequestDisabled() {
+            return this.typeOfRequest !== 'OTHERS';
         }
     }
 };
