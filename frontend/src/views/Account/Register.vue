@@ -1,14 +1,5 @@
-<script setup>
-import { onMounted } from "vue";
-import { Input, Ripple, initTWE } from "tw-elements";
-
-onMounted(() => {
-  initTWE({ Input, Ripple });
-});
-</script>
-
 <template>
-  <section class="flex justify-center pt-28">
+  <section class="flex justify-center pt-8">
     <div class="container h-full">
       <div
         class="flex h-full flex-wrap items-center justify-center text-neutral-800 dark:text-neutral-200"
@@ -16,7 +7,7 @@ onMounted(() => {
         <div class="w-full">
           <div class="block rounded-lg bg-white shadow-lg dark:bg-neutral-800">
             <div class="g-0 lg:flex lg:flex-wrap">
-              <div class="px-4 md:px-0 lg:w-6/12">
+              <div class="px-4 md:px-0 lg:w-7/12">
                 <div class="md:mx-6 md:p-12">
                   <div class="text-center">
                     <img
@@ -25,14 +16,13 @@ onMounted(() => {
                       alt="logo"
                     />
                     <h4
-                      class="mb-12 mt-1 pb-1 text-xl text-orange-600 font-semibold"
+                      class="mb-2 text-xl text-orange-600 font-semibold"
                     >
                       KPSM
                     </h4>
                   </div>
                   <form class="max-w-sm mx-auto" @submit.prevent="register">
                     <div v-if="error" class="error">{{ error }}</div>
-
                     <div class="mb-5">
                       <label
                         for="name"
@@ -101,25 +91,32 @@ onMounted(() => {
                         for="terms"
                         class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                         >I agree with the
-                        <router-link to="#"
+                        <router-link
+                          to="#"
                           data-modal-target="static-modal"
                           data-modal-toggle="static-modal"
                           class="text-blue-600 hover:underline dark:text-blue-500"
-                          >Terms and Conditions</router-link></label>
+                          >Terms and Conditions</router-link
+                        ></label
+                      >
                     </div>
                     <button
                       type="submit"
-                      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      class="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     >
                       Register New Account
                     </button>
-                    <router-link to="/login" class="text-white bg-success ml-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    >Already Have Account </router-link>
+                    <button
+                      class="text-white w-full mt-1 bg-success hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      @click="navigateToLogin"
+                    >
+                      Already Have Account
+                    </button>
                   </form>
                 </div>
               </div>
               <div
-                class="right-card mt-1 flex items-center rounded-b-lg lg:w-6/12 lg:rounded-e-lg lg:rounded-bl-none"
+                class="right-card flex items-center rounded-b-lg lg:w-5/12 lg:rounded-e-lg lg:rounded-bl-none"
               >
                 <img
                   class="mx-auto h-[70vh] w-[70vh]"
@@ -178,54 +175,73 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
 <script>
-import axios from 'axios';
+import axios from "axios";
+import { onMounted } from "vue";
+import { Input, Ripple, initTWE } from "tw-elements";
 
+onMounted(() => {
+  initTWE({
+    Input,
+    Ripple,
+  });
+});
 export default {
-    data() {
-        return {
-            completename: '',
-            email: '',
-            password: '',
-            error: null
-        };
-    },
-    mounted(){
-      document.title = "Register - KPSM";
-    },
-    methods: {
-        async register() {
-            try {
-                const response = await axios.post('http://localhost:8000/api/register', {
-                    name: this.completename,
-                    email: this.email,
-                    password: this.password
-                });
-
-                if (response.status === 201) {
-                    // Registration successful
-                    console.log('User registered successfully');
-                    // Optionally redirect to login page after registration
-                    this.$router.push('/');
-                }else{
-                  console.error('Registration failed');
-                }
-            } catch (error) {
-              if (error.response && error.response.data && error.response.data.error) {
-                    this.error = error.response.data.error;
-                } else {
-                    this.error = 'Registration failed. Please try again.';
-                }
-            }
+  data() {
+    return {
+      completename: "",
+      email: "",
+      password: "",
+      error: null,
+    };
+  },
+  mounted() {
+    document.title = "KPSM - Register";
+  },
+  methods: {
+    async register() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/register",
+          {
+            name: this.completename,
+            email: this.email,
+            password: this.password,
+          }
+        );
+        if (response.status === 201) {
+          // Registration successful
+          console.log("User registered successfully");
+          // Optionally redirect to login page after registration
+          this.$router.push("/");
+        } else {
+          console.error("Registration failed");
         }
-    }
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = "Registration failed. Please try again.";
+        }
+      }
+    },
+    navigateToLogin() {
+      this.$router.push("/login");
+    },
+  },
 };
-
 </script>
+
 <style>
 .signup-button {
   background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
 }
+
 .right-card {
   background: #e5aa35;
   background: linear-gradient(135deg, #e5aa35, #fcc071);

@@ -21,16 +21,16 @@ class AuthController extends Controller
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
-            ]);        
-            $user->save();        
-            $userToken = $user->createToken('authToken')->plainTextToken;        
+            ]);
+            $user->save();
+            $userToken = $user->createToken('authToken')->plainTextToken;
             $user->user_token = $userToken;
-            $user->save();         
+            $user->save();
             return response()->json([
                 'user' => $user,
                 'token' => $userToken,
                 'message' => 'User registered successfully'
-            ], 201); 
+            ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'User registration failed.'], 500);
         }
@@ -60,7 +60,7 @@ class AuthController extends Controller
 // $token = $user->createToken('authToken')->plainTextToken;
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            
+
             $token = encrypt($user->id);
             return response()->json([
                 'user' => $user,
