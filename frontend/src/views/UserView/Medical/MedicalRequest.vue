@@ -4,7 +4,7 @@
 <div class="p-4 mt-[50px]">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Personal Information
+            Patient Information
         </h2>
         <form class="max-w-full mx-auto w-full ml-0">
             <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
@@ -99,32 +99,33 @@
                     <label for="Hospital" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hospital</label>
                     <select id="Gender" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                         <option disabled selected>Choose Hospital</option>
-                        <option value="Maes">Maes</option>
-                        <option value="MMG">MMG</option>
-                        <option value="OMPH">OMPH</option>
-                        <option value="SMV">SMV</option>
-                        <option value="Luna Goco">Luna Goco</option>
+                        <option value="Maes">Maria Estrella General Hospital (MAES)</option>
+                        <option value="MMG">Medical Mission Group Hospital Multi Purpose Cooperative of Oriental Mindoro (MMG)</option>
+                        <option value="OMPH">Oriental Mindoro Provincial Hospital (OMPH)</option>
+                        <option value="SMV">Sta. Maria Village Hospital (SMV)</option>
+                        <option value="LGMC">Luna Goco Medical Center (LGMC)</option>
                     </select>
                 </div>
                 <div class="mb-5">
                     <label for="Type Of Request" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type Of Request</label>
                     <select id="Gender" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                         <option disabled selected>Choose Request</option>
-                        <option value="Laboratory">Laboratory</option>
-                        <option value="Bone Marrow">Bone Marrow</option>
-                        <option value="Medicine">Medicine</option>
-                        <option value="Hostpital Bill">Hostpital Bill</option>
-                        <option value="Chemotherapy">Chemotherapy</option>
-                        <option value="Endoscopy">Endoscopy</option>
-                        <option value="CT-Scan">CT-Scan</option>
-                        <option value="2D Echo">2D Echo</option>
-                        <option value="Scrotal Utz">Scrotal Utz</option>
+                        <option value="LABORATORY">Laboratory</option>
+                        <option value="BONE MARROW">Bone Marrow</option>
+                        <option value="MEDICINE">Medicine</option>
+                        <option value="HOSPITAL BILL">Hospital Bill</option>
+                        <option value="CHEMOTHERAPY">Chemotherapy</option>
+                        <option value="ENDOSCOPY">Endoscopy</option>
+                        <option value="CT-SCAN">CT-Scan</option>
+                        <option value="2D ECHO">2D Echo</option>
+                        <option value="SCROTAL UTZ">Scrotal Utz</option>
                         <option value="MRI">MRI</option>
-                        <option value="Blood Transfusion">Blood Transfusion</option>
-                        <option value="Biopsy">Biopsy</option>
-                        <option value="For EGD">For EGD</option>
-                        <option value="Broncoscopy">Broncoscopy</option>
-                        <option value="Laryngoscopy">Laryngoscopy</option>
+                        <option value="BLOOD TRANSFUSION">Blood Transfusion</option>
+                        <option value="BIOPSY">Biopsy</option>
+                        <option value="FOR EGD">For EGD</option>
+                        <option value="BRONCOSCOPY">Broncoscopy</option>
+                        <option value="LARYNGOSCOPY">Laryngoscopy</option>
+                        <option value="">Others</option>
                     </select>
                 </div>
             </div>

@@ -8,7 +8,6 @@ export default createStore({
   mutations: {
     setUserData(state, data) {
       state.userData = data;
-
       if (data !== null) {
         localStorage.setItem('userData', JSON.stringify(data));
       } else {
@@ -18,7 +17,6 @@ export default createStore({
   },
   actions: {
     authenticateUser({ commit }, userData) {
-      // Your authentication logic here
       commit('setUserData', userData);
     },
     logout({ commit }) {
