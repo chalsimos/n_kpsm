@@ -3,26 +3,80 @@
     <div
       class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4"
     >
-      <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="../../../assets/kpms.png" class="h-8" alt="Flowbite Logo" />
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
           >KPSM</span
         >
-      </a>
+      </router-link>
       <div
         class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse"
       >
-        <router-link
-          to="/login"
-          class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
-          >Login</router-link
+    
+    
+        <div v-if="isLoggedIn">
+        <button id="dropdownAvatarNameButton" data-dropdown-toggle="dropdownAvatarName" class="flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 dark:hover:text-blue-500 md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white" type="button">
+        <span class="sr-only">Open user menu</span>
+        <img class="w-8 h-8 me-2 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="user photo">
+        <p>{{ information.name }}</p>
+        <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+        </svg>
+      </button>
+<!-- Dropdown menu -->
+<div id="dropdownAvatarName" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+    <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+      <div class="font-medium ">{{ information.type }}</div>
+      <div class="truncate">{{ information.email }}</div>
+    </div>
+    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformdropdownAvatarNameButtonationButton">
+      <li>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+      </li>
+      <li>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+      </li>
+      <li>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+      </li>
+    </ul>
+    <div class="py-2">
+      <router-link
+        to="/logout"
+        class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+        @click="logout"
         >
-        <router-link
-          to="/register"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          >Sign up</router-link
-        >
+      Logout
+    </router-link>
+
+    </div>
+</div>
+
+    
+      
+      <!-- Display other user info here -->
+    </div>
+    <div v-else>
+  <!-- login -->
+
+  <router-link
+      v-if="!isLoggedIn"
+      to="/login"
+      class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+    >
+      Login
+    </router-link>
+    <router-link
+    v-if="!isLoggedIn"
+      to="/register"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+    >
+      Sign up
+    </router-link>
+
+    </div>
+
         <button
           data-collapse-toggle="mega-menu"
           type="button"
@@ -88,7 +142,7 @@
             </button>
             <div
               id="mega-menu-dropdown"
-              class="absolute z-10 hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700"
+              class="absolute z-10 grid hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700"
             >
               <div class="p-4 pb-0 text-gray-900 md:pb-4 dark:text-white">
                 <ul
@@ -96,101 +150,29 @@
                   aria-labelledby="mega-menu-dropdown-button"
                 >
                   <li>
-                    <a
-                      href="#"
+                    <router-link to="/medical-request"
                       class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
                     >
-                      About Us
-                    </a>
+                      Medical Assistance
+                  </router-link>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <router-link to="/scholarship"
                       class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
                     >
-                      Library
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Resources
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Pro Version
-                    </a>
+                      Scholarship
+                  </router-link>
                   </li>
                 </ul>
               </div>
               <div class="p-4 pb-0 text-gray-900 md:pb-4 dark:text-white">
                 <ul class="space-y-4">
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Blog
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Newsletter
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Playground
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      License
-                    </a>
-                  </li>
+                  <li></li>
                 </ul>
               </div>
               <div class="p-4">
                 <ul class="space-y-4">
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Contact Us
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Support Center
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                    >
-                      Terms
-                    </a>
-                  </li>
+                  <li></li>
                 </ul>
               </div>
             </div>
@@ -199,15 +181,25 @@
             <router-link
               to="/medical-request"
               class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"
-              >Medical Assistance</router-link
+              >Dole Tupad</router-link
             >
           </li>
           <li>
             <a
               href="#"
               class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"
-              >Contact</a
+              >KPSM Update</a
             >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"
+              >Announcement</a
+            >
+
+            
+
           </li>
         </ul>
       </div>
@@ -215,7 +207,54 @@
   </nav>
 </template>
 <script>
+import axios from 'axios';
 
 export default {
+  data() {
+    return {
+      isLoggedIn: false,
+      token: '',
+      information:[]
+    };
+  },
+  mounted() {
+    this.token = localStorage.getItem('token');
+    if (this.token) {
+      this.isLoggedIn = true;
+      this.getUser();
+    }
+  },
+  methods: {
+    getUser() {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${this.token}`
+        }
+      };
+      axios.get('http://localhost:8000/api/getuser', config)
+  .then(response => {
+    console.log('User Data:', response.data);
+    this.information = response.data.user;
+  })
+  .catch(error => {
+    console.error('Error retrieving user data:', error);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    } else if (error.request) {
+      console.error('Request made but no response received:', error.request);
+    } else {
+      console.error('Error setting up request:', error.message);
+    }
+  });
+
+    },
+    logout() {
+      localStorage.removeItem('token');
+      this.isLoggedIn = false;
+      this.$router.push('/');
+    }
+  },
 };
+
 </script>

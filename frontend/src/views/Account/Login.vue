@@ -1,11 +1,4 @@
-<script setup>
-import { onMounted } from "vue";
-import { Input, Ripple, initTWE } from "tw-elements";
 
-onMounted(() => {
-  initTWE({ Input, Ripple });
-});
-</script>
 
 <template>
   <section class="flex justify-center pt-28">
@@ -30,7 +23,8 @@ onMounted(() => {
                       KPSM
                     </h4>
                   </div>
-                  <form class="max-w-sm mx-auto">
+                  <form class="max-w-sm mx-auto" @submit.prevent="login">
+                    <div v-if="error" class="text-red-600">{{ error }}</div>
                     <div class="mb-5">
                       <label
                         for="email"
@@ -40,6 +34,7 @@ onMounted(() => {
                       <input
                         type="email"
                         id="email"
+                        v-model="email"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="name@gmail.com"
                         required
@@ -54,6 +49,7 @@ onMounted(() => {
                       <input
                         type="password"
                         id="password"
+                        v-model="password"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         required
                       />
@@ -81,11 +77,10 @@ onMounted(() => {
                         >Forgot password?</router-link>
                     </div>
                     <button
-                      type="submit"
+                    type="submit"
                       class="inline-block w-full rounded bg-primary px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
                       data-twe-ripple-init
-                      data-twe-ripple-color="light"
-                    >
+                      data-twe-ripple-color="light">
                       Sign in
                     </button>
                     <router-link to="/register"
@@ -114,12 +109,38 @@ onMounted(() => {
   </section>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
-  mounted() {
-    document.title = "Login";
+  data() {
+    return {
+      email: '',
+      password: '',
+      error:''
+    };
   },
+  methods: {
+    async login() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/login', {
+          email: this.email,
+          password: this.password
+        });
+
+        const { user, token } = response.data;
+        localStorage.setItem('token', token);
+        console.log('Login successful:', user);
+
+        this.$router.push('/');
+      } catch (error) {
+        console.error('Login failed:', error.response.data.message);
+        this.error = error.response.data.message;
+      }
+    }
+  }
 };
 </script>
+
 <style>
 .signup-button {
   background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);

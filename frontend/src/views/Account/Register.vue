@@ -30,7 +30,23 @@ onMounted(() => {
                       KPSM
                     </h4>
                   </div>
-                  <form class="max-w-sm mx-auto">
+                  <form class="max-w-sm mx-auto" @submit.prevent="register">
+                    <div v-if="error" class="error">{{ error }}</div>
+
+                    <div class="mb-5">
+                      <label
+                        for="name"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Complete Name</label
+                      >
+                      <input
+                        type="text"
+                        v-model="completename"
+                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                        placeholder="Juan dela Cruz"
+                        required
+                      />
+                    </div>
                     <div class="mb-5">
                       <label
                         for="email"
@@ -39,7 +55,7 @@ onMounted(() => {
                       >
                       <input
                         type="email"
-                        id="email"
+                        v-model="email"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="name@gmail.com"
                         required
@@ -53,7 +69,7 @@ onMounted(() => {
                       >
                       <input
                         type="password"
-                        id="password"
+                        v-model="password"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         required
                       />
@@ -163,11 +179,48 @@ onMounted(() => {
   </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
-  mounted() {
-    document.title = "Register";
-  },
+    data() {
+        return {
+            completename: '',
+            email: '',
+            password: '',
+            error: null
+        };
+    },
+    mounted(){
+      document.title = "Register - KPSM";
+    },
+    methods: {
+        async register() {
+            try {
+                const response = await axios.post('http://localhost:8000/api/register', {
+                    name: this.completename,
+                    email: this.email,
+                    password: this.password
+                });
+
+                if (response.status === 201) {
+                    // Registration successful
+                    console.log('User registered successfully');
+                    // Optionally redirect to login page after registration
+                    this.$router.push('/');
+                }else{
+                  console.error('Registration failed');
+                }
+            } catch (error) {
+              if (error.response && error.response.data && error.response.data.error) {
+                    this.error = error.response.data.error;
+                } else {
+                    this.error = 'Registration failed. Please try again.';
+                }
+            }
+        }
+    }
 };
+
 </script>
 <style>
 .signup-button {
