@@ -3,22 +3,39 @@
 <div class="p-4 sm:ml-64">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
 
-        <DataTable class="display shadow-lg rounded-lg overflow-hidden">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Second</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Dynamically generate table rows from data array -->
-                        <tr v-for="(row, index) in data" :key="index" class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">{{ row[0] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ row[1] }}</td>
-                        </tr>
-                    </tbody>
-                </DataTable>
+        <v-card flat>
+            <v-card-title class="d-flex align-center pe-2">
+                <v-icon icon="mdi-video-input-component"></v-icon> &nbsp;
+                Find a Graphics Card
 
+                <v-spacer></v-spacer>
+
+                <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+            </v-card-title>
+
+            <v-divider></v-divider>
+            <v-data-table v-model:search="search" :items="items">
+                <template v-slot:header.stock>
+                    <div class="text-end">Stock</div>
+                </template>
+
+                <template v-slot:item.image="{ item }">
+                    <v-card class="my-2" elevation="2" rounded>
+                        <v-img :src="`https://cdn.vuetifyjs.com/docs/images/graphics/gpus/${item.image}`" height="64" cover></v-img>
+                    </v-card>
+                </template>
+
+                <template v-slot:item.rating="{ item }">
+                    <v-rating :model-value="item.rating" color="orange-darken-2" density="compact" size="small" readonly></v-rating>
+                </template>
+
+                <template v-slot:item.stock="{ item }">
+                    <div class="text-end">
+                        <v-chip :color="item.stock ? 'green' : 'red'" :text="item.stock ? 'In stock' : 'Out of stock'" class="text-uppercase" size="small" label></v-chip>
+                    </div>
+                </template>
+            </v-data-table>
+        </v-card>
     </div>
 </div>
 <Foot />
@@ -28,29 +45,58 @@
 // @ is an alias to /src
 import Side from '@/views/AdminViews/Home/Sidebar.vue'
 import Foot from "@/views/AdminViews/Home/Footer.vue";
-import DataTable from 'datatables.net-vue3';
-import DataTablesCore from 'datatables.net';
-import 'datatables.net-select';
-import 'datatables.net-responsive';
-DataTable.use(DataTablesCore);
-const data = [
-            [1, 2],
-            [3, 4],
-        ];
+
+const items = [
+          {
+            name: 'Nebula GTX 3080',
+            image: '1.png',
+            price: 699.99,
+            rating: 5,
+            stock: true,
+          },
+          {
+            name: 'Galaxy RTX 3080',
+            image: '2.png',
+            price: 799.99,
+            rating: 4,
+            stock: false,
+          },
+          {
+            name: 'Orion RX 6800 XT',
+            image: '3.png',
+            price: 649.99,
+            rating: 3,
+            stock: true,
+          },
+          {
+            name: 'Vortex RTX 3090',
+            image: '4.png',
+            price: 1499.99,
+            rating: 4,
+            stock: true,
+          },
+          {
+            name: 'Cosmos GTX 1660 Super',
+            image: '5.png',
+            price: 299.99,
+            rating: 4,
+            stock: false,
+          },
+];
 
 export default {
     components: {
         Side,
         Foot,
-        DataTable
     },
     mounted() {
         document.title = "Manage Medical Request";
     },
     data() {
-    return {
-      data: data
-    };
-  }
+        return {
+            search: '',
+            items: items
+        };
+    }
 };
 </script>
