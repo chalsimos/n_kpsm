@@ -1,5 +1,5 @@
 <template>
-<nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+<nav class="fixed top-0 z-50 w-full bg-white border-2 border-b-orange-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center justify-start rtl:justify-end">
@@ -11,7 +11,7 @@
                 </button>
                 <router-link to="#" class="flex ms-2 md:me-24">
                     <img src="../../../assets/kpms.png" class="h-8 me-3" alt="KPSM Logo" />
-                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">KPSM</span>
+                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white hover:text-orange-500">KPSM</span>
                 </router-link>
             </div>
             <div class="flex items-center">
@@ -52,13 +52,13 @@
     </div>
 </nav>
 
-<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
+<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r-orange-200 sm:translate-x-0 border-2 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
     <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
             <li data-tooltip-target="dashboard" data-tooltip-placement="right">
                 <router-link to="/admin" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <img width="32" height="32" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-dashboards-productivity-flaticons-lineal-color-flat-icons.png" alt="external-dashboards-productivity-flaticons-lineal-color-flat-icons" />
-                    <span class="ms-3">Dashboard</span>
+                    <span class="ms-3 hover:text-orange-500">Dashboard</span>
                 </router-link>
             </li>
             <div id="dashboard" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -77,7 +77,7 @@
                             <path fill="#F92F60" d="M18.94 3.47v7.1c0 .16.13.28.28.28h.98c.62 0 .95.74.53 1.2l-4.01 4.41a.72.72 0 0 1-1.06 0l-4.02-4.41a.718.718 0 0 1 .53-1.2h.98c.16 0 .28-.13.28-.28v-7.1c0-.26.21-.47.47-.47h4.58c.25 0 .46.21.46.47" />
                         </g>
                     </svg>
-                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Request</span>
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Request</span>
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                     </svg>
@@ -102,7 +102,7 @@
                                 <path fill="#84929b" d="M19.241 26.18c0 .463-.272.841-.614.841c-.335 0-.608-.377-.608-.841v-6.813c0-.466.272-.841.608-.841c.341 0 .614.375.614.841z" />
                                 <path fill="#788187" d="M20.322 14.283c.205-.417.62-.632.92-.484c.302.15.381.61.173 1.026l-2.188 4.417c-.206.417-.618.632-.92.483c-.302-.148-.379-.61-.171-1.024z" />
                             </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap">Education</span>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Education</span>
                             <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
                         </router-link>
                     </li>
@@ -122,7 +122,7 @@
                                 <path fill="#00B1FF" d="M205.639 368.367h-35.71a7.2 7.2 0 0 1-7.2-7.2v-44.863a7.2 7.2 0 0 1 7.2-7.2h35.71a7.2 7.2 0 0 1 7.2 7.2v44.863a7.2 7.2 0 0 1-7.2 7.2m85.161-7.2v-44.863a7.2 7.2 0 0 0-7.2-7.2h-35.71a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h35.71a7.2 7.2 0 0 0 7.2-7.2m-155.921 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-35.71a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h35.71a7.2 7.2 0 0 0 7.2-7.2m-19.774-92.002v-44.863a7.2 7.2 0 0 0-7.2-7.2H91.969a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2H283.6a7.2 7.2 0 0 0 7.2-7.2" />
                                 <path fill="#67747C" d="M274.27 429.12H100.843v-8.22c0-5.442 4.412-9.854 9.854-9.854h153.718c5.442 0 9.854 4.412 9.854 9.854z" />
                                 <path fill="#95AAAD" d="M329.803 20.062H45.766a7.2 7.2 0 0 0-7.2 7.2v16.99a8.505 8.505 0 0 0 8.505 8.505h281.427a8.505 8.505 0 0 0 8.505-8.505v-16.99a7.2 7.2 0 0 0-7.2-7.2" /></svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap">Medical</span>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Medical</span>
                         </router-link>
                     </li>
                     <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -140,7 +140,7 @@
                         <path fill="#DCE2E2" d="M123.9 168.734c-2.339 3.971 138.467 131.347 138.467 131.347c17.707 15.585 28.761 15.831 53.112 0c0 0 196.315-127.274 195.755-131.19l.041-.029c-.01-.034-.033-.057-.049-.089c-.58-3.931-1.88-7.549-3.799-10.717c-.819-1.352-1.914-2.484-2.949-3.662l.074-.049c-.083-.091-.211-.134-.294-.226c-4.407-4.885-10.621-8.05-18.095-8.953c-.117-.014-.2-.077-.317-.091h-.463c-1.142-.111-2.19-.392-3.385-.392H163.525c-15.682 0-31.128 9.862-39.431 23.686c-.085.103-.199.177-.279.283z" />
                         <path fill="#59CAFC" d="M94.447 208.62H14.44c-6.627 0-12-5.373-12-12s5.373-12 12-12h80.007c6.627 0 12 5.373 12 12s-5.372 12-12 12m-13.108 70.236c0-6.627-5.373-12-12-12H14.44c-6.627 0-12 5.373-12 12s5.373 12 12 12h54.899c6.628 0 12-5.373 12-12m-18.215 82.237c0-6.627-5.373-12-12-12H14.44c-6.627 0-12 5.373-12 12s5.373 12 12 12h36.684c6.627 0 12-5.373 12-12" />
                     </svg>
-                    <span class="flex-1 ms-3 whitespace-nowrap">General Request</span>
+                    <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">General Request</span>
                     <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
                 </router-link>
             </li>
