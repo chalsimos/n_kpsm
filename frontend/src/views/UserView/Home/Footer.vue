@@ -1,5 +1,5 @@
 <template>
-	<footer class="bg-white bottom-0 left-0 w-[80vw] m-0 ml-[8vw] xs:ml-[2vw] xs:w-[100vw] md:ml-[35vw] md:w-[64vw] lg:ml-[19vw] lg:w-[78vw]">
+	<footer class="bg-white bottom-0 left-0 w-full">
 		<div class="w-full max-w-screen-xl mx-auto p-10 md:py-8">
 			<div class="sm:flex sm:items-center sm:justify-between">
 				<a href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
