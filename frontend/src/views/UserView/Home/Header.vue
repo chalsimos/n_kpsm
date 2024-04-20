@@ -2,7 +2,7 @@
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
         <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="../../../assets/kpms.png" class="h-8" alt="Flowbite Logo" />
+            <img :src="logoUrl" class="h-8" alt="Flowbite Logo" />
             <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">KPSM</span>
         </router-link>
         <div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse mt-4">
@@ -115,17 +115,19 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../../../main.js'; // use main.js instead of axios para magamit yung base.url at sa axios e hindi na ilalagay doamin ng backend api link nalang
 
 export default {
     data() {
         return {
             isLoggedIn: false,
             token: '',
-            information: []
+            information: [],
+            logoUrl: ''
         };
     },
     mounted() {
+        this.fetchActiveLogos();
         this.token = localStorage.getItem('token');
         if (this.token) {
             this.isLoggedIn = true;
@@ -139,7 +141,7 @@ export default {
                     Authorization: `Bearer ${this.token}`
                 }
             };
-            axios.get('http://localhost:8000/api/getuser', config)
+            axios.get('/api/getuser', config)
                 .then(response => {
                     console.log('User Data:', response.data);
                     this.information = response.data.user;
@@ -155,7 +157,19 @@ export default {
                         console.error('Error setting up request:', error.message);
                     }
                 });
-
+        },
+        fetchActiveLogos() {
+            axios.get('/api/active-logos')
+                .then(response => {
+                    if (response.data && response.data.image_url) {
+                        this.logoUrl = axios.defaults.baseURL + response.data.image_url;
+                    } else {
+                        console.error('Invalid response data:', response.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching active logos:', error);
+                });
         },
         logout() {
             localStorage.removeItem('token');

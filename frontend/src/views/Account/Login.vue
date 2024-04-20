@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../../main.js'; // use main.js instead of axios para magamit yung base.url at sa axios e hindi na ilalagay doamin ng backend api link nalang
 
 export default {
     data() {
@@ -68,7 +68,7 @@ export default {
     methods: {
         async login() {
             try {
-                const response = await axios.post('http://localhost:8000/api/login', {
+                const response = await axios.post('/api/login', {
                     email: this.email,
                     password: this.password
                 });
