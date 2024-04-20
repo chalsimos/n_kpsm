@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from '../../main.js'; // use main.js instead of axios para magamit yung base.url at sa axios e hindi na ilalagay doamin ng backend api link nalang
 import { onMounted } from "vue";
 import { Input, Ripple, initTWE } from "tw-elements";
 
@@ -203,7 +203,7 @@ export default {
     async register() {
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/register",
+          "/api/register",
           {
             name: this.completename,
             email: this.email,
