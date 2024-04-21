@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MedicalRequestController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -27,3 +28,9 @@ Route::get('/getuser', [AuthController::class, 'getUser']);
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 
+
+Route::prefix('medical-requests')->group(function () {
+    Route::post('/request', [MedicalRequestController::class, 'store']);
+    Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
+    Route::get('/get-all', [MedicalRequestController::class, 'index']);
+});
