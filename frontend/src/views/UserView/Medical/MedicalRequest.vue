@@ -61,7 +61,7 @@
                 <div class="mb-5">
                     <label for="Municipality" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Municipality</label>
                     <select @change="handleBarangay" id="Municipality" v-model="municipality" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
-                        <option  disabled selected value="">Select City</option>
+                        <option disabled selected value="">Select City</option>
                         <option v-for="city in cities" :value="city.city_code" :key="city.city_code">{{ city.city_name }}</option>
                     </select>
                 </div>
@@ -153,10 +153,14 @@ import {
     ref
 } from 'vue';
 import Head from "@/views/UserView/Home/Header.vue";
+import {
+    useToast
+} from 'vue-toastification'
 import Foot from "@/views/UserView/Home/Footer.vue";
 import Flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import SelectPhilippinesAddress from 'select-philippines-address';
+const toastr = useToast()
 import {
     cities,
     barangays
@@ -219,7 +223,7 @@ export default {
             barangays(this.municipality)
                 .then(response => {
                     this.barangays = response;
-                    this.selectedMunicipality = this.cities.find(city => city.city_code === this.municipality) ?.city_name || '';
+                    this.selectedMunicipality = this.cities.find(city => city.city_code === this.municipality) ?.city_name || ''; // magkadikit lagi yang ?. error pag ? . naghihiwalay pag nag vue-format
                     this.selectedBarangay = this.barangays.length > 0 ? this.barangays[0].brgy_name : '';
                 })
                 .catch(error => {
@@ -251,10 +255,26 @@ export default {
             };
             axios.post('/api/medical-requests/request', formData)
                 .then(response => {
-                    console.log(response.data);
+                    this.firstname = '';
+                    this.middlename = '';
+                    this.lastname = '';
+                    this.age = null;
+                    this.birthday = '';
+                    this.gender = '';
+                    this.province = '';
+                    this.selectedMunicipality = '';
+                    this.selectedBarangay = '';
+                    this.representativefullname = '';
+                    this.contactnumber = '';
+                    this.diagnosis = '';
+                    this.hospital = '';
+                    this.typeOfRequest = '';
+                    toastr.success('Medical Request Successfully Send');
+
                 })
                 .catch(error => {
                     console.error(error.response.data);
+                    toastr.error(error.response.data)
                 });
         }
     },
