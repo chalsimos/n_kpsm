@@ -10,7 +10,7 @@
                     <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                 </v-card-title>
                 <v-divider></v-divider>
-                <v-data-table v-model:search="search" :items="items">
+                <v-data-table v-model:search="search" :items="items" :items-per-page="5">
                     <template v-slot:item="{ item }">
                         <tr>
                             <td class="whitespace-nowrap">{{ item.firstname }}</td>
