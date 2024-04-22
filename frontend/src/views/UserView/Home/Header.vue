@@ -146,7 +146,7 @@ export default {
             };
             axios.get('/api/getuser', config)
                 .then(response => {
-                    console.log('User Data:', response.data);
+                    // console.log('User Data:', response.data);
                     this.information = response.data.user;
                 })
                 .catch(error => {

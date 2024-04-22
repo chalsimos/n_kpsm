@@ -6,25 +6,25 @@
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Patient Information
         </h2>
-        <form class="max-w-full mx-auto w-full ml-0">
+        <form @submit.prevent="saveToDatabase" class="max-w-full mx-auto w-full ml-0">
             <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
                 <div class="mb-5">
                     <label for="FirstName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
-                    <input type="text" id="FirstName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Juan" required />
+                    <input v-model="firstname" type="text" id="FirstName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Juan" required />
                 </div>
                 <div class="mb-5">
                     <label for="MiddleName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle Name</label>
-                    <input type="text" id="MiddleName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Martinez" required />
+                    <input v-model="middlename" type="text" id="MiddleName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Martinez" required />
                 </div>
                 <div class="mb-5">
                     <label for="LastName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
-                    <input type="text" id="LastName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Dela Cruz" required />
+                    <input v-model="lastname" type="text" id="LastName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Dela Cruz" required />
                 </div>
             </div>
             <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
                 <div class="mb-5">
                     <label for="Age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Age</label>
-                    <input type="number" id="Age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="21" required />
+                    <input v-model="age" type="number" id="Age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="21" required />
                 </div>
                 <div class="mb-5">
                     <label for="Birthday" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Birthday</label>
@@ -35,16 +35,16 @@
                                 <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                             </svg>
                         </div>
-                        <input id="Birthday" type="text" class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Select date">
+                        <input v-model="birthday" id="Birthday" type="text" class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Select date">
                     </div>
 
                 </div>
                 <div class="mb-5">
                     <label for="Gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                    <select id="Gender" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 w-full font-small rounded-lg text-sm py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
-                        <option disabled selected>Choose Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                    <select v-model="gender " id="Gender" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 w-full font-small rounded-lg text-sm py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                        <option value="" disabled selected>Choose Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
                     </select>
                 </div>
             </div>
@@ -54,17 +54,19 @@
             <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
                 <div class="mb-5">
                     <label for="Province" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
-                    <select @change="handleCity" id="Province" v-model="province" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
+                    <select @change="handleCity" id="Province" v-model="provinceto" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
                         <option value="1752">Oriental Mindoro</option>
                     </select>
                 </div>
                 <div class="mb-5">
                     <label for="Municipality" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Municipality</label>
-                    <select @change="handleBarangay" id="Municipality" v-model="city" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
-                        <option disabled selected value="">Select City</option>
+                    <select @change="handleBarangay" id="Municipality" v-model="municipality" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
+                        <option  disabled selected value="">Select City</option>
                         <option v-for="city in cities" :value="city.city_code" :key="city.city_code">{{ city.city_name }}</option>
                     </select>
                 </div>
+                <input type="hidden" v-model="selectedMunicipality" id="SelectedMunicipality" readonly>
+                <input type="hidden" v-model="selectedBarangay" id="SelectedBarangay" readonly>
 
                 <div class="mb-5">
                     <label for="Barangay" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
@@ -80,11 +82,11 @@
             <div class="grid md:grid-cols-2 md:gap-2 whitespace-nowrap">
                 <div class="mb-5">
                     <label for="FullName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Representative Fullname</label>
-                    <input type="text" id="FullName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Juan M. Dela Cruz" required />
+                    <input v-model="representativefullname" type="text" id="FullName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Juan M. Dela Cruz" required />
                 </div>
                 <div class="mb-5">
                     <label for="ContactNumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact Number</label>
-                    <input type="number" id="ContactNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="09123456789" required />
+                    <input v-model="contactnumber" type="number" id="ContactNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="09123456789" required />
                 </div>
             </div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -93,12 +95,12 @@
             <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
                 <div class="mb-5">
                     <label for="Diagnosis" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Diagnosis</label>
-                    <input type="text" id="Diagnosis" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Heart Disease" required />
+                    <input v-model="diagnosis" type="text" id="Diagnosis" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Heart Disease" required />
                 </div>
                 <div class="mb-5">
                     <label for="Hospital" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hospital</label>
-                    <select id="Hospital" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
-                        <option disabled selected>Choose Hospital</option>
+                    <select v-model="hospital" id="Hospital" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                        <option value="" disabled selected>Choose Hospital</option>
                         <option value="Maes">Maria Estrella General Hospital (MAES)</option>
                         <option value="MMG">Medical Mission Group Hospital Multi Purpose Cooperative of Oriental Mindoro (MMG)</option>
                         <option value="OMPH">Oriental Mindoro Provincial Hospital (OMPH)</option>
@@ -141,9 +143,9 @@
         </form>
     </div>
 </div>
-<div class="fixed inset-x-0 bottom-0 py-4">
-        <Foot />
-    </div>
+<div class="inset-x-0 bottom-0 py-4">
+    <Foot />
+</div>
 </template>
 
 <script>
@@ -156,11 +158,10 @@ import Flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import SelectPhilippinesAddress from 'select-philippines-address';
 import {
-    provinces,
     cities,
     barangays
 } from 'select-philippines-address';
-
+import axios from '../../../main.js'
 export default {
     components: {
         Head,
@@ -172,11 +173,24 @@ export default {
             provinces: [],
             cities: [],
             barangays: [],
-            province: '1752',
-            city: null,
+            provinceto: '1752',
+            municipality: null,
             barangay: null,
             typeOfRequest: '',
             otherRequestValue: '',
+            firstname: '',
+            middlename: '',
+            lastname: '',
+            age: null,
+            birthday: '',
+            gender: '',
+            province: "Oriental Mindoro",
+            representativefullname: '',
+            contactnumber: '',
+            diagnosis: '',
+            hospital: '',
+            selectedMunicipality: '',
+            selectedBarangay: '',
         };
     },
     mounted() {
@@ -186,11 +200,11 @@ export default {
     },
     methods: {
         fetchCities() {
-            cities(this.province)
+            cities(this.provinceto)
                 .then(response => {
                     if (response && response.length > 0) {
                         this.cities = response;
-                        this.city = null;
+                        this.municipality = null;
                         this.handleBarangay();
                     } else {
                         console.error('Empty response received for cities.');
@@ -201,10 +215,12 @@ export default {
                 });
         },
         handleBarangay() {
-            if (!this.city) return;
-            barangays(this.city)
+            if (!this.municipality) return;
+            barangays(this.municipality)
                 .then(response => {
                     this.barangays = response;
+                    this.selectedMunicipality = this.cities.find(city => city.city_code === this.municipality) ?.city_name || '';
+                    this.selectedBarangay = this.barangays.length > 0 ? this.barangays[0].brgy_name : '';
                 })
                 .catch(error => {
                     console.error('Error fetching barangays:', error);
@@ -216,17 +232,36 @@ export default {
             }
         },
         saveToDatabase() {
-            let dataToSave = {};
-
-            if (this.typeOfRequest === 'OTHERS') {
-                dataToSave = {
-                    TypeofRequest: this.otherRequestValue,
-                };
-            } else {
-                dataToSave = {
-                    TypeofRequest: this.typeOfRequest,
-                };
-            }
+            const formattedBirthday = this.birthday.split('/').reverse().join('-');
+            const formData = {
+                firstname: this.firstname,
+                middlename: this.middlename,
+                lastname: this.lastname,
+                age: this.age,
+                birthday: formattedBirthday,
+                gender: this.gender,
+                province: this.province,
+                municipality: this.selectedMunicipality,
+                barangay: this.selectedBarangay,
+                representativefullname: this.representativefullname,
+                contactnumber: this.contactnumber,
+                diagnosis: this.diagnosis,
+                hospital: this.hospital,
+                request: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
+            };
+            axios.post('/api/medical-requests/request', formData)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error.response.data);
+                });
+        }
+    },
+    watch: {
+        barangay(newBarangay) {
+            const selectedBarangayObject = this.barangays.find(barangay => barangay.brgy_code === newBarangay);
+            this.selectedBarangay = selectedBarangayObject ? selectedBarangayObject.brgy_name : '';
         }
     },
 

@@ -45,22 +45,21 @@ class MedicalRequestController extends Controller
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'FirstName' => 'required|string|max:255',
-            'MiddleName' => 'required|string|max:255',
-            'LastName' => 'required|string|max:255',
-            'Age' => 'required|integer|min:0',
-            'Birthday' => 'required|date',
-            'Gender' => 'required|string|in:male,female',
-            'Province' => 'required|string|max:255',
-            'Municipality' => 'required|string|max:255',
-            'Barangay' => 'required|string|max:255',
-            'FullName' => 'required|string|max:255',
-            'ContactNumber' => 'required|string|max:255',
-            'Diagnosis' => 'required|string|max:255',
-            'Hospital' => 'required|string|max:255',
-            'Request' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'middlename' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'age' => 'required|integer|min:0',
+            'birthday' => 'required|date',
+            'gender' => 'required|string|in:Male,Female',
+            'province' => 'required|string|max:255',
+            'municipality' => 'required|string|max:255',
+            'barangay' => 'required|string|max:255',
+            'representativefullname' => 'required|string|max:255',
+            'contactnumber' => 'required|integer|digits_between:1,11',
+            'diagnosis' => 'required|string|max:255',
+            'hospital' => 'required|string|max:255',
+            'request' => 'required|string|max:255',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -68,20 +67,20 @@ class MedicalRequestController extends Controller
         try {
             DB::beginTransaction();
             $data = new MedicalRequest();
-            $data->firstname = $request->input('FirstName');
-            $data->middlename = $request->input('MiddleName');
-            $data->lastname = $request->input('LastName');
-            $data->age = $request->input('Age');
-            $data->birthday = $request->input('Birthday');
-            $data->gender = $request->input('Gender');
-            $data->province = $request->input('Province');
-            $data->municipality = $request->input('Municipality');
-            $data->barangay = $request->input('Barangay');
-            $data->representativefullname = $request->input('FullName');
-            $data->contactnumber = $request->input('ContactNumber');
-            $data->diagnosis = $request->input('Diagnosis');
-            $data->hospital = $request->input('Hospital');
-            $data->request = $request->input('Request');
+            $data->firstname = $request->input('firstname');
+            $data->middlename = $request->input('middlename');
+            $data->lastname = $request->input('lastname');
+            $data->age = $request->input('age');
+            $data->birthday = $request->input('birthday');
+            $data->gender = $request->input('gender');
+            $data->province = $request->input('province');
+            $data->municipality = $request->input('municipality');
+            $data->barangay = $request->input('barangay');
+            $data->representativefullname = $request->input('representativefullname');
+            $data->contactnumber = $request->input('contactnumber');
+            $data->diagnosis = $request->input('diagnosis');
+            $data->hospital = $request->input('hospital');
+            $data->request = $request->input('request');
             $data->status = 'pending';
             $data->save();
             DB::commit();
