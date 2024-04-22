@@ -15,7 +15,25 @@ class MedicalRequestController extends Controller
     public function index()
     {
         try {
-            $medicalRequests = MedicalRequest::all();
+            $medicalRequests = MedicalRequest::select([
+                'firstname',
+                'middlename',
+                'lastname',
+                'age',
+                'birthday',
+                'gender',
+                'province',
+                'municipality',
+                'barangay',
+                'representativefullname',
+                'contactnumber',
+                'diagnosis',
+                'hospital',
+                'request',
+                'status',
+                'amount',
+            ])->get();
+
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -42,7 +60,7 @@ class MedicalRequestController extends Controller
             'ContactNumber' => 'required|string|max:255',
             'Diagnosis' => 'required|string|max:255',
             'Hospital' => 'required|string|max:255',
-            'TypeOfRequest' => 'required|string|max:255',
+            'Request' => 'required|string|max:255',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -50,19 +68,21 @@ class MedicalRequestController extends Controller
         try {
             DB::beginTransaction();
             $data = new MedicalRequest();
-            $data->first_name = $request->input('FirstName');
-            $data->middle_name = $request->input('MiddleName');
-            $data->last_name = $request->input('LastName');
+            $data->firstname = $request->input('FirstName');
+            $data->middlename = $request->input('MiddleName');
+            $data->lastname = $request->input('LastName');
             $data->age = $request->input('Age');
             $data->birthday = $request->input('Birthday');
             $data->gender = $request->input('Gender');
             $data->province = $request->input('Province');
             $data->municipality = $request->input('Municipality');
             $data->barangay = $request->input('Barangay');
-            $data->representative_fullname = $request->input('FullName');
-            $data->contact_number = $request->input('ContactNumber');
+            $data->representativefullname = $request->input('FullName');
+            $data->contactnumber = $request->input('ContactNumber');
             $data->diagnosis = $request->input('Diagnosis');
             $data->hospital = $request->input('Hospital');
+            $data->request = $request->input('Request');
+            $data->status = 'pending';
             $data->save();
             DB::commit();
             return response()->json(['message' => 'Medical Request saved successfully'], 201);

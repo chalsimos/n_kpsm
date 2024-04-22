@@ -286,16 +286,16 @@
       </div>
     </div>
   </div>
-  <Foot />
+  <div class="fixed inset-x-0 bottom-0 py-4">
+        <Foot />
+    </div>
 </template>
 
 <script>
 import Head from "@/views/UserView/Home/Header.vue";
-import Foot from "@/views/UserView/Home/Footer.vue";
 export default {
   components: {
     Head,
-    Foot
   },
   mounted() {
     document.title = "KPSM - Kongreso para sa Mamamayan";

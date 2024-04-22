@@ -13,20 +13,22 @@ return new class extends Migration
     {
         Schema::create('medical_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name')->nullable();
-            $table->string('middle_name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->string('firstname')->nullable();
+            $table->string('middlename')->nullable();
+            $table->string('lastname')->nullable();
             $table->unsignedInteger('age')->nullable();
             $table->date('birthday')->nullable();
             $table->string('gender')->nullable();
             $table->string('province')->nullable();
             $table->string('municipality')->nullable();
             $table->string('barangay')->nullable();
-            $table->string('representative_fullname')->nullable();
-            $table->string('contact_number')->nullable();
+            $table->string('representativefullname')->nullable();
+            $table->string('contactnumber')->nullable();
             $table->string('diagnosis')->nullable();
             $table->string('hospital')->nullable();
-            $table->string('type_of_request')->nullable();
+            $table->string('request')->nullable();
+            $table->string('status')->nullable();
+            $table->string('amount')->nullable();
             $table->timestamps();
         });
     }

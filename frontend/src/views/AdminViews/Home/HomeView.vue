@@ -1,5 +1,4 @@
 <template>
-
 <Side />
 <div class="p-4 sm:ml-64">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
@@ -102,7 +101,9 @@
         </div>
     </div>
 </div>
-<Foot />
+<div class="fixed inset-x-0 bottom-0 py-4">
+    <Foot />
+</div>
 </template>
 
 <script>
@@ -111,11 +112,12 @@ import Side from '@/views/AdminViews/Home/Sidebar.vue'
 import Foot from "@/views/AdminViews/Home/Footer.vue";
 
 export default {
-	components: {
-		Side,
+    components: {
+        Side,
         Foot,
-	},
-	mounted() {
-		document.title = "Home";
-			},};
+    },
+    mounted() {
+        document.title = "Home";
+    },
+};
 </script>
