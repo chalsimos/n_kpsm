@@ -106,10 +106,26 @@ class MedicalRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function approve_amount(Request $request, $id)
     {
-        //
+        try {
+            $medicalRequest = MedicalRequest::findOrFail($id);
+            $validatedData = $request->validate([
+                'amount' => 'required|numeric',
+            ]);
+            $medicalRequest->amount = $validatedData['amount'];
+            if ($medicalRequest->save()) {
+                $medicalRequest->status = 'approve';
+                $medicalRequest->save();
+                return response()->json(['data' => $medicalRequest], 200);
+            } else {
+                return response()->json(['error' => 'Failed to update amount'], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.

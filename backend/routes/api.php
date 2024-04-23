@@ -33,4 +33,5 @@ Route::prefix('medical-requests')->group(function () {
     Route::post('/request', [MedicalRequestController::class, 'store']);
     Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
     Route::get('/get-all', [MedicalRequestController::class, 'index']);
+    Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
 });

@@ -13,21 +13,22 @@
                 <v-data-table v-model:search="search" :items="items" :items-per-page="5">
                     <template v-slot:item="{ item }">
                         <tr>
-                            <td class="whitespace-nowrap">{{ item.firstname }}</td>
-                            <td class="whitespace-nowrap">{{ item.middlename }}</td>
-                            <td class="whitespace-nowrap">{{ item.lastname }}</td>
-                            <td class="whitespace-nowrap">{{ item.age }}</td>
-                            <td class="whitespace-nowrap">{{ item.birthday }}</td>
-                            <td class="whitespace-nowrap">{{ item.gender }}</td>
-                            <td class="whitespace-nowrap">{{ item.province }}</td>
-                            <td class="whitespace-nowrap">{{ item.municipality }}</td>
-                            <td class="whitespace-nowrap">{{ item.barangay }}</td>
-                            <td class="whitespace-nowrap">{{ item.representativefullname }}</td>
-                            <td class="whitespace-nowrap">{{ item.contactnumber }}</td>
-                            <td class="whitespace-nowrap">{{ item.diagnosis }}</td>
-                            <td class="whitespace-nowrap">{{ item.hospital }}</td>
-                            <td class="whitespace-nowrap">{{ item.request }}</td>
-                            <td class="whitespace-nowrap">{{ item.status }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.lastname }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.age }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.birthday }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.gender }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.province }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.municipality }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.barangay }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.representativefullname }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.contactnumber }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.diagnosis }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱   ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
                         </tr>
                     </template>
                 </v-data-table>

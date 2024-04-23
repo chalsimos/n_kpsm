@@ -1,7 +1,7 @@
 <!-- carpel, ito ang landing page, dito narin ung mga news -->
 <template>
   <Head />
-  <div class="p-4 mt-[5vh] md:mt-[4vh]">
+<div class="p-4 mt-[-7vh]">
     <div
       class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14"
     >
@@ -286,16 +286,18 @@
       </div>
     </div>
   </div>
-  <div class="fixed inset-x-0 bottom-0 py-4">
+  <div class="inset-x-0 bottom-0 py-4">
         <Foot />
     </div>
 </template>
 
 <script>
 import Head from "@/views/UserView/Home/Header.vue";
+import Foot from "@/views/UserView/Home/Footer.vue";
 export default {
   components: {
     Head,
+    Foot
   },
   mounted() {
     document.title = "KPSM - Kongreso para sa Mamamayan";
