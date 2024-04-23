@@ -2,7 +2,7 @@
 <Side />
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
-        <div class="p-4 border-2 border-orange-200  border-solid rounded-lg dark:border-gray-700 mt-14 ">
+        <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
             <v-card flat>
                 <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                     <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Manage Medical Requests
@@ -12,7 +12,7 @@
                 <v-divider></v-divider>
                 <v-data-table v-model:search="search" :items="items" :items-per-page="5">
                     <template #headers="{ headers }">
-                        <tr>
+                        <tr class="text-center whitespace-nowrap">
                             <th>Firstname</th>
                             <th>Middlename</th>
                             <th>Lastname</th>
@@ -28,11 +28,12 @@
                             <th>Hospital</th>
                             <th>Request</th>
                             <th>Status</th>
+                            <th>Amount</th>
                             <th>Action</th>
                         </tr>
                     </template>
                     <template v-slot:item="{ item }">
-                        <tr>
+                        <tr class="h-[12vh]">
                             <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.lastname }}</td>
@@ -48,14 +49,18 @@
                             <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
+                            <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
                             <td class="whitespace-nowrap uppercase">
                                 <template v-if="!item.amount">
                                     <button @click="amountModal(item.id)" data-modal-target="default-modal" data-modal-toggle="default-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                                         Input Amount
                                     </button>
+                                    <button @click="DeclineModal(item.id)" data-modal-target="default-modal" data-modal-toggle="default-modal" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-10 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                        Decline
+                                    </button>
                                 </template>
                                 <template v-else>
-                                    ₱ {{ item.amount ? parseFloat(item.amount).toFixed(2) : '' }}
+                                    
                                 </template>
                             </td>
                         </tr>
