@@ -32,6 +32,7 @@ class MedicalRequestController extends Controller
                 'request',
                 'status',
                 'amount',
+                'id'
             ])->get();
 
             return response()->json($medicalRequests, 200);

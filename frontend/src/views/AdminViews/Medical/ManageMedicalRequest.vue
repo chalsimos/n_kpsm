@@ -11,6 +11,26 @@
                 </v-card-title>
                 <v-divider></v-divider>
                 <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                    <template #headers="{ headers }">
+                        <tr>
+                            <th>Firstname</th>
+                            <th>Middlename</th>
+                            <th>Lastname</th>
+                            <th>Age</th>
+                            <th>Birthday</th>
+                            <th>Gender</th>
+                            <th>Province</th>
+                            <th>Municipality</th>
+                            <th>Barangay</th>
+                            <th>Representative Fullname</th>
+                            <th>Contact Number</th>
+                            <th>Diagnosis</th>
+                            <th>Hospital</th>
+                            <th>Request</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </template>
                     <template v-slot:item="{ item }">
                         <tr>
                             <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
@@ -28,11 +48,46 @@
                             <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱   ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                            <td class="whitespace-nowrap uppercase">
+                                <template v-if="!item.amount">
+                                    <button @click="amountModal(item.id)" data-modal-target="default-modal" data-modal-toggle="default-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                        Input Amount
+                                    </button>
+                                </template>
+                                <template v-else>
+                                    ₱ {{ item.amount ? parseFloat(item.amount).toFixed(2) : '' }}
+                                </template>
+                            </td>
                         </tr>
                     </template>
                 </v-data-table>
             </v-card>
+        </div>
+    </div>
+</div>
+
+<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Medical Assistance Amount
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <form @submit.prevent="updateAmount" class="max-w-sm mx-auto mt-5 mb-5">
+                <label for="Amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Input Amount</label>
+                <input type="number" id="Amount" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
+                <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    <button data-modal-hide="default-modal" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
@@ -41,7 +96,10 @@
 <script>
 import Side from '@/views/AdminViews/Home/Sidebar.vue'
 import axios from '../../../main.js'
-
+import {
+    useToast
+} from 'vue-toastification'
+const toastr = useToast()
 export default {
     data() {
         return {
@@ -64,6 +122,24 @@ export default {
                 })
                 .catch(error => {
                     console.error('Error fetching medical requests:', error);
+                });
+        },
+        amountModal(itemId) {
+            this.itemId = itemId;
+        },
+        updateAmount() {
+            const itemId = this.itemId;
+            const amount = parseFloat(document.getElementById('Amount').value);
+            axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
+                    amount
+                })
+                .then(response => {
+                    toastr.success("Amount Approve")
+                    this.fetchMedicalRequests();
+                })
+                .catch(error => {
+                    console.error(error.response.data);
+                    toastr.error("Please input the amount value.")
                 });
         }
     }
