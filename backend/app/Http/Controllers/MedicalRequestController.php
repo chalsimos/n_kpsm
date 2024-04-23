@@ -126,6 +126,25 @@ class MedicalRequestController extends Controller
             return response()->json(['error' => $e->getMessage()], 404);
         }
     }
+    public function decline(Request $request, $id)
+    {
+        try {
+            $medicalRequest = MedicalRequest::findOrFail($id);
+            $validatedData = $request->validate([
+                'decline_reason' => 'required|string',
+            ]);
+            $medicalRequest->decline_reason = $validatedData['decline_reason'];
+            if ($medicalRequest->save()) {
+                $medicalRequest->status = 'decline';
+                $medicalRequest->save();
+                return response()->json(['data' => $medicalRequest], 200);
+            } else {
+                return response()->json(['error' => 'Failed to update amount'], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
 
 
     /**
