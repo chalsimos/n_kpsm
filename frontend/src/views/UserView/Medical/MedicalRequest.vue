@@ -199,7 +199,7 @@ export default {
     },
     mounted() {
         Flatpickr('#Birthday', {});
-        document.title = "Medical Request";
+        document.title = "KPSM - Medical Request";
         this.fetchCities();
     },
     methods: {

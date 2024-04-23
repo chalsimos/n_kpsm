@@ -58,6 +58,20 @@ class AuthController extends Controller
         }
         return response()->json(['message' => 'Unauthorized'], 401);
     }
+    public function getUserType(Request $request)
+    {
+        $token = $request->bearerToken();
+        if ($token) {
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if ($user) {
+                return response()->json([
+                    'type' => $user->type,
+                ], 200);
+            }
+        }
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
 
     public function login(Request $request)
     {
