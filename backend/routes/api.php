@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicalRequestController;
-use App\Http\Controllers\Dole;
+use App\Http\Controllers\DoleController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,11 +34,15 @@ Route::get('/active-logos', [LogoController::class, 'displayImage']);
 
 Route::prefix('medical-requests')->group(function () {
     Route::post('/request', [MedicalRequestController::class, 'store']);
+    //admin
     Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
     Route::get('/get-all', [MedicalRequestController::class, 'index']);
     Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
 });
 Route::prefix('dole')->group(function () {
-    Route::post('/add-tupad', [Dole::class, 'save_tupad']);
+    Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
+    //admin
+    Route::get('/captain-list', [DoleController::class, 'captain_list']);
+    Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
 });

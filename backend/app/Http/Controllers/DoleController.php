@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tupad;
+use App\Models\TupadSlot;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class Dole extends Controller
+class DoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +17,47 @@ class Dole extends Controller
     public function index()
     {
         //
+    }
+
+    public function captain_list(Request $request)
+    {
+        try {
+            $captains = User::where('type', 'captain')
+                            ->leftJoin('tupad_slots', 'users.id', '=', 'tupad_slots.captain_id')
+                            ->select('users.*', 'tupad_slots.slot_get', 'tupad_slots.slot_left', 'tupad_slots.month_year_available', 'tupad_slots.date_obtained')
+                            ->get();
+            return response()->json($captains, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function give_slot(Request $request, $captain_id)
+    {
+        try {
+            $captain = User::findOrFail($captain_id);
+            if ($captain->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $validator = Validator::make($request->all(), [
+                'slot_get' => 'required|integer|min:0',
+                'month_year_available' => 'required|date_format:Y-m',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 400);
+            }
+            $slot = new TupadSlot();
+            $slot->captain_id = $captain_id;
+            $slot->slot_get = $request->input('slot_get');
+            $slot->slot_left = $request->input('slot_get');
+            $slot->month_year_available = $request->input('month_year_available');
+            $slot->date_obtained = now()->toDateString();
+            $slot->save();
+
+            return response()->json(['data' => $slot], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function save_tupad(Request $request)

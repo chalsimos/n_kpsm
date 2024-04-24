@@ -23,12 +23,12 @@ return new class extends Migration
             $table->string('municipality')->nullable();
             $table->string('barangay')->nullable();
             $table->string('representativefullname')->nullable();
-            $table->string('contactnumber')->nullable();
+            $table->integer('contactnumber')->nullable();
             $table->string('diagnosis')->nullable();
             $table->string('hospital')->nullable();
             $table->string('request')->nullable();
             $table->string('status')->nullable();
-            $table->string('amount')->nullable();
+            $table->integer('amount')->nullable();
             $table->timestamps();
         });
     }

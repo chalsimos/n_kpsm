@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('municipality')->nullable();
             $table->string('barangay')->nullable();
             $table->string('civil_status')->nullable();
-            $table->string('contact_number')->nullable();
+            $table->integer('contact_number')->nullable();
             $table->string('benificiary_name')->nullable();
             $table->string('id_type')->nullable();
             $table->string('id_number')->nullable();

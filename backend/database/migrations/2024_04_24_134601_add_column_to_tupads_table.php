@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('medical_requests', function (Blueprint $table) {
-            $table->string('decline_reason')->nullable();
+        Schema::table('tupads', function (Blueprint $table) {
+            $table->integer('given_by_captainID')->nullable();
         });
     }
 
@@ -21,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('medical_requests', function (Blueprint $table) {
-
-            $table->dropColumn('decline_reason');
+        Schema::table('tupads', function (Blueprint $table) {
+            $table->dropColumn('given_by_captainID');
         });
     }
 };
