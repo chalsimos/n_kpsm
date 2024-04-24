@@ -47,6 +47,14 @@
                             <option value="Female">Female</option>
                         </select>
                     </div>
+                    <div class="mb-5">
+                        <label for="FullName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Benificiary Fullname</label>
+                        <input v-model="benificiaryfullname" type="text" id="FullName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Juan M. Dela Cruz" required />
+                    </div>
+                    <div class="mb-5">
+                        <label for="ContactNumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact Number</label>
+                        <input v-model="contactnumber" type="number" id="ContactNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="09123456789" required />
+                    </div>
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     Address
@@ -75,64 +83,35 @@
                             <option v-for="barangay in barangays" :value="barangay.brgy_code" :key="barangay.brgy_code">{{ barangay.brgy_name }}</option>
                         </select>
                     </div>
-                </div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    Representative Information
-                </h2>
-                <div class="grid md:grid-cols-2 md:gap-2 whitespace-nowrap">
                     <div class="mb-5">
-                        <label for="FullName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Representative Fullname</label>
-                        <input v-model="representativefullname" type="text" id="FullName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Juan M. Dela Cruz" required />
-                    </div>
-                    <div class="mb-5">
-                        <label for="ContactNumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact Number</label>
-                        <input v-model="contactnumber" type="number" id="ContactNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="09123456789" required />
+                        <label for="Sitio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sitio</label>
+                        <input v-model="sitio" type="text" id="Sitio" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Sitio" required />
                     </div>
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    Request Information
+                    ID Information
                 </h2>
                 <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
                     <div class="mb-5">
-                        <label for="Diagnosis" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Diagnosis</label>
-                        <input v-model="diagnosis" type="text" id="Diagnosis" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Heart Disease" required />
+                        <label for="IDNO" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ID Number</label>
+                        <input v-model="idNum" type="text" id="IDNO" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Heart Disease" required />
                     </div>
                     <div class="mb-5">
-                        <label for="Hospital" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hospital</label>
-                        <select v-model="hospital" id="Hospital" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
-                            <option value="" disabled selected>Choose Hospital</option>
-                            <option value="Maes">Maria Estrella General Hospital (MAES)</option>
-                            <option value="MMG">Medical Mission Group Hospital Multi Purpose Cooperative of Oriental Mindoro (MMG)</option>
-                            <option value="OMPH">Oriental Mindoro Provincial Hospital (OMPH)</option>
-                            <option value="SMV">Sta. Maria Village Hospital (SMV)</option>
-                            <option value="LGMC">Luna Goco Medical Center (LGMC)</option>
-                        </select>
-                    </div>
-                    <div class="mb-5">
-                        <label for="TypeOfRequest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type of Request</label>
+                        <label for="TypeOfRequest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type of ID</label>
                         <select v-model="typeOfRequest" @change="handleTypeOfRequestChange" id="TypeOfRequest" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
-                            <option value="" disabled selected>Choose Request</option>
-                            <option value="LABORATORY">Laboratory</option>
-                            <option value="BONE MARROW">Bone Marrow</option>
-                            <option value="MEDICINE">Medicine</option>
-                            <option value="HOSPITAL BILL">Hospital Bill</option>
-                            <option value="CHEMOTHERAPY">Chemotherapy</option>
-                            <option value="ENDOSCOPY">Endoscopy</option>
-                            <option value="CT-SCAN">CT-Scan</option>
-                            <option value="2D ECHO">2D Echo</option>
-                            <option value="SCROTAL UTZ">Scrotal Utz</option>
-                            <option value="MRI">MRI</option>
-                            <option value="BLOOD TRANSFUSION">Blood Transfusion</option>
-                            <option value="BIOPSY">Biopsy</option>
-                            <option value="FOR EGD">For EGD</option>
-                            <option value="BRONCOSCOPY">Broncoscopy</option>
-                            <option value="LARYNGOSCOPY">Laryngoscopy</option>
+                            <option value="" disabled selected>Choose Type of ID</option>
+                            <option value="LABORATORY">Pag-Ibig</option>
+                            <option value="HOSPITAL BILL">Postal</option>
+                            <option value="CHEMOTHERAPY">Driver's License</option>
+                            <option value="ENDOSCOPY">Philhealth</option>
+                            <option value="CT-SCAN">Passport ID</option>
+                            <option value="2D ECHO">Umid ID</option>
                             <option value="OTHERS">Others</option>
                         </select>
                     </div>
                     <div class="mb-4" v-if="typeOfRequest === 'OTHERS'">
-                        <label for="OtherRequest" class="block text-sm font-medium text-gray-900 dark:text-white">Other Type of Request</label>
-                        <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Flu" required />
+                        <label for="OtherRequest" class="block text-sm font-medium text-gray-900 dark:text-white">Other Type of ID</label>
+                        <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="SSS" required />
                     </div>
                 </div>
                 <div class="flex justify-end">
@@ -189,17 +168,17 @@
                 birthday: '',
                 gender: '',
                 province: "Oriental Mindoro",
-                representativefullname: '',
+                benificiaryfullname: '',
                 contactnumber: '',
-                diagnosis: '',
-                hospital: '',
+                idNum: '',
+                sitio: '',
                 selectedMunicipality: '',
                 selectedBarangay: '',
             };
         },
         mounted() {
             Flatpickr('#Birthday', {});
-            document.title = "KPSM - Tupad";
+            document.title = "KPSM - GIP";
             this.fetchCities();
         },
         methods: {
@@ -247,11 +226,11 @@
                     province: this.province,
                     municipality: this.selectedMunicipality,
                     barangay: this.selectedBarangay,
-                    representativefullname: this.representativefullname,
+                    benificiaryfullname: this.benificiaryfullname,
                     contactnumber: this.contactnumber,
-                    diagnosis: this.diagnosis,
-                    hospital: this.hospital,
-                    request: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
+                    idNum: this.this.idNum,
+                    sitio: this.sitio,
+                    idType: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
                 };
                 axios.post('/api/medical-requests/request', formData)
                     .then(response => {
@@ -264,10 +243,10 @@
                         this.province = '';
                         this.selectedMunicipality = '';
                         this.selectedBarangay = '';
-                        this.representativefullname = '';
+                        this.benificiaryfullname = '';
                         this.contactnumber = '';
-                        this.diagnosis = '';
-                        this.hospital = '';
+                        this.idNum = '';
+                        this.sitio = '';
                         this.typeOfRequest = '';
                         toastr.success('Medical Request Successfully Send');
     

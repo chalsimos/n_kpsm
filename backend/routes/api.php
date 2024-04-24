@@ -2,11 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+//Controller
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicalRequestController;
-use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\Dole;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,4 +38,7 @@ Route::prefix('medical-requests')->group(function () {
     Route::get('/get-all', [MedicalRequestController::class, 'index']);
     Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
+});
+Route::prefix('dole')->group(function () {
+    Route::post('/add-tupad', [Dole::class, 'save_tupad']);
 });

@@ -19,7 +19,7 @@ const routes = [
 	{ path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresAuth: true }},
 
 	//Brgy. Captain Side
-	{ path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue'),meta: { requiresAuth: true, requiresCaptain: true }},
+	{ path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue'),meta: { requiresAuth: true, requiresCaptain: true}},
 	{ path:'/gip', name:'GIP', component:() => import('../views/UserView/Dole/GIP.vue'),meta: { requiresAuth: true, requiresCaptain: true }},
 
 	//Admin
@@ -31,9 +31,9 @@ const routes = [
 const router = createRouter({
 	history: createWebHistory(),
 	routes
-  });
-  
-  router.beforeEach(async (to, from, next) => {
+});
+
+router.beforeEach(async (to, from, next) => {
     if (to.meta.requiresAuth) {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -65,4 +65,4 @@ const router = createRouter({
     }
 });
 
-  export default router;
+export default router;
