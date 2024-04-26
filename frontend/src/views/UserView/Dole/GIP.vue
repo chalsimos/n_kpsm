@@ -1,3 +1,13 @@
+<script setup>
+  import { onMounted } from "vue";
+  import { Modal,Tooltip, initTWE } from "tw-elements";
+
+  import { initFlowbite } from 'flowbite'
+  onMounted(() => {
+    initFlowbite();
+    initTWE({ Modal,Tooltip });
+  });
+</script>
 <template>
     <Head />
     

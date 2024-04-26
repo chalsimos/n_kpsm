@@ -1,3 +1,13 @@
+<script setup>
+  import { onMounted } from "vue";
+  import { Modal,Tooltip, initTWE } from "tw-elements";
+
+  import { initFlowbite } from 'flowbite'
+  onMounted(() => {
+    initFlowbite();
+    initTWE({ Modal,Tooltip });
+  });
+</script>
 <template>
 <Side />
 <div class="p-4 sm:ml-64">
@@ -100,9 +110,6 @@
             </div>
         </div>
     </div>
-</div>
-<div class="fixed inset-x-0 bottom-0 py-4">
-    <Foot />
 </div>
 </template>
 

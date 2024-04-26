@@ -1,3 +1,4 @@
+
 <template>
 <nav class="fixed top-0 z-50 w-full bg-white border-b-2 border-orange-200 dark:bg-gray-800 dark:border-gray-700 ">
     <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
@@ -7,7 +8,7 @@
         </router-link>
         <div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse md:mt-3 ">
 
-            <div v-if="isLoggedIn">
+            <div v-show="isLoggedIn">
                 <button id="dropdownAvatarNameButton" data-dropdown-toggle="dropdownAvatarName" class="flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white" type="button">
                     <span class="sr-only">Open user menu</span>
                     <img class="w-12 h-12 rounded-full" src="../../../assets/kpms.png" alt="user photo">
@@ -43,13 +44,13 @@
 
                 <!-- Display other user info here -->
             </div>
-            <div v-else>
+            <div>
                 <!-- login -->
 
-                <router-link v-if="!isLoggedIn" to="/login" class="text-white bg-orange-500 mr-1 dark:text-white hover:bg-orange-700 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2  py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                <router-link v-show="!isLoggedIn" to="/login" class="text-white bg-orange-500 mr-1 dark:text-white hover:bg-orange-700 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2  py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                     Login
                 </router-link>
-                <router-link v-if="!isLoggedIn" to="/register" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 md:px-5 md:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                <router-link v-show="!isLoggedIn" to="/register" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 md:px-5 md:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     Sign up
                 </router-link>
 
@@ -81,6 +82,8 @@
                                     <router-link to="/medical-request" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
                                         Medical Assistance
                                     </router-link>
+                                    <!-- Pag ganito ang gamit e hindi na kailangan magrefresh para gumana yung mga dropdown, etc. -->
+                                    <!-- <a :href="$router.resolve({name: 'Medical Request'}).href" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">Medical Assistance</a> -->
                                 </li>
                                 <li>
                                     <router-link to="/scholarship" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
@@ -101,8 +104,7 @@
                         </div>
                     </div>
                 </li>
-
-                <li v-if="userType === 'captain'">
+                <li  v-show="this.information.type === 'captain'">
                     <button id="mega-menu-dropdown-button-dole" data-dropdown-toggle="mega-menu-dropdown-dole" class="flex items-center justify-between w-full py-2 px-3 font-medium border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
                         Dole
                         <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -256,6 +258,8 @@ export default {
             this.getUser();
         }
     },
+    computed: {
+  },
     methods: {
         getUser() {
             const config = {
@@ -265,7 +269,7 @@ export default {
             };
             axios.get('/api/getuser', config)
                 .then(response => {
-                    // console.log('User Data:', response.data);
+                    console.log('User Data:', response.data);
                     this.information = response.data.user;
                 })
                 .catch(error => {
