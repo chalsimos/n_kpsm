@@ -239,7 +239,7 @@
                     sitio: this.sitio,
                     idType: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
                 };
-                axios.post('/api/medical-requests/request', formData)
+                axios.post('/api/dole/add-tupad', formData)
                     .then(response => {
                         this.firstname = '';
                         this.middlename = '';
