@@ -115,8 +115,8 @@
                         <div class="p-4 pb-0 text-black md:pb-4 dark:text-white">
                             <ul class="space-y-4" aria-labelledby="mega-menu-dropdown-button-dole">
                                 <li>
-                                    <router-link to="/tupad" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
-                                        Tupad
+                                    <router-link to="/tupad-slot" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Tupad Slot
                                     </router-link>
                                 </li>
                                 <li>

@@ -1,10 +1,7 @@
-<script setup>
-
-</script>
 <template>
-<Head />
-
-<div class="p-4 mt-[5vh]">
+ <div class="flex flex-col min-h-screen">
+        <Head />
+        <div class="flex-grow p-4 mt-[5vh]">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Patient Information
@@ -125,9 +122,10 @@
         </form>
     </div>
 </div>
-<div class="inset-x-0 bottom-0 py-4">
-    <Foot />
-</div>
+<div>
+            <Foot />
+        </div>
+    </div>
 </template>
 
     <script>
