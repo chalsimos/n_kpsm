@@ -40,8 +40,8 @@ class DoleController extends Controller
                 return response()->json(['error' => 'User is not a captain'], 400);
             }
             $validator = Validator::make($request->all(), [
-                'slot_get' => 'required|integer|min:0',
-                'month_year_available' => 'required|date_format:Y-m',
+                'slot_get' => 'required|integer',
+                'month_year_available' => 'required',
             ]);
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 400);

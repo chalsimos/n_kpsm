@@ -8,6 +8,7 @@ import 'flowbite'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
+import Antd from 'ant-design-vue';
 import axios from 'axios'
 axios.defaults.baseURL="http://127.0.0.1:8000";
 export default axios;
@@ -24,7 +25,7 @@ const vuetify = createVuetify({
 
 createApp(App)
 .use(router)
-.use(store)
+.use(Antd)
 .use(Toast, {
   transition: "Vue-Toastification__bounce",
   maxToasts: 20,
