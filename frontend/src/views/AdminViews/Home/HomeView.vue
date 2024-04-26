@@ -1,13 +1,4 @@
-<script setup>
-  import { onMounted } from "vue";
-  import { Modal,Tooltip, initTWE } from "tw-elements";
 
-  import { initFlowbite } from 'flowbite'
-  onMounted(() => {
-    initFlowbite();
-    initTWE({ Modal,Tooltip });
-  });
-</script>
 <template>
 <Side />
 <div class="p-4 sm:ml-64">
@@ -114,6 +105,15 @@
 </template>
 
 <script>
+import {
+    Modal,
+    Tooltip,
+    initTWE
+} from "tw-elements";
+
+import {
+    initFlowbite
+} from 'flowbite'
 // @ is an alias to /src
 import Side from '@/views/AdminViews/Home/Sidebar.vue'
 import Foot from "@/views/AdminViews/Home/Footer.vue";
@@ -124,6 +124,11 @@ export default {
         Foot,
     },
     mounted() {
+    initTWE({
+        Modal,
+        Tooltip
+    });
+    initFlowbite();
         document.title = "Home";
     },
 };

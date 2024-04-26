@@ -1,13 +1,3 @@
-<script setup>
-  import { onMounted } from "vue";
-  import { Modal,Tooltip, initTWE } from "tw-elements";
-
-  import { initFlowbite } from 'flowbite'
-  onMounted(() => {
-    initFlowbite();
-    initTWE({ Modal,Tooltip });
-  });
-</script>
 <template>
 <Side />
 <div>
@@ -70,7 +60,7 @@
                                     </button>
                                 </template>
                                 <template v-else>
-                                    
+
                                 </template>
                             </td>
                         </tr>
@@ -109,6 +99,15 @@
 </template>
 
 <script>
+import {
+    Modal,
+    Tooltip,
+    initTWE
+} from "tw-elements";
+
+import {
+    initFlowbite
+} from 'flowbite'
 import Side from '@/views/AdminViews/Home/Sidebar.vue'
 import axios from '../../../main.js'
 import {
@@ -126,6 +125,12 @@ export default {
         Side,
     },
     mounted() {
+
+        initTWE({
+            Modal,
+            Tooltip
+        });
+        initFlowbite();
         document.title = "Manage Medical Request";
         this.fetchMedicalRequests();
     },
