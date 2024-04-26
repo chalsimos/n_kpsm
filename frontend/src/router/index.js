@@ -9,6 +9,9 @@ const toastr = useToast()
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
+        //need invitation code
+        { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
+
         //Account
         { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') }, 
         { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') }, 
@@ -21,8 +24,8 @@ const router = createRouter({
         { path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresClient: true}},
     
         //Brgy. Captain Side
-        { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue'),meta: {  requiresCaptain: true}},
         { path:'/gip', name:'GIP', component:() => import('../views/UserView/Dole/GIP.vue'),meta: {  requiresCaptain: true }},
+        { path:'/tupad-slot', name:'GIP', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
     
         //Admin
         { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdmin: true }},

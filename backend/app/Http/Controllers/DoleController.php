@@ -6,8 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tupad;
 use App\Models\TupadSlot;
+use App\Models\TupadCode;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class DoleController extends Controller
 {
@@ -19,13 +23,119 @@ class DoleController extends Controller
         //
     }
 
+    public function tupad_code_list(Request $request)
+    {
+        try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $codes = TupadCode::where('captain_id', $user->id)
+                ->with(['slot' => function ($query) {
+                    $query->select('id', 'month_year_available');
+                }])
+                ->get();
+            $transformedData = $codes->map(function ($code) {
+                return [
+                    'id' => $code->id,
+                    'captain_id' => $code->captain_id,
+                    'slot_id' => $code->slot_id,
+                    'code_generated' => $code->code_generated,
+                    'status' => $code->status,
+                    'created_at' => $code->created_at,
+                    'updated_at' => $code->updated_at,
+                    'month_year_available' => $code->slot->month_year_available,
+                ];
+            });
+            return response()->json($transformedData, 200);
+            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function generateCodeAndSave(Request $request)
+    {
+        try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $slotsWithNoCode = TupadSlot::where('captain_id', $user->id)
+                ->where('status', 'No Code')
+                ->get();
+            if ($slotsWithNoCode->isEmpty()) {
+                return response()->json(['message' => 'No slots available for code generation'], 400);
+            }
+            $slotsWithNoCode->each(function ($slot) {
+                $slot->status = 'Code Generated';
+                $slot->save();
+            });
+            foreach ($slotsWithNoCode as $slot) {
+                for ($i = 0; $i < $slot->slot_get; $i++) {
+                    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+                    $codeGenerated = 'CODE_' . str_shuffle(substr(str_shuffle($characters), 0, 10));
+                    $code = new TupadCode();
+                    $code->captain_id = $user->id;
+                    $code->slot_id = $slot->id;
+                    $code->code_generated = $codeGenerated;
+                    $code->status = 'active';
+                    $code->save();
+                }
+            }
+
+            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function captain_tupad_slot(Request $request)
+    {
+        try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $slots = TupadSlot::where('captain_id', $user->id)->get();
+            return response()->json(['data' => $slots], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+    }
+
     public function captain_list(Request $request)
     {
         try {
             $captains = User::where('type', 'captain')
-                            ->leftJoin('tupad_slots', 'users.id', '=', 'tupad_slots.captain_id')
-                            ->select('users.*', 'tupad_slots.slot_get', 'tupad_slots.slot_left', 'tupad_slots.month_year_available', 'tupad_slots.date_obtained')
-                            ->get();
+                ->leftJoin('tupad_slots', 'users.id', '=', 'tupad_slots.captain_id')
+                ->select('users.*', 'tupad_slots.slot_get', 'tupad_slots.slot_left', 'tupad_slots.month_year_available', 'tupad_slots.date_obtained')
+                ->get();
             return response()->json($captains, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -52,6 +162,7 @@ class DoleController extends Controller
             $slot->slot_left = $request->input('slot_get');
             $slot->month_year_available = $request->input('month_year_available');
             $slot->date_obtained = now()->toDateString();
+            $slot->status = 'No Code';
             $slot->save();
 
             return response()->json(['data' => $slot], 200);

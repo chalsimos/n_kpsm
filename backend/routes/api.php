@@ -33,6 +33,7 @@ Route::get('/active-logos', [LogoController::class, 'displayImage']);
 
 
 Route::prefix('medical-requests')->group(function () {
+    //client
     Route::post('/request', [MedicalRequestController::class, 'store']);
     //admin
     Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
@@ -41,8 +42,13 @@ Route::prefix('medical-requests')->group(function () {
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
 });
 Route::prefix('dole')->group(function () {
+    //client
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     //admin
     Route::get('/captain-list', [DoleController::class, 'captain_list']);
     Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
+    //captain
+    Route::get('/captain-slot-list', [DoleController::class,'captain_tupad_slot']);
+    Route::post('/generate-code', [DoleController::class,'generateCodeAndSave']);
+    Route::get('/tupad-code-list', [DoleController::class,'tupad_code_list']);
 });
