@@ -57,7 +57,7 @@ class MedicalRequestController extends Controller
             'municipality' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
             'representativefullname' => 'required|string|max:255',
-            'contactnumber' => 'required|integer|digits_between:1,11',
+            'contactnumber' => 'required|string|max:11',
             'diagnosis' => 'required|string|max:255',
             'hospital' => 'required|string|max:255',
             'request' => 'required|string|max:255',

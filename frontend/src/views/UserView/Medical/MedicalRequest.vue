@@ -150,8 +150,14 @@
 
 <script>
 import {
-    ref
-} from 'vue';
+    Modal,
+    Tooltip,
+    initTWE
+} from "tw-elements";
+
+import {
+    initFlowbite
+} from 'flowbite'
 import Head from "@/views/UserView/Home/Header.vue";
 import {
     useToast
@@ -198,6 +204,12 @@ export default {
         };
     },
     mounted() {
+
+        initTWE({
+            Modal,
+            Tooltip
+        });
+        initFlowbite();
         Flatpickr('#Birthday', {});
         document.title = "KPSM - Medical Request";
         this.fetchCities();

@@ -1,4 +1,4 @@
-<!-- carpel, ito ang landing page, dito narin ung mga news -->
+
 <template>
   <Head />
 <div class="p-4 mt-[5vh]">
@@ -292,6 +292,14 @@
 </template>
 
 <script>
+import {
+    Modal,
+    Tooltip,
+    initTWE
+} from "tw-elements";
+import {
+    initFlowbite
+} from 'flowbite'
 import Head from "@/views/UserView/Home/Header.vue";
 import Foot from "@/views/UserView/Home/Footer.vue";
 export default {
@@ -300,6 +308,11 @@ export default {
     Foot
   },
   mounted() {
+    initTWE({
+        Modal,
+        Tooltip
+    });
+    initFlowbite();
     document.title = "KPSM - Kongreso para sa Mamamayan";
   },
 };
