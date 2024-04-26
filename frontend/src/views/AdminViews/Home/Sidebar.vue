@@ -66,7 +66,7 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
             <li>
-                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-request" data-collapse-toggle="manage-request">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                         <g fill="none">
                             <rect width="30" height="22" x="1" y="8" fill="#B4ACBC" rx="1.5" />
@@ -82,7 +82,7 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
-                <ul id="dropdown-example" class="hidden py-2 space-y-2">
+                <ul id="manage-request" class="hidden py-2 space-y-2">
                     <li data-tooltip-target="Education" data-tooltip-placement="right">
                         <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64">
@@ -127,6 +127,38 @@
                     </li>
                     <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Medical
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                </ul>
+            </li>
+            <li>
+                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-dole" data-collapse-toggle="manage-dole">
+                    <img src="../../../assets/dole.png" class="h-8 me-3" alt="KPSM Logo" />
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Dole</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                    </svg>
+                </button>
+                <ul id="manage-dole" class="hidden py-2 space-y-2">
+                    <li data-tooltip-target="Tupad" data-tooltip-placement="right">
+                        <router-link to="/manage-tupad" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Manage Tupad</span>
+                            <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
+                        </router-link>
+                    </li>
+                    <div id="Tupad" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Tupad
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <li data-tooltip-target="GIP" data-tooltip-placement="right">
+                        <router-link to="/gip" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img src="../../../assets/gip.jpg" class="h-8 me-3" alt="KPSM Logo" />
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">GIP</span>
+                        </router-link>
+                    </li>
+                    <div id="GIP" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        GIP
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </ul>

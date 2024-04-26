@@ -22,7 +22,7 @@
                         </tr>
                     </template>
                     <template v-slot:item="{ item }">
-                        <tr class="h-[12vh]">
+                        <tr class="h-[2vh]">
                             <td class="whitespace-nowrap uppercase">{{ item.name }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.slot_get ?? 'No slot given' }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.slot_left ?? 'No slot given' }}</td>
@@ -57,7 +57,18 @@
             </div>
             <form @submit.prevent="updateSlot" class="max-w-sm mx-auto mt-5 mb-5">
                 <label for="Amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">How Many Slot</label>
-                <input type="number" id="Amount" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
+                <input v-model="slot_get" type="number" id="Amount" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
+                <label for="slotDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Slot Available</label>
+                <div class="relative max-w-full">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
+                    </div>
+                    <a-space direction="vertical">
+                        <a-date-picker v-model="month_year_available" format="MM/YYYY" picker="month" @change="handleMonthChange" />
+                    </a-space>
+                </div>
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button data-modal-hide="giveSlot" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
                 </div>
@@ -67,7 +78,6 @@
 </div>
 </template>
 
-    
 <script>
 import {
     Modal,
@@ -84,28 +94,61 @@ import {
     useToast
 } from 'vue-toastification'
 const toastr = useToast()
+import {
+    ADatePicker,
+    ASpace
+} from 'ant-design-vue';
+import moment from 'moment';
+
 export default {
     data() {
         return {
             search: '',
-            items: []
+            items: [],
+            month_year_available: '',
+            slot_get: '',
         };
     },
     components: {
         Side,
+        ADatePicker,
+        ASpace
     },
     mounted() {
-
         initTWE({
             Modal,
             Tooltip
         });
         initFlowbite();
         document.title = "Manage Medical Request";
-        this.fetchMedicalRequests();
+        this.fetchCaptainList();
     },
     methods: {
-        fetchMedicalRequests() {
+        handleMonthChange(date, dateString) {
+    const formattedDate = moment(dateString, "MM/YYYY").format("YYYY-MM");
+    console.log(date, formattedDate);
+    this.month_year_available = formattedDate;
+},
+
+        updateSlot() {
+    const itemId = this.itemId;
+    const formData = {
+        slot_get: this.slot_get,
+        month_year_available: this.month_year_available
+    };
+
+    axios.post(`/api/dole/give-slot/${itemId}`, formData)
+        .then(response => {
+            toastr.success("Slot Approved");
+            this.fetchCaptainList();
+        })
+        .catch(error => {
+            console.error(error.response.data);
+            toastr.error("Please input the amount value.");
+        });
+},
+
+        fetchCaptainList() {
             axios.get('/api/dole/captain-list')
                 .then(response => {
                     this.items = response.data;
@@ -127,21 +170,6 @@ export default {
                 }
             });
         },
-        updateSlot() {
-            const itemId = this.itemId;
-            const amount = parseFloat(document.getElementById('Amount').value);
-            axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
-                    amount
-                })
-                .then(response => {
-                    toastr.success("Amount Approve")
-                    this.fetchMedicalRequests();
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error("Please input the amount value.")
-                });
-        }
     }
 };
 </script>

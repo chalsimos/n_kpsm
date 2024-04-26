@@ -8,10 +8,12 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
+    "ant-design-vue": "^4.2.1",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
     "flatpickr": "^4.6.13",
     "flowbite": "^2.3.0",
+    "moment": "^2.30.1",
     "register-service-worker": "^1.7.2",
     "select-philippines-address": "^1.0.6",
     "tw-elements": "^2.0.0",
