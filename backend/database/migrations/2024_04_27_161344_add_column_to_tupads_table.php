@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tupads', function (Blueprint $table) {
-            $table->integer('given_by_captainID')->nullable();
+            $table->foreignId('used_code_id')->nullable()->constrained('tupad_codes')->onDelete('cascade');
+            $table->foreignId('given_by_captainID')->nullable()->constrained('users')->onDelete('cascade');
         });
     }
 
@@ -22,7 +23,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tupads', function (Blueprint $table) {
-
+            $table->dropForeign(['used_code_id']);
+            $table->dropColumn('used_code_id');
+            $table->dropForeign(['given_by_captainID']);
+            $table->dropColumn('given_by_captainID');
         });
     }
 };
