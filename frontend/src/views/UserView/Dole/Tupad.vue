@@ -168,11 +168,6 @@ import {
     barangays
 } from 'select-philippines-address';
 import axios from '../../../main.js'
-import {
-    Button,
-    Modal,
-    Space
-} from "ant-design-vue";
 
 export default {
     components: {
@@ -222,16 +217,19 @@ export default {
                 })
                 .then(response => {
                     if (response.status === 200) {
+                        this.accessCode = '';
                         this.accessGranted = true;
                         this.showModal = false;
                         document.querySelector('.flex-grow').classList.remove('blur');
                         toastr.success("Code Accepted")
                         this.hideModal();
                     } else {
+                        this.accessCode = '';
                         toastr.error('Invalid access code. Please try again.');
                     }
                 })
                 .catch(error => {
+                    this.accessCode = '';
                     console.error('Error checking access code:', error);
                     toastr.error('An error occurred. Please try again later.');
                 });
