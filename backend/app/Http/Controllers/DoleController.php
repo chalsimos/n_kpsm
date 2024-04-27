@@ -23,6 +23,23 @@ class DoleController extends Controller
         //
     }
 
+    public function code_checker(Request $request)
+    {
+        try {
+            $code = $request->input('code');
+            $tupadCode = TupadCode::where('code_generated', $code)->first();
+            if (!$tupadCode) {
+                return response()->json(['error' => 'Code not found'], 404);
+            }
+            if ($tupadCode->status !== 'active') {
+                return response()->json(['error' => 'Code is inactive'], 400);
+            }
+            return response()->json(['message' => 'Code is valid'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function tupad_code_list(Request $request)
     {
         try {
