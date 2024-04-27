@@ -70,7 +70,7 @@
                     </a-space>
                 </div>
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                    <button data-modal-hide="giveSlot" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
+                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
                 </div>
             </form>
         </div>
@@ -125,28 +125,28 @@ export default {
     },
     methods: {
         handleMonthChange(date, dateString) {
-    const formattedDate = moment(dateString, "MM/YYYY").format("YYYY-MM");
-    console.log(date, formattedDate);
-    this.month_year_available = formattedDate;
-},
+            const formattedDate = moment(dateString, "MM/YYYY").format("YYYY-MM");
+            console.log(date, formattedDate);
+            this.month_year_available = formattedDate;
+        },
 
         updateSlot() {
-    const itemId = this.itemId;
-    const formData = {
-        slot_get: this.slot_get,
-        month_year_available: this.month_year_available
-    };
+            const itemId = this.itemId;
+            const formData = {
+                slot_get: this.slot_get,
+                month_year_available: this.month_year_available
+            };
 
-    axios.post(`/api/dole/give-slot/${itemId}`, formData)
-        .then(response => {
-            toastr.success("Slot Approved");
-            this.fetchCaptainList();
-        })
-        .catch(error => {
-            console.error(error.response.data);
-            toastr.error("Please input the amount value.");
-        });
-},
+            axios.post(`/api/dole/give-slot/${itemId}`, formData)
+                .then(response => {
+                    toastr.success("Slot Approved");
+                    this.fetchCaptainList();
+                })
+                .catch(error => {
+                    console.error(error.response.data);
+                    toastr.error("Please input the amount value.");
+                });
+        },
 
         fetchCaptainList() {
             axios.get('/api/dole/captain-list')

@@ -42,6 +42,7 @@ Route::prefix('medical-requests')->group(function () {
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
 });
 Route::prefix('dole')->group(function () {
+    Route::post('/code-checker', [DoleController::class, 'code_checker']);
     //client
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     //admin
