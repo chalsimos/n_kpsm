@@ -9,7 +9,7 @@ const toastr = useToast()
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
-        //need invitation code
+        //need invitation code from captain
         { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
 
         //Account

@@ -129,14 +129,12 @@ export default {
             console.log(date, formattedDate);
             this.month_year_available = formattedDate;
         },
-
         updateSlot() {
             const itemId = this.itemId;
             const formData = {
                 slot_get: this.slot_get,
                 month_year_available: this.month_year_available
             };
-
             axios.post(`/api/dole/give-slot/${itemId}`, formData)
                 .then(response => {
                     this.slot_get = '',
