@@ -28,13 +28,21 @@ class DoleController extends Controller
         try {
             $code = $request->input('code');
             $tupadCode = TupadCode::where('code_generated', $code)->first();
+
             if (!$tupadCode) {
                 return response()->json(['error' => 'Code not found'], 404);
             }
+
             if ($tupadCode->status !== 'active') {
                 return response()->json(['error' => 'Code is inactive'], 400);
             }
-            return response()->json(['message' => 'Code is valid'], 200);
+            $id = $tupadCode->id;
+            $captainId = $tupadCode->captain_id;
+            $encryptedId = [
+                'tupad_codeId' => encrypt($id),
+                'captain_id' => encrypt($captainId)
+            ];
+            return response()->json(['encrypted_id' => $encryptedId], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -229,7 +237,12 @@ class DoleController extends Controller
             $data->id_type = $request->input('idType');
             $data->civil_status = $request->input('civilstatus');
             $data->status = 'pending';
+            $usedCodeId = decrypt($request->input('used_code_id'));
+            $givenByCaptainID = decrypt($request->input('given_by_captainID'));
+            $data->used_code_id = $usedCodeId;
+            $data->given_by_captainID = $givenByCaptainID;
             $data->save();
+            TupadCode::where('id', $usedCodeId)->update(['status' => 'Code Used']);
             DB::commit();
             return response()->json(['message' => 'Tupad saved successfully'], 201);
         } catch (\Exception $e) {
