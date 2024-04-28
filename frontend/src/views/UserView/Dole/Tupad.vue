@@ -27,7 +27,6 @@
                     </div>
                     <div class="mb-5">
                         <label for="Birthday" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Birthday</label>
-
                         <div class="relative max-w-full">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -36,7 +35,6 @@
                             </div>
                             <input v-model="birthday" id="Birthday" type="text" class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Select date">
                         </div>
-
                     </div>
                     <div class="mb-5">
                         <label for="Gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
@@ -44,6 +42,16 @@
                             <option value="" disabled selected>Choose Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
+                        </select>
+                    </div>
+                      <div class="mb-5">
+                        <label for="Civil Status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Civil Status</label>
+                        <select v-model="civil_status " id="Civil Status" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 w-full font-small rounded-lg text-sm py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                            <option value="" disabled selected>Civil Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Separated or Divorced">Separated or Divorced</option>
+                            <option value="Widowed">Widowed</option>
                         </select>
                     </div>
                     <div class="mb-5">
@@ -74,7 +82,6 @@
                     </div>
                     <input type="hidden" v-model="selectedMunicipality" id="SelectedMunicipality" readonly>
                     <input type="hidden" v-model="selectedBarangay" id="SelectedBarangay" readonly>
-
                     <div class="mb-5">
                         <label for="Barangay" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
                         <select id="Barangay" v-model="barangay" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
@@ -136,7 +143,7 @@
             </div>
             <form @submit.prevent="submitCode" class="max-w-sm mx-auto mt-5 mb-5">
                 <label for="Code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Input Code</label>
-                <input required v-model="accessCode" type="text" id="Code" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
+                <input required v-model="accessCode" type="text" id="Code" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Code Here">
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
                 </div>
@@ -196,8 +203,10 @@ export default {
             contactnumber: '',
             idNum: '',
             sitio: '',
+            civil_status: '',
             selectedMunicipality: '',
             selectedBarangay: '',
+            inputed_code: '',
             showModal: true,
             accessCode: '',
             accessGranted: false
@@ -215,7 +224,11 @@ export default {
             this.hideModal();
             document.querySelector('.flex-grow').classList.remove('blur');
         }
-
+        setTimeout(() => {
+                    localStorage.removeItem('accessGranted');
+                    localStorage.removeItem('tupad_codeId');
+                    localStorage.removeItem('captain_id');
+                }, 600000);
     },
     methods: {
         submitCode() {
@@ -229,6 +242,8 @@ export default {
                         this.showModal = false;
                         document.querySelector('.flex-grow').classList.remove('blur');
                         toastr.success("Code Accepted")
+                        localStorage.setItem('tupad_codeId', response.data.encrypted_id.tupad_codeId);
+                        localStorage.setItem('captain_id', response.data.encrypted_id.captain_id);
                         localStorage.setItem('accessGranted', 'true');
                         this.hideModal();
                     } else {
@@ -291,9 +306,12 @@ export default {
                 barangay: this.selectedBarangay,
                 benificiaryfullname: this.benificiaryfullname,
                 contactnumber: this.contactnumber,
-                idNum: this.this.idNum,
+                civilstatus: this.civil_status,
+                idNum: this.idNum,
                 sitio: this.sitio,
                 idType: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
+                used_code_id: localStorage.getItem('tupad_codeId'),
+                given_by_captainID: localStorage.getItem('captain_id')
             };
             axios.post('/api/dole/add-tupad', formData)
                 .then(response => {
@@ -304,6 +322,7 @@ export default {
                     this.birthday = '';
                     this.gender = '';
                     this.province = '';
+                    this.civil_status = '';
                     this.selectedMunicipality = '';
                     this.selectedBarangay = '';
                     this.benificiaryfullname = '';
@@ -312,7 +331,7 @@ export default {
                     this.sitio = '';
                     this.typeOfRequest = '';
                     toastr.success('Tupad Successfully Send');
-
+                    localStorage.removeItem('accessGranted');
                 })
                 .catch(error => {
                     console.error(error.response.data);
