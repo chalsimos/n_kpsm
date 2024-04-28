@@ -208,6 +208,13 @@ export default {
         document.title = "KPSM - Tupad";
         this.fetchCities();
         initFlowbite();
+        const accessGranted = localStorage.getItem('accessGranted');
+        if (accessGranted === 'true') {
+            this.accessGranted = true;
+            this.showModal = false;
+            this.hideModal();
+            document.querySelector('.flex-grow').classList.remove('blur');
+        }
 
     },
     methods: {
@@ -222,6 +229,7 @@ export default {
                         this.showModal = false;
                         document.querySelector('.flex-grow').classList.remove('blur');
                         toastr.success("Code Accepted")
+                        localStorage.setItem('accessGranted', 'true');
                         this.hideModal();
                     } else {
                         this.accessCode = '';

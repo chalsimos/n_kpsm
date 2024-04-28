@@ -139,7 +139,10 @@ export default {
 
             axios.post(`/api/dole/give-slot/${itemId}`, formData)
                 .then(response => {
+                    this.slot_get = '',
+                    this.month_year_available = ''
                     toastr.success("Slot Approved");
+                    document.getElementById('giveSlot').classList.add('hidden');
                     this.fetchCaptainList();
                 })
                 .catch(error => {
