@@ -23,6 +23,33 @@ class DoleController extends Controller
         //
     }
 
+    public function captain_tupad_invite(Request $request)
+    {
+        try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $tupads = Tupad::where('given_by_captainID', $user->id)
+                ->leftJoin('tupad_codes', 'tupads.used_code_id', '=', 'tupad_codes.id')
+                ->select('tupads.*', 'tupad_codes.code_generated')
+                ->get();
+
+            return response()->json($tupads, 200);
+            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function code_checker(Request $request)
     {
         try {
@@ -115,7 +142,7 @@ class DoleController extends Controller
             foreach ($slotsWithNoCode as $slot) {
                 for ($i = 0; $i < $slot->slot_get; $i++) {
                     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-                    $codeGenerated = 'CODE_' . str_shuffle(substr(str_shuffle($characters), 0, 10));
+                    $codeGenerated = 'TUPAD_CODE_' . str_shuffle(substr(str_shuffle($characters), 0, 10));
                     $code = new TupadCode();
                     $code->captain_id = $user->id;
                     $code->slot_id = $slot->id;

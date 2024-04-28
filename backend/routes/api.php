@@ -52,4 +52,5 @@ Route::prefix('dole')->group(function () {
     Route::get('/captain-slot-list', [DoleController::class,'captain_tupad_slot']);
     Route::post('/generate-code', [DoleController::class,'generateCodeAndSave']);
     Route::get('/tupad-code-list', [DoleController::class,'tupad_code_list']);
+    Route::get('/captain-tupad-invited', [DoleController::class,'captain_tupad_invite']);
 });

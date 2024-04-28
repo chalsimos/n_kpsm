@@ -68,7 +68,7 @@
                 <li>
                     <router-link to="/" class="block py-2 px-3 border-b border-gray-100 hover:text-orange-300 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-blue-500 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700 test-class" aria-current="page">Home</router-link>
                 </li>
-                <li>
+                <li v-show="this.information.type === 'client'">
                     <button id="mega-menu-dropdown-button" data-dropdown-toggle="mega-menu-dropdown" class="flex items-center justify-between w-full py-2 px-3 font-medium border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
                         Assistance
                         <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -82,8 +82,6 @@
                                     <router-link to="/medical-request" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
                                         Medical Assistance
                                     </router-link>
-                                    <!-- Pag ganito ang gamit e hindi na kailangan magrefresh para gumana yung mga dropdown, etc. -->
-                                    <!-- <a :href="$router.resolve({name: 'Medical Request'}).href" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">Medical Assistance</a> -->
                                 </li>
                                 <li>
                                     <router-link to="/scholarship" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
