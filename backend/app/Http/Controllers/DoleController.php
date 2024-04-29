@@ -22,6 +22,31 @@ class DoleController extends Controller
     {
         //
     }
+    public function getAll_captains_tupad_invites(Request $request)
+    {
+        try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'admin') {
+                return response()->json(['error' => 'User is not a admin'], 400);
+            }
+            $tupads = Tupad::where('status', 'accepted')
+                ->leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
+                ->select('tupads.*', 'users.name as captain_name')
+                ->get();
+            return response()->json($tupads, 200);
+            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     public function accept_tupad_invites(Request $request, $id)
     {
         try{
@@ -322,6 +347,11 @@ class DoleController extends Controller
             $data->used_code_id = $usedCodeId;
             $data->given_by_captainID = $givenByCaptainID;
             $data->save();
+            $tupadCode = TupadCode::find($data->used_code_id);
+            $slotId = $tupadCode->slot_id;
+            $slot = TupadSlot::find($slotId);
+            $slot->slot_left -= 1;
+            $slot->save();
             TupadCode::where('id', $usedCodeId)->update(['status' => 'Code Used']);
             DB::commit();
             return response()->json(['message' => 'Tupad saved successfully'], 201);

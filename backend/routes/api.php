@@ -48,6 +48,7 @@ Route::prefix('dole')->group(function () {
     //admin
     Route::get('/captain-list', [DoleController::class, 'captain_list']);
     Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
+    Route::get('/getAll-captains-tupad-invites', [DoleController::class, 'getAll_captains_tupad_invites']);
     //captain
     Route::get('/captain-slot-list', [DoleController::class,'captain_tupad_slot']);
     Route::post('/generate-code', [DoleController::class,'generateCodeAndSave']);

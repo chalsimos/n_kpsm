@@ -45,9 +45,17 @@
                 </div>
             </div>
             <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 w-2/3">
+                <div class="flex">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    Tupad Invited: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
+                   Total Tupad Invited: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
                 </h2>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                   Total Tupad Accepted: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
+                </h2>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                   Total Tupad Declined: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
+                </h2>
+                </div>
                 <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
@@ -64,7 +72,7 @@
                                     <th class="text-center whitespace-nowrap">Gender</th>
                                     <th class="text-center whitespace-nowrap">Address</th>
                                     <th class="text-center whitespace-nowrap">Civil Status</th>
-                                    <th class="text-center whitespace-nowrap">Contanct Number</th>
+                                    <th class="text-center whitespace-nowrap">Contact Number</th>
                                     <th class="text-center whitespace-nowrap">Benificiary Name</th>
                                     <th class="text-center whitespace-nowrap">Id & Id Number</th>
                                     <th class="text-center whitespace-nowrap">Used Code</th>
@@ -162,6 +170,8 @@ export default {
             search: "",
             totalNoCodeSlots: '',
             totalInvites: '',
+            totalAccepted: '',
+            totalDeclined: '',
             items: [],
             tupad_invites: []
         };
@@ -232,10 +242,30 @@ export default {
                 .then(response => {
                     this.tupad_invites = response.data;
                     this.totalInvites = this.calculatetotalInvites(this.tupad_invites);
+                    this.totalAccepted = this.calculatetotalAccepted(this.tupad_invites);
+                    this.totalDeclined = this.calculatetotalDeclined(this.tupad_invites);
                 })
                 .catch(error => {
                     console.error('Error fetching tupad slot:', error);
                 });
+        },
+        calculatetotalAccepted(invites) {
+            let total = 0;
+            invites.forEach(tupad_invites => {
+                if (tupad_invites.status === 'accepted') {
+                    total++;
+                }
+            });
+            return total;
+        },
+        calculatetotalDeclined(invites) {
+            let total = 0;
+            invites.forEach(tupad_invites => {
+                if (tupad_invites.status === 'declined') {
+                    total++;
+                }
+            });
+            return total;
         },
         calculatetotalInvites(invites) {
             let total = 0;
