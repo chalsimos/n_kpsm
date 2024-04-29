@@ -3,40 +3,92 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <v-card flat>
-                <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                    <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" /> &nbsp; Manage Medical Requests
-                    <v-spacer></v-spacer>
-                    <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-data-table v-model:search="search" :items="items" :items-per-page="5">
-                    <template #headers="{ headers }">
-                        <tr class="text-center whitespace-nowrap">
-                            <th>Name</th>
-                            <th>Slot Have</th>
-                            <th>Slot Left</th>
-                            <th>Slot Available At</th>
-                            <th>Slot Obtained</th>
-                            <th>Action</th>
-                        </tr>
-                    </template>
-                    <template v-slot:item="{ item }">
-                        <tr class="h-[2vh]">
-                            <td class="whitespace-nowrap uppercase">{{ item.name }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.slot_get ?? 'No slot given' }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.slot_left ?? 'No slot given' }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.month_year_available ?? 'No slot given' }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.date_obtained ?? 'No slot given' }}</td>
-                            <td class="whitespace-nowrap uppercase">
-                                <button @click="giveSlot(item.id)" v-show="item.slot_left === null" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                                    Input number of slot
-                                </button>
-                            </td>
-                        </tr>
-                    </template>
-                </v-data-table>
-            </v-card>
+            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-500 border-purple-600 dark:border-purple-500" data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300" role="tablist">
+                    <li class="me-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="Captain-List-styled-tab" data-tabs-target="#styled-Captain-List" type="button" role="tab" aria-controls="Captain-List" aria-selected="false">Captain List</button>
+                    </li>
+                    <li class="me-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Tupad-Member-styled-tab" data-tabs-target="#styled-Tupad-Member" type="button" role="tab" aria-controls="Tupad-Member" aria-selected="false">Tupad Member</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="default-styled-tab-content">
+                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Captain-List" role="tabpanel" aria-labelledby="Captain-List-tab">
+                    <v-card flat>
+                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" /> &nbsp; Captain List
+                            <v-spacer></v-spacer>
+                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                            <template #headers="{ headers }">
+                                <tr class="text-center whitespace-nowrap">
+                                    <th>Name</th>
+                                    <th>Slot Have</th>
+                                    <th>Slot Left</th>
+                                    <th>Slot Available At</th>
+                                    <th>Slot Obtained</th>
+                                    <th>Action</th>
+                                </tr>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <tr class="h-[2vh]">
+                                    <td class="whitespace-nowrap uppercase">{{ item.name }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.slot_get ?? 'No slot given' }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.slot_left ?? 'No slot given' }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.month_year_available ?? 'No slot given' }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.date_obtained ?? 'No slot given' }}</td>
+                                    <td class="whitespace-nowrap uppercase">
+                                        <button @click="giveSlot(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                            Give slot
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </div>
+                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Tupad-Member" role="tabpanel" aria-labelledby="Tupad-Member-tab">
+                    <v-card flat>
+                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Tupad Member
+                            <v-spacer></v-spacer>
+                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-data-table v-model:search="search" :items="tupad_member" :items-per-page="5">
+                            <template #headers="{ headers }">
+                                <tr class="text-center whitespace-nowrap">
+                                    <th class="text-center whitespace-nowrap">Fullname</th>
+                                    <th class="text-center whitespace-nowrap">Age & Birthday</th>
+                                    <th class="text-center whitespace-nowrap">Gender</th>
+                                    <th class="text-center whitespace-nowrap">Address</th>
+                                    <th class="text-center whitespace-nowrap">Civil Status</th>
+                                    <th class="text-center whitespace-nowrap">Contact Number</th>
+                                    <th class="text-center whitespace-nowrap">Benificiary Name</th>
+                                    <th class="text-center whitespace-nowrap">Id & Id Number</th>
+                                    <th class="text-center whitespace-nowrap">Invited by</th>
+                                </tr>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <tr class="h-[2vh]">
+                                    <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
+                                    <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.captain_name }}</td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -107,6 +159,7 @@ export default {
             items: [],
             month_year_available: '',
             slot_get: '',
+            tupad_member: []
         };
     },
     components: {
@@ -122,8 +175,22 @@ export default {
         initFlowbite();
         document.title = "Manage Medical Request";
         this.fetchCaptainList();
+        this.fetchTupadMember();
     },
     methods: {
+        fetchTupadMember() {
+            axios.get('/api/dole/getAll-captains-tupad-invites', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.tupad_member = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching tupad slot:', error);
+                });
+        },
         handleMonthChange(date, dateString) {
             const formattedDate = moment(dateString, "MM/YYYY").format("YYYY-MM");
             console.log(date, formattedDate);
@@ -138,7 +205,7 @@ export default {
             axios.post(`/api/dole/give-slot/${itemId}`, formData)
                 .then(response => {
                     this.slot_get = '',
-                    this.month_year_available = ''
+                        this.month_year_available = ''
                     toastr.success("Slot Approved");
                     document.getElementById('giveSlot').classList.add('hidden');
                     this.fetchCaptainList();
