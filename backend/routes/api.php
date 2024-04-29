@@ -53,4 +53,6 @@ Route::prefix('dole')->group(function () {
     Route::post('/generate-code', [DoleController::class,'generateCodeAndSave']);
     Route::get('/tupad-code-list', [DoleController::class,'tupad_code_list']);
     Route::get('/captain-tupad-invited', [DoleController::class,'captain_tupad_invite']);
+    Route::put('/decline-tupad-request/{id}', [DoleController::class,'decline_tupad_invites']);
+    Route::put('/accept-tupad-request/{id}', [DoleController::class,'accept_tupad_invites']);
 });
