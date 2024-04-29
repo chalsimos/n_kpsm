@@ -22,7 +22,60 @@ class DoleController extends Controller
     {
         //
     }
-
+    public function accept_tupad_invites(Request $request, $id)
+    {
+        try{
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $tupadRequest = Tupad::findOrFail($id);
+            if($tupadRequest->save()){
+                $tupadRequest->status = 'accepted';
+                $tupadRequest->save();
+                return response()->json($tupadRequest, 200);
+            }
+        }catch(\Exception $e){
+        return redirect()->back()->with("error", $e->getMessage());
+        }
+    }
+    public function decline_tupad_invites(Request $request, $id)
+    {
+        try{
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'captain') {
+                return response()->json(['error' => 'User is not a captain'], 400);
+            }
+            $tupadRequest = Tupad::findOrFail($id);
+            $validatedData = $request->validate([
+                'decline_reason' => 'required',
+            ]);
+            $tupadRequest->decline_reason = $validatedData['decline_reason'];
+            if($tupadRequest->save()){
+                $tupadRequest->status = 'declined';
+                $tupadRequest->save();
+                return response()->json($tupadRequest, 200);
+            }
+        }catch(\Exception $e){
+        return redirect()->back()->with("error", $e->getMessage());
+        }
+    }
     public function captain_tupad_invite(Request $request)
     {
         try {
