@@ -43,6 +43,7 @@ Route::prefix('medical-requests')->group(function () {
 });
 Route::prefix('dole')->group(function () {
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
+    Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //client
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     //admin
