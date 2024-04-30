@@ -22,6 +22,32 @@ class DoleController extends Controller
     {
         //
     }
+    public function tupad_request_status_checker(Request $request)
+    {
+        try {
+            $code = $request->input('code');
+            $tupadCode = TupadCode::where('code_generated', $code)->first();
+            if (!$tupadCode) {
+                return response()->json("Invalid Tupad code", 404);
+            }
+            $tupads = Tupad::where('used_code_id', $tupadCode->id)->first();
+            $status = $tupads->status;
+            $reason = $tupads->decline_reason;
+            if ($status === 'pending') {
+                return response()->json("Tupad request is still pending", 200);
+            }
+            if ($status === "accepted") {
+                return response()->json("Tupad request is accepted", 200);
+            }
+            if ($status === "declined") {
+                return response()->json("Tupad request is declined reason ($reason) ", 200);
+            }
+            return response()->json("Unknown status", 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function getAll_captains_tupad_invites(Request $request)
     {
         try {
@@ -49,7 +75,7 @@ class DoleController extends Controller
     }
     public function accept_tupad_invites(Request $request, $id)
     {
-        try{
+        try {
             $token = $request->bearerToken();
             if (!$token) {
                 return response()->json(['error' => 'Unauthorized'], 401);
@@ -63,18 +89,18 @@ class DoleController extends Controller
                 return response()->json(['error' => 'User is not a captain'], 400);
             }
             $tupadRequest = Tupad::findOrFail($id);
-            if($tupadRequest->save()){
+            if ($tupadRequest->save()) {
                 $tupadRequest->status = 'accepted';
                 $tupadRequest->save();
                 return response()->json($tupadRequest, 200);
             }
-        }catch(\Exception $e){
-        return redirect()->back()->with("error", $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
         }
     }
     public function decline_tupad_invites(Request $request, $id)
     {
-        try{
+        try {
             $token = $request->bearerToken();
             if (!$token) {
                 return response()->json(['error' => 'Unauthorized'], 401);
@@ -92,13 +118,13 @@ class DoleController extends Controller
                 'decline_reason' => 'required',
             ]);
             $tupadRequest->decline_reason = $validatedData['decline_reason'];
-            if($tupadRequest->save()){
+            if ($tupadRequest->save()) {
                 $tupadRequest->status = 'declined';
                 $tupadRequest->save();
                 return response()->json($tupadRequest, 200);
             }
-        }catch(\Exception $e){
-        return redirect()->back()->with("error", $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
         }
     }
     public function captain_tupad_invite(Request $request)
@@ -133,13 +159,11 @@ class DoleController extends Controller
         try {
             $code = $request->input('code');
             $tupadCode = TupadCode::where('code_generated', $code)->first();
-
             if (!$tupadCode) {
                 return response()->json(['error' => 'Code not found'], 404);
             }
-
             if ($tupadCode->status !== 'active') {
-                return response()->json(['error' => 'Code is inactive'], 400);
+                return response()->json(['error' => 'Code already used'], 400);
             }
             $id = $tupadCode->id;
             $captainId = $tupadCode->captain_id;
@@ -219,7 +243,7 @@ class DoleController extends Controller
             });
             foreach ($slotsWithNoCode as $slot) {
                 for ($i = 0; $i < $slot->slot_get; $i++) {
-                    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+                    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&():;=?@[]^{|}~';
                     $codeGenerated = 'TUPAD_CODE_' . str_shuffle(substr(str_shuffle($characters), 0, 10));
                     $code = new TupadCode();
                     $code->captain_id = $user->id;
