@@ -12,5 +12,23 @@ class MedicalRequest extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-
+    protected $fillable = [
+        'firstname',
+        'middlename',
+        'lastname',
+        'age',
+        'birthday',
+        'gender',
+        'province',
+        'municipality',
+        'barangay',
+        'representativefullname',
+        'contactnumber',
+        'diagnosis',
+        'hospital',
+        'request',
+        'status',
+        'Hor_code',
+        'decline_reason'
+    ];
 }

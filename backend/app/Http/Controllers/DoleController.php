@@ -260,7 +260,6 @@ class DoleController extends Controller
         }
     }
 
-
     public function captain_tupad_slot(Request $request)
     {
         try {
