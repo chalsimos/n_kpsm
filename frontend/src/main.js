@@ -7,7 +7,7 @@ import './assets/index.css'
 import 'flowbite'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
-
+import VueCameraLib from 'vue-camera-lib'
 import Antd from 'ant-design-vue';
 import axios from 'axios'
 axios.defaults.baseURL="http://127.0.0.1:8000";
@@ -26,6 +26,7 @@ const vuetify = createVuetify({
 createApp(App)
 .use(router)
 .use(Antd)
+.use(VueCameraLib)
 .use(Toast, {
   transition: "Vue-Toastification__bounce",
   maxToasts: 20,
