@@ -20,7 +20,7 @@ const router = createRouter({
     
         //User Side
         { path:'/', name:'Home Page', component:() => import('../views/UserView/Home/HomePage.vue')},
-        { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue'),meta: { requiresClient: true}},
+        { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
         { path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresClient: true}},
     
         //Brgy. Captain Side

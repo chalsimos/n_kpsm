@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MedicalRequest;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Illuminate\Support\Facades\Crypt;
 
 class MedicalRequestController extends Controller
 {
@@ -15,25 +17,7 @@ class MedicalRequestController extends Controller
     public function index()
     {
         try {
-            $medicalRequests = MedicalRequest::select([
-                'firstname',
-                'middlename',
-                'lastname',
-                'age',
-                'birthday',
-                'gender',
-                'province',
-                'municipality',
-                'barangay',
-                'representativefullname',
-                'contactnumber',
-                'diagnosis',
-                'hospital',
-                'request',
-                'status',
-                'amount',
-                'id'
-            ])->get();
+            $medicalRequests = MedicalRequest::get();
 
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
@@ -84,6 +68,8 @@ class MedicalRequestController extends Controller
             $data->request = $request->input('request');
             $data->status = 'pending';
             $data->save();
+            $horCode = 'AVU-' . now()->year . '-' . str_replace(' ', '-', $request->input('hospital')) . '-' . $data->id;
+            $data->update(['Hor_code' => $horCode]);
             DB::commit();
             return response()->json(['message' => 'Medical Request saved successfully'], 201);
         } catch (\Exception $e) {
@@ -129,6 +115,18 @@ class MedicalRequestController extends Controller
     public function decline(Request $request, $id)
     {
         try {
+            $token = $request->bearerToken();
+            if (!$token) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            $decryptedId = Crypt::decrypt($token);
+            $user = User::find($decryptedId);
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            if ($user->type !== 'admin') {
+                return response()->json(['error' => 'User is not a admin'], 400);
+            }
             $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
                 'decline_reason' => 'required|string',

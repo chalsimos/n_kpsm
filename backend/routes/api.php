@@ -42,10 +42,9 @@ Route::prefix('medical-requests')->group(function () {
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
 });
 Route::prefix('dole')->group(function () {
+    //no need authentication
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
-    //client
-    Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     //admin
     Route::get('/captain-list', [DoleController::class, 'captain_list']);
     Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
