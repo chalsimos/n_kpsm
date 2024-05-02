@@ -21,7 +21,7 @@ const router = createRouter({
         //User Side
         { path:'/', name:'Home Page', component:() => import('../views/UserView/Home/HomePage.vue')},
         { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
-        { path:'/test', name:'Medical Request', component:() => import('../views/UserView/Medical/test.vue')},
+        { path:'/test', name:'test', component:() => import('../views/UserView/Medical/test.vue')},
         { path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresClient: true}},
     
         //Brgy. Captain Side

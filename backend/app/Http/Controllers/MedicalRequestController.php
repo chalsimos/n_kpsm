@@ -8,6 +8,7 @@ use App\Models\MedicalRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class MedicalRequestController extends Controller
 {
