@@ -136,24 +136,31 @@
                         <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Flu" required />
                     </div>
                 </div>
-                <div class="grid md:grid-cols-3 md:gap-3 whitespace-nowrap">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    Requirements Upload (Image Only)
+                </h2>
+                <div class="grid md:grid-cols-4 md:gap-4 whitespace-nowrap">
                     <div class="mb-5">
-                        <label for="brgyClearance" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Brgy. Clearance (Image only)</label>
-                        <input type="file" id="brgyClearance" ref="fileInput" accept="image/*" multiple @change="handleClearanceUpload">
+                        <label for="brgyClearance" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Brgy. Clearance</label>
+                        <input type="file" required id="brgyClearance" ref="fileInput" accept="image/*" multiple @change="handleClearanceUpload">
                     </div>
                     <div class="mb-5">
-                        <label for="validID" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Valid ID (Image only)</label>
-                        <input type="file" id="validID" ref="fileInput" accept="image/*" multiple @change="handleIDUpload">
+                        <label for="validID" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Valid ID</label>
+                        <input type="file" required id="validID" ref="fileInput" accept="image/*" multiple @change="handleIDUpload">
                     </div>
                     <div class="mb-5">
-                        <label for="hospitalDocuments" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Hospital Document (Image only)</label>
-                        <input type="file" id="hospitalDocuments" ref="fileInput" accept="image/*" multiple @change="handleHospitalUpload">
+                        <label for="hospitalDocuments" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Hospital Document</label>
+                        <input type="file" required id="hospitalDocuments" ref="fileInput" accept="image/*" multiple @change="handleHospitalUpload">
                     </div>
                     <div class="mb-5">
-                        <button data-modal-target="preview-image" data-modal-toggle="preview-image" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                        <label for="manageImage" class="block text-sm font-medium text-gray-900 dark:text-white">Manage Upload Image</label>
+                        <button id="manageImage" data-modal-target="preview-image" data-modal-toggle="preview-image" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                             Image Preview
                         </button>
                     </div>
+                </div>
+                <div class="mb-5">
+                    <span class="text-red-500">Requirements needed to be brought and submitted to the office.</span>
                 </div>
                 <div class="flex justify-end">
                     <button type="submit" class="text-white bg-orange-900 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 lg:w-40 lg:ml-auto">
@@ -167,13 +174,10 @@
         <Foot />
     </div>
 </div>
-<div id="preview-image" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative p-4 w-full max-w-2xl max-h-full">
+<div id="preview-image" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0">
+    <div class="relative p-4 w-full max-w-2xl">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Image Preiew
-                </h3>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="preview-image">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -182,23 +186,23 @@
                 </button>
             </div>
             <div class="p-4 md:p-5 space-y-4">
-                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div v-for="(image, index) in capturedImages" :key="index" class="flex flex-col items-center">
-                        <img :src="image.url" @click="previewImage(image)" class="w-full h-full object-cover" style="max-width: 100px; max-height: 100px; cursor: pointer;">
-                        <button @click="removeImage(index)" class="mt-1 p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-600 to-blue-500 group-hover:from-orange-600 group-hover:to-blue-500 hover:text-white dark:text-white">
-                            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                Remove
-                            </span>
-                        </button>
+                <div class="max-h-[60vh] overflow-y-auto">
+                    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div v-for="(image, index) in allImages" :key="index" class="flex flex-col items-center">
+                            <img :src="image.url" @click="previewImage(image)" class="w-full h-full object-cover" style="max-width: 100px; max-height: 100px; cursor: pointer;">
+                            <button @click="removeImage(index)" class="mt-1 p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-orange-600 to-blue-500 group-hover:from-orange-600 group-hover:to-blue-500 hover:text-white dark:text-white">
+                                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                    Remove
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                <button data-modal-hide="preview-image" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <div id="preview-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
     <div class="relative p-4 w-full max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -266,7 +270,9 @@ export default {
             selectedMunicipality: '',
             selectedBarangay: '',
             showCamera: false,
-            capturedImages: [],
+            brgy_ClearanceImages: [],
+            valid_IdImages: [],
+            hospital_DocumentImages: [],
             previewedImage: {}
         };
     },
@@ -309,48 +315,6 @@ export default {
                 this.otherRequestValue = '';
             }
         },
-        saveToDatabase() {
-            const formattedBirthday = this.birthday.split('/').reverse().join('-');
-            const formData = {
-                firstname: this.firstname,
-                middlename: this.middlename,
-                lastname: this.lastname,
-                age: this.age,
-                birthday: formattedBirthday,
-                gender: this.gender,
-                province: this.province,
-                municipality: this.selectedMunicipality,
-                barangay: this.selectedBarangay,
-                representativefullname: this.representativefullname,
-                contactnumber: this.contactnumber,
-                diagnosis: this.diagnosis,
-                hospital: this.hospital,
-                request: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
-            };
-            axios.post('/api/medical-requests/request', formData)
-                .then(response => {
-                    this.firstname = '';
-                    this.middlename = '';
-                    this.lastname = '';
-                    this.age = null;
-                    this.birthday = '';
-                    this.gender = '';
-                    this.province = '';
-                    this.selectedMunicipality = '';
-                    this.selectedBarangay = '';
-                    this.representativefullname = '';
-                    this.contactnumber = '';
-                    this.diagnosis = '';
-                    this.hospital = '';
-                    this.typeOfRequest = '';
-                    toastr.success('Medical Request Successfully Send');
-
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error(error.response.data)
-                });
-        },
         handleClearanceUpload(event) {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
@@ -365,8 +329,14 @@ export default {
                     const originalFileName = file.name;
                     const fileExtension = originalFileName.split('.').pop();
                     const imageName = 'brgy_Clearance.' + fileExtension;
-                    this.capturedImages.push({
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+
+                    this.brgy_ClearanceImages.push({
                         url: imageUrl,
+                        brgy_Clearanceimage: newFile,
                         name: imageName
                     });
                 };
@@ -387,8 +357,14 @@ export default {
                     const originalFileName = file.name;
                     const fileExtension = originalFileName.split('.').pop();
                     const imageName = 'valid_id.' + fileExtension;
-                    this.capturedImages.push({
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+
+                    this.valid_IdImages.push({
                         url: imageUrl,
+                        valid_IdImagesimage: newFile,
                         name: imageName
                     });
                 };
@@ -409,8 +385,14 @@ export default {
                     const originalFileName = file.name;
                     const fileExtension = originalFileName.split('.').pop();
                     const imageName = 'hospital_documents.' + fileExtension;
-                    this.capturedImages.push({
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+
+                    this.hospital_DocumentImages.push({
                         url: imageUrl,
+                        hospital_DocumentImagesimage: newFile,
                         name: imageName
                     });
                 };
@@ -418,7 +400,9 @@ export default {
             }
         },
         removeImage(index) {
-            this.capturedImages.splice(index, 1);
+            this.hospital_DocumentImages.splice(index, 1);
+            this.valid_IdImages.splice(index, 1);
+            this.brgy_ClearanceImages.splice(index, 1);
         },
         previewImage(image) {
             if (image && image.url) {
@@ -433,7 +417,63 @@ export default {
             this.previewedImage = '';
             document.getElementById('preview-modal').classList.add('hidden');
             document.getElementById('preview-image').classList.remove('hidden');
-        }
+        },
+        saveToDatabase() {
+            const formattedBirthday = this.birthday.split('/').reverse().join('-');
+            const formData = new FormData();
+            formData.append('firstname', this.firstname);
+            formData.append('middlename', this.middlename);
+            formData.append('lastname', this.lastname);
+            formData.append('age', this.age);
+            formData.append('birthday', formattedBirthday);
+            formData.append('gender', this.gender);
+            formData.append('province', this.province);
+            formData.append('municipality', this.selectedMunicipality);
+            formData.append('barangay', this.selectedBarangay);
+            formData.append('representativefullname', this.representativefullname);
+            formData.append('contactnumber', this.contactnumber);
+            formData.append('diagnosis', this.diagnosis);
+            formData.append('hospital', this.hospital);
+            formData.append('request', this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest);
+            this.brgy_ClearanceImages.forEach(image => {
+                formData.append('brgy_ClearanceImages[]', image.brgy_Clearanceimage);
+            });
+            this.valid_IdImages.forEach(image => {
+                formData.append('valid_IdImages[]', image.valid_IdImagesimage);
+            });
+            this.hospital_DocumentImages.forEach(image => {
+                formData.append('hospital_DocumentImages[]', image.hospital_DocumentImagesimage);
+            });
+            axios.post('/api/medical-requests/request', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(response => {
+                    this.firstname = '';
+                    this.middlename = '';
+                    this.lastname = '';
+                    this.age = null;
+                    this.birthday = '';
+                    this.gender = '';
+                    this.province = '';
+                    this.selectedMunicipality = '';
+                    this.selectedBarangay = '';
+                    this.representativefullname = '';
+                    this.contactnumber = '';
+                    this.diagnosis = '';
+                    this.hospital = '';
+                    this.typeOfRequest = '';
+                    this.brgy_ClearanceImages = [];
+                    this.valid_IdImages = [];
+                    this.hospital_DocumentImages = [];
+                    toastr.success('Medical Request Successfully Send');
+                })
+                .catch(error => {
+                    console.error(error.response.data);
+                    toastr.error(error.response.data)
+                });
+        },
     },
     watch: {
         barangay(newBarangay) {
@@ -445,6 +485,13 @@ export default {
     computed: {
         isOtherRequestDisabled() {
             return this.typeOfRequest !== 'OTHERS';
+        },
+        allImages() {
+            return [
+                ...this.brgy_ClearanceImages,
+                ...this.valid_IdImages,
+                ...this.hospital_DocumentImages
+            ];
         }
     }
 };
