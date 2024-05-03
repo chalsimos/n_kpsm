@@ -29,6 +29,9 @@ class MedicalRequest extends Model
         'request',
         'status',
         'Hor_code',
-        'decline_reason'
+        'decline_reason',
+        'barangay_clearance_imagepath',
+        'hospital_document_imagepath',
+        'valid_id_imagepath'
     ];
 }

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+
 
 class MedicalRequestController extends Controller
 {
@@ -42,10 +44,13 @@ class MedicalRequestController extends Controller
             'municipality' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
             'representativefullname' => 'required|string|max:255',
-            'contactnumber' => 'required|string|max:11',
+            'contactnumber' => 'required|max:11',
             'diagnosis' => 'required|string|max:255',
             'hospital' => 'required|string|max:255',
             'request' => 'required|string|max:255',
+            'brgy_ClearanceImages.*' => 'image',
+            'valid_IdImages.*' => 'image',
+            'hospital_DocumentImages.*' => 'image',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -69,6 +74,49 @@ class MedicalRequestController extends Controller
             $data->request = $request->input('request');
             $data->status = 'pending';
             $data->save();
+            $basePath = 'Request/Medical Request/' . now()->year . '/' . now()->format('F') . '/';
+            $directoryPath = public_path($basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/');
+            if (!File::isDirectory($directoryPath)) {
+                File::makeDirectory($directoryPath, 0700, true);
+            }
+            $brgyClearanceImagePaths = [];
+            $validIdImagePaths = [];
+            $hospitalDocumentImagePaths = [];
+            if ($request->hasFile('brgy_ClearanceImages')) {
+                foreach ($request->file('brgy_ClearanceImages') as $image) {
+                    $imageName = 'brgy_Clearance_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
+                    if (!in_array($imagePath, $brgyClearanceImagePaths)) {
+                        $image->move($directoryPath, $imageName);
+                        $brgyClearanceImagePaths[] = $imagePath;
+                    }
+                }
+            }
+            if ($request->hasFile('valid_IdImages')) {
+                foreach ($request->file('valid_IdImages') as $image) {
+                    $imageName = 'valid_id_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
+                    if (!in_array($imagePath, $validIdImagePaths)) {
+                        $image->move($directoryPath, $imageName);
+                        $validIdImagePaths[] = $imagePath;
+                    }
+                }
+            }
+            if ($request->hasFile('hospital_DocumentImages')) {
+                foreach ($request->file('hospital_DocumentImages') as $image) {
+                    $imageName = 'hospital_documents_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
+                    if (!in_array($imagePath, $hospitalDocumentImagePaths)) {
+                        $image->move($directoryPath, $imageName);
+                        $hospitalDocumentImagePaths[] = $imagePath;
+                    }
+                }
+            }
+            $data->update([
+                'barangay_clearance_imagepath' => implode(',', $brgyClearanceImagePaths),
+                'valid_id_imagepath' => implode(',', $validIdImagePaths),
+                'hospital_document_imagepath' => implode(',', $hospitalDocumentImagePaths),
+            ]);
             $horCode = 'AVU-' . now()->year . '-' . str_replace(' ', '-', $request->input('hospital')) . '-' . $data->id;
             $data->update(['Hor_code' => $horCode]);
             DB::commit();
