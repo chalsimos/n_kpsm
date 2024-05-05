@@ -31,11 +31,12 @@
                             <th>Status</th>
                             <th>Decline Reason</th>
                             <th>Amount</th>
+                            <th>Requirements</th>
                             <th>Action</th>
                         </tr>
                     </template>
                     <template v-slot:item="{ item }">
-                        <tr class="h-[12vh]">
+                        <tr class="h-[12vh] text-center">
                             <td class="whitespace-nowrap uppercase">{{ item.Hor_code }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
@@ -54,6 +55,11 @@
                             <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.decline_reason || '' }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                            <td class="whitespace-nowrap uppercase">
+                                <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-3 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                    Check Requiements
+                                </button>
+                            </td>
                             <td class="whitespace-nowrap uppercase">
                                 <button @click="amountModal(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="!item.amount">
                                     Input Amount
@@ -117,6 +123,44 @@
         </div>
     </div>
 </div>
+<div id="RequirementsModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{ medicalRequest.firstname }} {{ medicalRequest.middlename }} {{ medicalRequest.lastname }} Requirements
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="RequirementsModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4">
+                <div v-if="medicalRequest.valid_id_imagepath && medicalRequest.valid_id_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Valid ID Image</h4>
+                    <div v-for="(imagePath, index) in medicalRequest.valid_id_imagepath" :key="index">
+                        <img :src="imagePath" alt="Valid ID Image" class="w-full mb-2">
+                    </div>
+                </div>
+                <div v-if="medicalRequest.hospital_document_imagepath && medicalRequest.hospital_document_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Hospital Documents Image</h4>
+                    <div v-for="(imagePath, index) in medicalRequest.hospital_document_imagepath" :key="index">
+                        <img :src="imagePath" alt="Hospital Documents Image" class="w-full mb-2">
+                    </div>
+                </div>
+                <div v-if="medicalRequest.barangay_clearance_imagepath && medicalRequest.barangay_clearance_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Barangay Clearance Image</h4>
+                    <div v-for="(imagePath, index) in medicalRequest.barangay_clearance_imagepath" :key="index">
+                        <img :src="imagePath" alt="Barangay Clearance Image" class="w-full mb-2">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -138,15 +182,16 @@ const toastr = useToast()
 export default {
     data() {
         return {
+            imagePath: '',
             search: '',
-            items: []
+            items: [],
+            medicalRequest: []
         };
     },
     components: {
         Side,
     },
     mounted() {
-
         initTWE({
             Modal,
             Tooltip
@@ -194,6 +239,28 @@ export default {
                 })
                 .catch(error => {
                     console.error(error.response.data);
+                });
+        },
+        RequirementsModal(itemId) {
+            axios.get(`/api/medical-requests/requirements-path/${itemId}`)
+                .then(response => {
+                    this.medicalRequest = response.data;
+                    const modal = document.getElementById('RequirementsModal');
+                    modal.classList.remove('hidden');
+                    modal.setAttribute('aria-hidden', 'false');
+                    // Add event listener to close modal on close button click
+                    modal.addEventListener('click', function (e) {
+                        if (e.target && e.target.closest('[data-modal-hide="RequirementsModal"]')) {
+                            modal.classList.add('hidden');
+                            modal.setAttribute('aria-hidden', 'true');
+                        }
+                    });
+                    this.medicalRequest.valid_id_imagepath = this.medicalRequest.valid_id_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.medicalRequest.hospital_document_imagepath = this.medicalRequest.hospital_document_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.medicalRequest.barangay_clearance_imagepath = this.medicalRequest.barangay_clearance_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                })
+                .catch(error => {
+                    console.error('Error fetching medical request data:', error);
                 });
         },
         amountModal(itemId) {
