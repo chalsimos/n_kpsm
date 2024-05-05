@@ -37,6 +37,7 @@ Route::prefix('medical-requests')->group(function () {
     Route::post('/request', [MedicalRequestController::class, 'store']);
     //admin
     Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
+    Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
     Route::get('/get-all', [MedicalRequestController::class, 'index']);
     Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);

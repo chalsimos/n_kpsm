@@ -21,12 +21,35 @@ class MedicalRequestController extends Controller
     {
         try {
             $medicalRequests = MedicalRequest::get();
-
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function requirementsPath(Request $request, $id)
+    {
+        try {
+            $medicalRequest = MedicalRequest::findOrFail($id);
+            $requestData = $medicalRequest->toArray();
+            $imageUrls = [
+                'barangay_clearance_imagepath' => [],
+                'valid_id_imagepath' => [],
+                'hospital_document_imagepath' => [],
+            ];
+            foreach ($imageUrls as $key => $imagePaths) {
+                $imagePaths = explode(',', $requestData[$key]);
+                foreach ($imagePaths as $imagePath) {
+                    $imageUrl = asset($imagePath);
+                    $imageUrls[$key][] = $imageUrl;
+                }
+            }
+            $responseData = array_merge($requestData, $imageUrls);
+            return response()->json($responseData);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.
