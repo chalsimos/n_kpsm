@@ -2,12 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 ::-webkit-scrollbar {
-    width: 8px; 
+  width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #e96f1d; 
-    border-radius: 6px; 
+  background-color: #e96f1d;
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-track {
-    background-color: #d1d1d1; 
+  background-color: #d1d1d1;
 }
+
+.ant-carousel .slick-prev:focus,
+.ant-carousel .slick-prev:hover,
+.ant-carousel .slick-prev {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20"><path fill="orange" d="m5.83 9l5.58-5.58L10 2l-8 8l8 8l1.41-1.41L5.83 11H18V9z"/></svg>')no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+  margin-left: 2vw;
+}
+
+.ant-carousel .slick-next:focus,
+.ant-carousel .slick-next,
+.ant-carousel .slick-next:hover {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20"><path fill="orange" d="M2 11h12.2l-5.6 5.6L10 18l8-8l-8-8l-1.4 1.4L14.2 9H2z"/></svg>')no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+  margin-right: 1.5vw;
+}
+
