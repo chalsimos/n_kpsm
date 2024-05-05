@@ -140,23 +140,45 @@
             <div class="p-4">
                 <div v-if="medicalRequest.valid_id_imagepath && medicalRequest.valid_id_imagepath.length">
                     <h4 class="text-lg font-semibold mb-2">Valid ID Image</h4>
-                    <div v-for="(imagePath, index) in medicalRequest.valid_id_imagepath" :key="index">
-                        <img :src="imagePath" alt="Valid ID Image" class="w-full mb-2">
-                    </div>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in medicalRequest.valid_id_imagepath" :key="'valid_id_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Valid ID Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
                 </div>
                 <div v-if="medicalRequest.hospital_document_imagepath && medicalRequest.hospital_document_imagepath.length">
                     <h4 class="text-lg font-semibold mb-2">Hospital Documents Image</h4>
-                    <div v-for="(imagePath, index) in medicalRequest.hospital_document_imagepath" :key="index">
-                        <img :src="imagePath" alt="Hospital Documents Image" class="w-full mb-2">
-                    </div>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in medicalRequest.hospital_document_imagepath" :key="'hospital_document_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Hospital Documents Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
                 </div>
                 <div v-if="medicalRequest.barangay_clearance_imagepath && medicalRequest.barangay_clearance_imagepath.length">
                     <h4 class="text-lg font-semibold mb-2">Barangay Clearance Image</h4>
-                    <div v-for="(imagePath, index) in medicalRequest.barangay_clearance_imagepath" :key="index">
-                        <img :src="imagePath" alt="Barangay Clearance Image" class="w-full mb-2">
-                    </div>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in medicalRequest.barangay_clearance_imagepath" :key="'barangay_clearance_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Barangay Clearance Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
                 </div>
-
+            </div>
+        </div>
+    </div>
+</div>
+<div id="preview-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button data-modal-hide="preview-modal" @click="closePreviewModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <img :src="previewedImage.url" class="w-full h-auto" style="max-width: 100%; max-height: 80vh;">
             </div>
         </div>
     </div>
@@ -164,6 +186,9 @@
 </template>
 
 <script>
+import {
+    Carousel,ConfigProvider, Popover
+} from "ant-design-vue";
 import {
     Modal,
     Tooltip,
@@ -185,22 +210,49 @@ export default {
             imagePath: '',
             search: '',
             items: [],
-            medicalRequest: []
+            medicalRequest: [],
+            contentStyle: {
+                margin: 0,
+                height: '160px',
+                color: '#fff',
+                lineHeight: '160px',
+                textAlign: 'center',
+                background: '#364d79',
+            },
+            previewedImage: {
+                url: ''
+            }
         };
     },
     components: {
         Side,
+        Carousel,
+        ConfigProvider, 
+        Popover
     },
     mounted() {
         initTWE({
             Modal,
-            Tooltip
+            Tooltip,
+
         });
         initFlowbite();
         document.title = "Manage Medical Request";
         this.fetchMedicalRequests();
     },
     methods: {
+        previewImage(imagePath) {
+            this.previewedImage.url = imagePath;
+                document.getElementById('RequirementsModal').classList.add('hidden');
+                document.getElementById('preview-modal').classList.remove('hidden');
+                document.getElementById('preview-modal').focus();
+            
+        },
+        closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('RequirementsModal').classList.remove('hidden');
+            this.previewedImage.url = '';
+        },
         fetchMedicalRequests() {
             axios.get('/api/medical-requests/get-all')
                 .then(response => {
