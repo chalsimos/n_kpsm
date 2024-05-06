@@ -16,34 +16,34 @@
             <div id="default-styled-tab-content">
                 <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Captain-List" role="tabpanel" aria-labelledby="Captain-List-tab">
                     <v-card flat>
+                        <!-- Main table -->
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" /> &nbsp; Captain List
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            <v-text-field v-model="captain_search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                        <v-data-table v-model:search="captain_search" :items="items" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
                                     <th>Name</th>
-                                    <th>Slot Have</th>
-                                    <th>Slot Left</th>
-                                    <th>Slot Available At</th>
-                                    <th>Slot Obtained</th>
+                                    <th>Email</th>
                                     <th>Action</th>
                                 </tr>
                             </template>
                             <template v-slot:item="{ item }">
                                 <tr class="h-[2vh]">
                                     <td class="whitespace-nowrap uppercase">{{ item.name }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.slot_get ?? 'No slot given' }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.slot_left ?? 'No slot given' }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.month_year_available ?? 'No slot given' }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.date_obtained ?? 'No slot given' }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.email }}</td>
                                     <td class="whitespace-nowrap uppercase">
-                                        <button @click="giveSlot(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                                            Give slot
-                                        </button>
+                                        <div class="flex space-x-4">
+                                            <button @click.stop="giveSlot(item.id)" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                                Give slot
+                                            </button>
+                                            <button @click.stop="checkSlot(item.id)" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                                Tupad Slot History
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </template>
@@ -55,10 +55,10 @@
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Tupad Member
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            <v-text-field v-model="tupad_memberSearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-data-table v-model:search="search" :items="tupad_member" :items-per-page="5">
+                        <v-data-table v-model:search="tupad_memberSearch" :items="tupad_member" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
                                     <th class="text-center whitespace-nowrap">Fullname</th>
@@ -128,6 +128,51 @@
         </div>
     </div>
 </div>
+<div id="checkSlot" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+        <div class="relative bg-orange-200 rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Tupad Member Slot History
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="checkSlot">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <v-card flat>
+                <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                    <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Tupad Member
+                    <v-spacer></v-spacer>
+                    <v-text-field v-model="captain_slotSearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-data-table v-model:search="captain_slotSearch" :items="captain_slot" :items-per-page="5">
+                    <template #headers="{ headers }">
+                        <tr class="text-center whitespace-nowrap">
+                            <th class="text-center whitespace-nowrap">Captain Name</th>
+                            <th class="text-center whitespace-nowrap">Slot Get</th>
+                            <th class="text-center whitespace-nowrap">Slot Left</th>
+                            <th class="text-center whitespace-nowrap">Slot Available At</th>
+                            <th class="text-center whitespace-nowrap">Slot Obtained</th>
+                        </tr>
+                    </template>
+                    <template v-slot:item="{ item }">
+                        <tr class="h-[2vh]">
+                            <td class="whitespace-nowrap text-center">{{ item.name }}</td>
+                            <td class="whitespace-nowrap text-center">{{ item.slot_get }}</td>
+                            <td class="whitespace-nowrap text-center">{{ item.slot_left }}</td>
+                            <td class="whitespace-nowrap text-center">{{ formatMonthYearToWords(item.month_year_available) }}</td>
+                            <td class="whitespace-nowrap text-center">{{ formatDateToWords(item.date_obtained) }}</td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -155,11 +200,14 @@ import moment from 'moment';
 export default {
     data() {
         return {
-            search: '',
-            items: [],
+            captain_search: '',
+            captain_slotSearch: '',
+            tupad_memberSearch: '',
             month_year_available: '',
             slot_get: '',
-            tupad_member: []
+            tupad_member: [],
+            items: [],
+            captain_slot: [],
         };
     },
     components: {
@@ -215,7 +263,6 @@ export default {
                     toastr.error("Please input the amount value.");
                 });
         },
-
         fetchCaptainList() {
             axios.get('/api/dole/captain-list')
                 .then(response => {
@@ -223,6 +270,30 @@ export default {
                 })
                 .catch(error => {
                     console.error('Error fetching medical requests:', error);
+                });
+        },
+        checkSlot(itemId) {
+            this.itemId = itemId;
+            this.fetchSlotlist(itemId);
+            const modal = document.getElementById('checkSlot');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // Add event listener to close modal on close button click
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="checkSlot"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
+            this.fetchSlotlist(itemId);
+        },
+        fetchSlotlist(itemId) {
+            axios.get(`/api/dole/all-captain-slot/${itemId}`)
+                .then(response => {
+                    this.captain_slot = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching captain slot details:', error);
                 });
         },
         giveSlot(itemId) {
@@ -238,6 +309,22 @@ export default {
                 }
             });
         },
+        formatDateToWords(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        },
+        formatMonthYearToWords(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long'
+            });
+        }
+
     }
 };
 </script>

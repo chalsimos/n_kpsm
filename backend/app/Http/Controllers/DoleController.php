@@ -281,19 +281,30 @@ class DoleController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }
-
     public function captain_list(Request $request)
     {
         try {
-            $captains = User::where('type', 'captain')
-                ->leftJoin('tupad_slots', 'users.id', '=', 'tupad_slots.captain_id')
-                ->select('users.*', 'tupad_slots.slot_get', 'tupad_slots.slot_left', 'tupad_slots.month_year_available', 'tupad_slots.date_obtained')
-                ->get();
+            $captains = User::select('id','name', 'email')->where('type', 'captain')->get();
             return response()->json($captains, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function allCaptain_tupadSlot(Request $request, $id)
+    {
+        try {
+            $allCaptain_tupadSlot = User::where('type', 'captain')
+                ->leftJoin('tupad_slots', 'users.id', '=', 'tupad_slots.captain_id')
+                ->where('users.id', $id)
+                ->select('users.name', 'tupad_slots.slot_get', 'tupad_slots.slot_left', 'tupad_slots.month_year_available', 'tupad_slots.date_obtained')
+                ->get();
+            return response()->json($allCaptain_tupadSlot, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 
     public function give_slot(Request $request, $captain_id)
     {
