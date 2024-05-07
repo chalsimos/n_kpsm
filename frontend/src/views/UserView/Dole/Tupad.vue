@@ -1,6 +1,7 @@
 <template>
 <div class="flex flex-col min-h-screen">
-    <div class="flex-grow p-4" :class="{ 'blur': showModal }">
+    <Head />
+    <div class="flex-grow p-4 mt-[5vh]" :class="{ 'blur': showModal }">
         <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 Patient Information
@@ -117,7 +118,7 @@
                     </div>
                     <div class="mb-4" v-if="typeOfRequest === 'OTHERS'">
                         <label for="OtherRequest" class="block text-sm font-medium text-gray-900 dark:text-white">Other Type of ID</label>
-                        <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="SSS" required />
+                        <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full mt-2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="SSS" required />
                     </div>
                 </div>
                 <div class="flex justify-end">

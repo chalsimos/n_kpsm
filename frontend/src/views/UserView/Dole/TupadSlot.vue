@@ -8,8 +8,8 @@
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     New Tupad Slot Available: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalNoCodeSlots }}</span>
                     <Flex v-show="totalNoCodeSlots !== 0 " gap="small" wrap="wrap">
-                        <Button @click="generateCodes" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate {{ totalNoCodeSlots }} Code</Button>
                     </Flex>
+                    <Button v-show="totalNoCodeSlots !== 0 " @click="generateCodes" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate {{ totalNoCodeSlots }} Code</Button>
                 </h2>
                 <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
                     <v-card flat>
@@ -46,15 +46,15 @@
             </div>
             <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 w-2/3">
                 <div class="flex">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                   Total Tupad Invited: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
-                </h2>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                   Total Tupad Accepted: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
-                </h2>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                   Total Tupad Declined: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
-                </h2>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        Total Tupad Invited: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
+                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        Total Tupad Accepted: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
+                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        Total Tupad Declined: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
+                    </h2>
                 </div>
                 <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
                     <v-card flat>

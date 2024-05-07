@@ -250,7 +250,11 @@ export default {
                 slot_get: this.slot_get,
                 month_year_available: this.month_year_available
             };
-            axios.post(`/api/dole/give-slot/${itemId}`, formData)
+            axios.post(`/api/dole/give-slot/${itemId}`, formData, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
                 .then(response => {
                     this.slot_get = '',
                         this.month_year_available = ''
@@ -264,7 +268,11 @@ export default {
                 });
         },
         fetchCaptainList() {
-            axios.get('/api/dole/captain-list')
+            axios.get('/api/dole/captain-list', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
                 .then(response => {
                     this.items = response.data;
                 })
@@ -288,7 +296,11 @@ export default {
             this.fetchSlotlist(itemId);
         },
         fetchSlotlist(itemId) {
-            axios.get(`/api/dole/all-captain-slot/${itemId}`)
+            axios.get(`/api/dole/all-captain-slot/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
                 .then(response => {
                     this.captain_slot = response.data;
                 })
