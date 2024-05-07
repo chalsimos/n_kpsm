@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('educational_assistance_amount', function (Blueprint $table) {
+        Schema::create('educational_assistance_amounts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('elemantary_amount')->nullable();
             $table->unsignedBigInteger('highschool_amount')->nullable();
             $table->unsignedBigInteger('senior_highschool_amount')->nullable();
             $table->unsignedBigInteger('vocational_college_amount')->nullable();
             $table->unsignedBigInteger('total_target')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('educational_assistance_amount');
+        Schema::dropIfExists('educational_assistance_amounts');
     }
 };

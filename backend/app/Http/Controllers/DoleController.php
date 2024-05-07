@@ -55,8 +55,11 @@ class DoleController extends Controller
                 ->leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
                 ->select('tupads.*', 'users.name as captain_name')
                 ->get();
-            return response()->json($tupads, 200);
-            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+
+                return response()->json([
+                    'data' => $tupads,
+                    'message' => 'Get all captain tupads invites successfully'
+                ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -101,8 +104,10 @@ class DoleController extends Controller
                 ->select('tupads.*', 'tupad_codes.code_generated')
                 ->get();
 
-            return response()->json($tupads, 200);
-            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+                return response()->json([
+                    'data' => $tupads,
+                    'message' => 'Get tupads invites successfully'
+                ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -153,8 +158,11 @@ class DoleController extends Controller
                     'month_year_available' => $code->slot->month_year_available,
                 ];
             });
-            return response()->json($transformedData, 200);
-            return response()->json(['message' => 'Codes generated and saved successfully'], 200);
+            return response()->json([
+                'data' => $transformedData,
+                'message' => 'Codes generated and saved successfully'
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
