@@ -33,29 +33,35 @@ Route::get('/active-logos', [LogoController::class, 'displayImage']);
 
 
 Route::prefix('medical-requests')->group(function () {
-    //client
+    //no need authentication
     Route::post('/request', [MedicalRequestController::class, 'store']);
     //admin
-    Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
-    Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
-    Route::get('/get-all', [MedicalRequestController::class, 'index']);
-    Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
-    Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
+        Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
+        Route::get('/get-all', [MedicalRequestController::class, 'index']);
+        Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
+        Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
+    });
 });
 Route::prefix('dole')->group(function () {
     //no need authentication
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //admin
-    Route::get('/captain-list', [DoleController::class, 'captain_list']);
-    Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
-    Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
-    Route::get('/getAll-captains-tupad-invites', [DoleController::class, 'getAll_captains_tupad_invites']);
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/captain-list', [DoleController::class, 'captain_list']);
+        Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
+        Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
+        Route::get('/getAll-captains-tupad-invites', [DoleController::class, 'getAll_captains_tupad_invites']);
+    });
     //captain
-    Route::get('/captain-slot-list', [DoleController::class,'captain_tupad_slot']);
-    Route::post('/generate-code', [DoleController::class,'generateCodeAndSave']);
-    Route::get('/tupad-code-list', [DoleController::class,'tupad_code_list']);
-    Route::get('/captain-tupad-invited', [DoleController::class,'captain_tupad_invite']);
-    Route::put('/decline-tupad-request/{id}', [DoleController::class,'decline_tupad_invites']);
-    Route::put('/accept-tupad-request/{id}', [DoleController::class,'accept_tupad_invites']);
+    Route::middleware(['captain'])->group(function () {
+        Route::get('/captain-slot-list', [DoleController::class, 'captain_tupad_slot']);
+        Route::post('/generate-code', [DoleController::class, 'generateCodeAndSave']);
+        Route::get('/tupad-code-list', [DoleController::class, 'tupad_code_list']);
+        Route::get('/captain-tupad-invited', [DoleController::class, 'captain_tupad_invite']);
+        Route::put('/decline-tupad-request/{id}', [DoleController::class, 'decline_tupad_invites']);
+        Route::put('/accept-tupad-request/{id}', [DoleController::class, 'accept_tupad_invites']);
+    });
 });

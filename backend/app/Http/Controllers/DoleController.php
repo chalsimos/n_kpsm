@@ -51,18 +51,6 @@ class DoleController extends Controller
     public function getAll_captains_tupad_invites(Request $request)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'admin') {
-                return response()->json(['error' => 'User is not a admin'], 400);
-            }
             $tupads = Tupad::where('status', 'accepted')
                 ->leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
                 ->select('tupads.*', 'users.name as captain_name')
@@ -76,18 +64,6 @@ class DoleController extends Controller
     public function accept_tupad_invites(Request $request, $id)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'captain') {
-                return response()->json(['error' => 'User is not a captain'], 400);
-            }
             $tupadRequest = Tupad::findOrFail($id);
             if ($tupadRequest->save()) {
                 $tupadRequest->status = 'accepted';
@@ -101,18 +77,6 @@ class DoleController extends Controller
     public function decline_tupad_invites(Request $request, $id)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'captain') {
-                return response()->json(['error' => 'User is not a captain'], 400);
-            }
             $tupadRequest = Tupad::findOrFail($id);
             $validatedData = $request->validate([
                 'decline_reason' => 'required',
@@ -130,18 +94,8 @@ class DoleController extends Controller
     public function captain_tupad_invite(Request $request)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'captain') {
-                return response()->json(['error' => 'User is not a captain'], 400);
-            }
+            $user = $this->validateCaptain($request);
+
             $tupads = Tupad::where('given_by_captainID', $user->id)
                 ->leftJoin('tupad_codes', 'tupads.used_code_id', '=', 'tupad_codes.id')
                 ->select('tupads.*', 'tupad_codes.code_generated')
@@ -180,18 +134,8 @@ class DoleController extends Controller
     public function tupad_code_list(Request $request)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'captain') {
-                return response()->json(['error' => 'User is not a captain'], 400);
-            }
+
+            $user = $this->validateCaptain($request);
             $codes = TupadCode::where('captain_id', $user->id)
                 ->with(['slot' => function ($query) {
                     $query->select('id', 'month_year_available');
@@ -219,18 +163,8 @@ class DoleController extends Controller
     public function generateCodeAndSave(Request $request)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'captain') {
-                return response()->json(['error' => 'User is not a captain'], 400);
-            }
+
+            $user = $this->validateCaptain($request);
             $slotsWithNoCode = TupadSlot::where('captain_id', $user->id)
                 ->where('status', 'No Code')
                 ->get();
@@ -263,18 +197,8 @@ class DoleController extends Controller
     public function captain_tupad_slot(Request $request)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'captain') {
-                return response()->json(['error' => 'User is not a captain'], 400);
-            }
+
+            $user = $this->validateCaptain($request);
             $slots = TupadSlot::where('captain_id', $user->id)->get();
             return response()->json(['data' => $slots], 200);
         } catch (\Exception $e) {
@@ -394,7 +318,19 @@ class DoleController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
+    private function validateCaptain(Request $request)
+    {
+        $token = $request->bearerToken();
+        if (!$token) {
+            throw new \Exception('Unauthorized', 401);
+        }
+        $decryptedId = Crypt::decrypt($token);
+        $user = User::find($decryptedId);
+        if (!$user || $user->type !== 'captain') {
+            throw new \Exception('User is not a captain', 400);
+        }
+        return $user;
+    }
     /**
      * Store a newly created resource in storage.
      */

@@ -31,8 +31,8 @@
                             <th>Status</th>
                             <th>Decline Reason</th>
                             <th>Amount</th>
-                            <th>Requirements</th>
-                            <th>Action</th>
+                            <th class="requirements-column">Check Requirements</th>
+                            <th class="action-column">Action</th>
                         </tr>
                     </template>
                     <template v-slot:item="{ item }">
@@ -55,16 +55,16 @@
                             <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.decline_reason || '' }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
-                            <td class="whitespace-nowrap uppercase">
-                                <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-3 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
-                                    Check Requiements
+                            <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase requirements-column">
+                                <button  @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                    Requiements
                                 </button>
                             </td>
-                            <td class="whitespace-nowrap uppercase">
-                                <button @click="amountModal(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="!item.amount">
+                            <td class="whitespace-nowrap uppercase action-column">
+                                <button @click="amountModal(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="!item.amount">
                                     Input Amount
                                 </button>
-                                <button @click="DeclineModal(item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-10 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="!item.amount">
+                                <button @click="DeclineModal(item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-7 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="!item.amount">
                                     Decline
                                 </button>
                             </td>
@@ -91,7 +91,7 @@
             </div>
             <form @submit.prevent="DeclineRequest" class="max-w-sm mx-auto mt-5 mb-5">
                 <label for="Reason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Decline Reason</label>
-                <input type="text" id="Reason" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
+                <input type="text" id="Reason" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Reason here.">
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button data-modal-hide="declineModal" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
                 </div>
@@ -187,7 +187,9 @@
 
 <script>
 import {
-    Carousel,ConfigProvider, Popover
+    Carousel,
+    ConfigProvider,
+    Popover
 } from "ant-design-vue";
 import {
     Modal,
@@ -227,7 +229,7 @@ export default {
     components: {
         Side,
         Carousel,
-        ConfigProvider, 
+        ConfigProvider,
         Popover
     },
     mounted() {
@@ -243,10 +245,10 @@ export default {
     methods: {
         previewImage(imagePath) {
             this.previewedImage.url = imagePath;
-                document.getElementById('RequirementsModal').classList.add('hidden');
-                document.getElementById('preview-modal').classList.remove('hidden');
-                document.getElementById('preview-modal').focus();
-            
+            document.getElementById('RequirementsModal').classList.add('hidden');
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('preview-modal').focus();
+
         },
         closePreviewModal() {
             document.getElementById('preview-modal').classList.add('hidden');
@@ -254,7 +256,11 @@ export default {
             this.previewedImage.url = '';
         },
         fetchMedicalRequests() {
-            axios.get('/api/medical-requests/get-all')
+            axios.get('/api/medical-requests/get-all', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
                 .then(response => {
                     this.items = response.data;
                 })
@@ -294,7 +300,11 @@ export default {
                 });
         },
         RequirementsModal(itemId) {
-            axios.get(`/api/medical-requests/requirements-path/${itemId}`)
+            axios.get(`/api/medical-requests/requirements-path/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
                 .then(response => {
                     this.medicalRequest = response.data;
                     const modal = document.getElementById('RequirementsModal');
@@ -333,6 +343,10 @@ export default {
             const amount = parseFloat(document.getElementById('Amount').value);
             axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
                     amount
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
                 })
                 .then(response => {
                     toastr.success("Amount Approve")
@@ -346,3 +360,20 @@ export default {
     }
 };
 </script>
+
+<style>
+@media screen and (min-width: 1024px) {
+    .action-column {
+        position: sticky;
+        right: -0.01vw;
+        background-color: rgb(226, 178, 88);
+        z-index: 1;
+    }
+    .requirements-column {
+        position: sticky;
+        right: 7vw;
+        background-color: rgb(226, 178, 88);
+        z-index: 0;
+    }
+}
+</style>

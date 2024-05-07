@@ -27,7 +27,14 @@ class User extends Authenticatable
         'remember_token',
         'type'
     ];
-
+    public function isAdmin()
+    {
+        return $this->type === 'admin';
+    }
+    public function isCaptain()
+    {
+        return $this->type === 'captain';
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
