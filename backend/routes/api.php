@@ -9,6 +9,8 @@ use App\Http\Controllers\LogoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicalRequestController;
 use App\Http\Controllers\DoleController;
+use App\Http\Controllers\EducationalAssistanceController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,6 +33,17 @@ Route::get('/getUserType', [AuthController::class, 'getUserType']);
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 
+Route::prefix('educational-assistance')->group(function () {
+    //no need authentication
+    Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);
+    //admin
+    Route::middleware(['admin'])->group(function () {
+        Route::post('/school-level-amount', [EducationalAssistanceController::class, 'educational_assistance_amount']);
+        Route::put('/school-level-amount-change-status/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_change_status']);
+        Route::put('/school-level-amount-update/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_update']);
+
+    });
+});
 
 Route::prefix('medical-requests')->group(function () {
     //no need authentication

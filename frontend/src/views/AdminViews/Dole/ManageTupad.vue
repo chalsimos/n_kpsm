@@ -191,10 +191,6 @@ import {
     useToast
 } from 'vue-toastification'
 const toastr = useToast()
-import {
-    ADatePicker,
-    ASpace
-} from 'ant-design-vue';
 import moment from 'moment';
 
 export default {
@@ -211,9 +207,7 @@ export default {
         };
     },
     components: {
-        Side,
-        ADatePicker,
-        ASpace
+        Side
     },
     mounted() {
         initTWE({
@@ -233,7 +227,7 @@ export default {
                     }
                 })
                 .then(response => {
-                    this.tupad_member = response.data;
+                    this.tupad_member = response.data.data;
                 })
                 .catch(error => {
                     console.error('Error fetching tupad slot:', error);

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('educational_assistance', function (Blueprint $table) {
+        Schema::create('educational_assistances', function (Blueprint $table) {
             $table->id();
             $table->string('representative_lastname')->nullable();
             $table->string('representative_firstname')->nullable();
@@ -33,8 +33,10 @@ return new class extends Migration
             $table->string('sitio')->nullable();
             $table->string('school')->nullable();
             $table->string('school_level')->nullable();
+            $table->string('year_level')->nullable();
             $table->string('academic_year_stage')->nullable();
             $table->string('remarks')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
@@ -44,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('educational_assistance');
+        Schema::dropIfExists('educational_assistances');
     }
 };

@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\MedicalRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\EducationalAssistance;
+use App\Models\EducationalAssistanceAmount;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -38,6 +38,7 @@ class EducationalAssistanceController extends Controller
             'sitio' => 'nullable|string|max:255',
             'school' => 'nullable|string|max:255',
             'school_level' => 'nullable|string|max:255',
+            'year_level' => 'nullable|string|max:255',
             'academic_year_stage' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:255',
         ]);
@@ -67,10 +68,95 @@ class EducationalAssistanceController extends Controller
             $data->sitio = $request->input('sitio');
             $data->school = $request->input('school');
             $data->school_level = $request->input('school_level');
+            $data->year_level = $request->input('year_level');
             $data->academic_year_stage = $request->input('academic_year_stage');
             $data->remarks = $request->input('remarks');
+            $data->status = 'pending';
             $data->save();
             DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function educational_assistance_amount(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'elemantary_amount' => 'nullable|integer',
+            'highschool_amount' => 'nullable|integer',
+            'senior_highschool_amount' => 'nullable|integer',
+            'vocational_college_amount' => 'nullable|integer',
+            'total_target' => 'nullable|integer',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        try {
+            DB::beginTransaction();
+            EducationalAssistanceAmount::where('status', 'active')->update(['status' => 'inactive']);
+            $data = new EducationalAssistanceAmount();
+            $data->elemantary_amount = $request->input('elemantary_amount');
+            $data->highschool_amount = $request->input('highschool_amount');
+            $data->senior_highschool_amount = $request->input('senior_highschool_amount');
+            $data->vocational_college_amount = $request->input('vocational_college_amount');
+            $data->total_target = $request->input('total_target');
+            $data->status = 'active';
+            $data->save();
+            DB::commit();
+            return response()->json(['message' => 'Educational assistance amount created successfully'], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function educational_assistance_amount_update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'elemantary_amount' => 'nullable|integer',
+            'highschool_amount' => 'nullable|integer',
+            'senior_highschool_amount' => 'nullable|integer',
+            'vocational_college_amount' => 'nullable|integer',
+            'total_target' => 'nullable|integer',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        try {
+            DB::beginTransaction();
+            $data = EducationalAssistanceAmount::find($id);
+            if (!$data) {
+                return response()->json(['error' => 'Educational assistance amount not found'], 404);
+            }
+            $data->elemantary_amount = $request->input('elemantary_amount', $data->elemantary_amount);
+            $data->highschool_amount = $request->input('highschool_amount', $data->highschool_amount);
+            $data->senior_highschool_amount = $request->input('senior_highschool_amount', $data->senior_highschool_amount);
+            $data->vocational_college_amount = $request->input('vocational_college_amount', $data->vocational_college_amount);
+            $data->total_target = $request->input('total_target', $data->total_target);
+            $data->save();
+            DB::commit();
+            return response()->json(['message' => 'Educational assistance amount updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function educational_assistance_amount_change_status(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $requestedItem = EducationalAssistanceAmount::find($id);
+            if (!$requestedItem) {
+                return response()->json(['error' => 'Educational assistance amount not found'], 404);
+            }
+            if ($requestedItem->status === 'active') {
+                return response()->json(['message' => 'Status is already active'], 200);
+            }
+            EducationalAssistanceAmount::where('id', '!=', $id)
+                ->update(['status' => 'inactive']);
+            $requestedItem->status = 'active';
+            $requestedItem->save();
+            DB::commit();
+            return response()->json(['message' => 'Status updated successfully'], 200);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);

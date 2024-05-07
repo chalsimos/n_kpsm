@@ -61,10 +61,10 @@
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Invites
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            <v-text-field v-model="searchTupadInvites" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-data-table v-model:search="search" :items="tupad_invites" :items-per-page="5">
+                        <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
                                     <th class="text-center whitespace-nowrap">Fullname</th>
@@ -168,6 +168,7 @@ export default {
     data() {
         return {
             search: "",
+            searchTupadInvites: '',
             totalNoCodeSlots: '',
             totalInvites: '',
             totalAccepted: '',
@@ -240,7 +241,7 @@ export default {
                     }
                 })
                 .then(response => {
-                    this.tupad_invites = response.data;
+                    this.tupad_invites = response.data.data;
                     this.totalInvites = this.calculatetotalInvites(this.tupad_invites);
                     this.totalAccepted = this.calculatetotalAccepted(this.tupad_invites);
                     this.totalDeclined = this.calculatetotalDeclined(this.tupad_invites);
@@ -284,7 +285,7 @@ export default {
                     },
                 })
                 .then((response) => {
-                    this.items = response.data;
+                    this.items = response.data.data;
                 })
                 .catch((error) => {
                     console.error("Error fetching tupad slot:", error);
