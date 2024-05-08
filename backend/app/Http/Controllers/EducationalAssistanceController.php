@@ -11,10 +11,50 @@ use App\Models\EducationalAssistanceAmount;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EducationalAssistanceMail;
 
 class EducationalAssistanceController extends Controller
 {
+
+    public function get_all_scholarship_request(Request $request)
+    {
+
+    }
+
+    public function check_educational_assistance_application_status(Request $request)
+    {
+        try {
+            $validator = validator()->make($request->all(), [
+                'code' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 400);
+            }
+            $code = $request->input('code');
+            $application = EducationalAssistance::where('code', $code)->first();
+            if (!$application) {
+                return response()->json(['error' => 'Application not found.'], 404);
+            }
+            return response()->json(['status' => $application->status], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function confirm_code(Request $request)
+    {
+        try {
+            $code = $request->input('code');
+            if ($code !== 'CONFIRM') {
+                return response()->json("Invalid input. Please type 'CONFIRM' in all uppercase letters to proceed.", 400);
+            }
+            return response()->json("Tupad request is accepted", 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function apply_educational_assistance(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -40,13 +80,15 @@ class EducationalAssistanceController extends Controller
             'school_level' => 'nullable|string|max:255',
             'year_level' => 'nullable|string|max:255',
             'academic_year_stage' => 'nullable|string|max:255',
-            'remarks' => 'nullable|string|max:255',
+            'email' => 'required|string|email|unique:users,email',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
         try {
             DB::beginTransaction();
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $codeGenerated = $request->input('beneficiary_lastname') . '_' . str_shuffle(substr(str_shuffle($characters), 0, 10));
             $data = new EducationalAssistance();
             $data->representative_lastname = $request->input('representative_lastname');
             $data->representative_firstname = $request->input('representative_firstname');
@@ -70,9 +112,18 @@ class EducationalAssistanceController extends Controller
             $data->school_level = $request->input('school_level');
             $data->year_level = $request->input('year_level');
             $data->academic_year_stage = $request->input('academic_year_stage');
-            $data->remarks = $request->input('remarks');
+            $data->student_email = $request->input('email');
+            $data->code = $codeGenerated;
             $data->status = 'pending';
             $data->save();
+            $url = url('http://localhost:9000/educational-assistance');
+            $info = [
+                'firstname' => $request->input('beneficiary_firstname'),
+                'codeGenerated' => $codeGenerated,
+                'url' => $url,
+            ];
+            Mail::to($request->input('email'))->send(new EducationalAssistanceMail($info['firstname'], $info['codeGenerated'], $info['url']));
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();

@@ -36,6 +36,8 @@ Route::get('/active-logos', [LogoController::class, 'displayImage']);
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
     Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);
+    Route::post('/confirm-code', [EducationalAssistanceController::class, 'confirm_code']);
+    Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
     //admin
     Route::middleware(['admin'])->group(function () {
         Route::post('/school-level-amount', [EducationalAssistanceController::class, 'educational_assistance_amount']);
@@ -59,6 +61,7 @@ Route::prefix('medical-requests')->group(function () {
 });
 Route::prefix('dole')->group(function () {
     //no need authentication
+    Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //admin
