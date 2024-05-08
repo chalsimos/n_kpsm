@@ -387,6 +387,8 @@ export default {
                     this.typeOfRequest = '';
                     toastr.success('Tupad Successfully Send');
                     localStorage.removeItem('accessGranted');
+                    localStorage.removeItem('tupad_codeId');
+                    localStorage.removeItem('captain_id');
                 })
                 .catch(error => {
                     console.error(error.response.data);
