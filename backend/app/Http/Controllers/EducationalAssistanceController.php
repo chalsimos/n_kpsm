@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\EducationalAssistanceApproved;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -13,13 +14,55 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EducationalAssistanceMail;
+use Illuminate\Support\Facades\Log;
 
 class EducationalAssistanceController extends Controller
 {
 
+
+    public function accept_educational_assistance(Request $request, $id)
+    {
+        try {
+            $educationalRequest = EducationalAssistance::findOrFail($id);
+            $validatedData = $request->validate([
+                'amount' => 'required|numeric',
+            ]);
+            $educationalRequest->status = 'approved';
+            $amount = $validatedData['amount'];
+            if ($educationalRequest->save()) {
+                $studentEmail = $educationalRequest->student_email;
+                $studentname = $educationalRequest->beneficiary_lastname;
+                $info = [
+                    'firstname' => $studentname,
+                    'amount' => $amount,
+                ];
+                Mail::to($studentEmail)->send(new EducationalAssistanceApproved($info['firstname'], $info['amount']));
+                return response()->json(['data' => $educationalRequest], 200);
+            } else {
+                return response()->json(['error' => 'Failed to update status'], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
+
     public function get_all_scholarship_request(Request $request)
     {
-
+        try {
+            $educationalAssistances = EducationalAssistance::get();
+            $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
+            foreach ($educationalAssistances as $assistance) {
+                $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
+                $amount = $educationalAssistanceAmounts->{$preprocessedSchoolLevel} ?? null;
+                $assistance->amount = $amount;
+            }
+            return response()->json($educationalAssistances, 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function check_educational_assistance_application_status(Request $request)
@@ -136,7 +179,8 @@ class EducationalAssistanceController extends Controller
             'elemantary_amount' => 'nullable|integer',
             'highschool_amount' => 'nullable|integer',
             'senior_highschool_amount' => 'nullable|integer',
-            'vocational_college_amount' => 'nullable|integer',
+            'vocational_amount' => 'nullable|integer',
+            'college_amount' => 'nullable|integer',
             'total_target' => 'nullable|integer',
         ]);
         if ($validator->fails()) {
@@ -149,7 +193,8 @@ class EducationalAssistanceController extends Controller
             $data->elemantary_amount = $request->input('elemantary_amount');
             $data->highschool_amount = $request->input('highschool_amount');
             $data->senior_highschool_amount = $request->input('senior_highschool_amount');
-            $data->vocational_college_amount = $request->input('vocational_college_amount');
+            $data->college_amount = $request->input('college_amount');
+            $data->vocational_amount = $request->input('vocational_amount');
             $data->total_target = $request->input('total_target');
             $data->status = 'active';
             $data->save();

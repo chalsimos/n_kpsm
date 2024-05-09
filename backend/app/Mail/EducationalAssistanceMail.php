@@ -33,10 +33,10 @@ class EducationalAssistanceMail extends Mailable
      * @return $this
      */
     public function build()
-{
-    $url = url('kpsm.png');
+    {
+        $url = url('kpsm.png');
 
-    $message = "
+        $message = "
         <html>
             <head>
                 <style>
@@ -76,8 +76,7 @@ class EducationalAssistanceMail extends Mailable
         </html>
     ";
 
-    return $this->subject('KPSM-Educational Assistance')
-                ->html($message);
-}
-
+        return $this->subject('KPSM-Educational Assistance')
+            ->html($message);
+    }
 }
