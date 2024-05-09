@@ -11,4 +11,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class EducationalAssistance extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
 }

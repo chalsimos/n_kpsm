@@ -39,8 +39,11 @@ Route::prefix('educational-assistance')->group(function () {
     Route::post('/confirm-code', [EducationalAssistanceController::class, 'confirm_code']);
     Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
     //admin
-    Route::middleware(['admin'])->group(function () {
+        Route::get('/get-all-shcolarship-request', [EducationalAssistanceController::class, 'get_all_scholarship_request']);
         Route::post('/school-level-amount', [EducationalAssistanceController::class, 'educational_assistance_amount']);
+        Route::put('/approve-scholarship-request/{id}', [EducationalAssistanceController::class, 'accept_educational_assistance']);
+
+    Route::middleware(['admin'])->group(function () {
         Route::put('/school-level-amount-change-status/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_change_status']);
         Route::put('/school-level-amount-update/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_update']);
 
