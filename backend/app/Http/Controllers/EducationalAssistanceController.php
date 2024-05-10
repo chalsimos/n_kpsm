@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\EducationalAssistanceApproved;
+use App\Mail\EducationalAssistanceDecline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,65 @@ use Illuminate\Support\Facades\Log;
 
 class EducationalAssistanceController extends Controller
 {
+    public function get_all_approved_scholarship_request(Request $request)
+    {
+        try {
+            $educationalAssistances = EducationalAssistance::where('status', 'approved')->get();
+            $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
+            foreach ($educationalAssistances as $assistance) {
+                $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
+                $amount = $educationalAssistanceAmounts->{$preprocessedSchoolLevel} ?? null;
+                $assistance->amount = $amount;
+            }
+            return response()->json($educationalAssistances, 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
+    public function get_all_decline_scholarship_request(Request $request)
+    {
+        try {
+            $educationalAssistances = EducationalAssistance::where('status', 'decline')->get();
+            $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
+            foreach ($educationalAssistances as $assistance) {
+                $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
+                $amount = $educationalAssistanceAmounts->{$preprocessedSchoolLevel} ?? null;
+                $assistance->amount = $amount;
+            }
+            return response()->json($educationalAssistances, 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function decline_educational_assistance(Request $request, $id)
+    {
+        try {
+            $educationalRequest = EducationalAssistance::findOrFail($id);
+            $validatedData = $request->validate([
+                'decline_reason' => 'required',
+            ]);
+            $educationalRequest->decline_reason = $validatedData['decline_reason'];
+            $educationalRequest->status = 'declined';
+            if ($educationalRequest->save()) {
+                $studentEmail = $educationalRequest->student_email;
+                $studentName = $educationalRequest->beneficiary_lastname;
+                $info = [
+                    'firstname' => $studentName,
+                    'decline' => $validatedData['decline_reason'],
+                ];
+                Mail::to($studentEmail)->send(new EducationalAssistanceDecline($info['firstname'], $info['decline']));
+            return response()->json($educationalRequest, 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
     public function accept_educational_assistance(Request $request, $id)
     {
@@ -46,11 +105,10 @@ class EducationalAssistanceController extends Controller
         }
     }
 
-
-    public function get_all_scholarship_request(Request $request)
+    public function get_all_pending_scholarship_request(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::get();
+            $educationalAssistances = EducationalAssistance::where('status', 'pending')->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
