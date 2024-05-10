@@ -97,13 +97,13 @@
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Approve Educational Assistance Requests
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            <v-text-field v-model="Approvesearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                        <v-data-table v-model:search="Approvesearch" :items="Approveitems" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center"> <input @change="checkAll" :checked="isCheckedAll" id="check-all" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                    <th class="text-center"> <input @change="checkAllForApproved" :checked="isCheckedAllForApproved" id="check-all-for-approved" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
@@ -132,7 +132,7 @@
                                 <tr class="h-[10vh] text-center">
                                     <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
-                                        <input @change="toggleChecked(item.id)" :checked="checkedIds.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.beneficiary_lastname + ' ' + item.beneficiary_firstname + ' ' + item.beneficiary_middlename }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ formatDateToWords(item.beneficiary_birthday) }}</td>
@@ -169,13 +169,13 @@
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Decline Educational Assistance Requests
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            <v-text-field v-model="Declinesearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                        <v-data-table v-model:search="Declinesearch" :items="Declineitems" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center"> <input @change="checkAll" :checked="isCheckedAll" id="check-all" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                    <th class="text-center"> <input @change="checkAllForDecline" :checked="isCheckedAllForDecline" id="check-all-for-Decline" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
@@ -204,7 +204,7 @@
                                 <tr class="h-[10vh] text-center">
                                     <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
-                                        <input @change="toggleChecked(item.id)" :checked="checkedIds.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input @change="toggleCheckedForDecline(item.id)" :checked="checkedIdsForDecline.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.beneficiary_lastname + ' ' + item.beneficiary_firstname + ' ' + item.beneficiary_middlename }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ formatDateToWords(item.beneficiary_birthday) }}</td>
@@ -292,8 +292,14 @@ export default {
         return {
             imagePath: '',
             search: '',
+            Approvesearch: '',
+            Declinesearch: '',
             items: [],
+            Approveitems: [],
+            Declineitems: [],
             checkedIds: [],
+            checkedIdsForApproved: [],
+            checkedIdsForDecline: [],
             medicalRequest: [],
             contentStyle: {
                 margin: 0,
@@ -323,6 +329,8 @@ export default {
         initFlowbite();
         document.title = "KPSM - Manage Scholarship";
         this.fetchEducationalAssistance();
+        this.fetchDeclineEducationalAssistance();
+        this.fetchApprovedEducationalAssistance();
     },
     methods: {
         formatDateToWords(dateString) {
@@ -332,6 +340,32 @@ export default {
                 month: 'long',
                 day: 'numeric'
             });
+        },
+        fetchDeclineEducationalAssistance() {
+            axios.get('/api/educational-assistance/get-all-decline_shcolarship-request', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.Declineitems = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching medical requests:', error);
+                });
+        },
+        fetchApprovedEducationalAssistance() {
+            axios.get('/api/educational-assistance/get-all-approved_shcolarship-request', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.Approveitems = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching medical requests:', error);
+                });
         },
         fetchEducationalAssistance() {
             axios.get('/api/educational-assistance/get-all-pending_shcolarship-request', {
@@ -429,6 +463,7 @@ export default {
             this.$nextTick(() => {
                 document.getElementById("check-all").checked = isChecked;
             });
+            console.log("Checked IDs:", this.checkedIds);
         },
         toggleChecked(id) {
             if (this.checkedIds.includes(id)) {
@@ -436,12 +471,60 @@ export default {
             } else {
                 this.checkedIds.push(id);
             }
+            console.log("Checked IDs:", this.checkedIds);
         },
+        checkAllForApproved(event) {
+            const isChecked = event.target.checked;
+            if (isChecked) {
+                this.checkedIdsForApproved = this.Approveitems.map((item) => item.id);
+            } else {
+                this.checkedIdsForApproved = [];
+            }
+            this.$nextTick(() => {
+                document.getElementById("check-all-for-approved").checked = isChecked;
+            });
+            console.log("Checked IDs For Approved:", this.checkedIdsForApproved);
+        },
+        toggleCheckedForApproved(id) {
+            if (this.checkedIdsForApproved.includes(id)) {
+                this.checkedIdsForApproved = this.checkedIdsForApproved.filter((checkedId) => checkedId !== id);
+            } else {
+                this.checkedIdsForApproved.push(id);
+            }
+            console.log("Checked IDs For Approved:", this.checkedIdsForApproved);
+        },
+        checkAllForDecline(event) {
+            const isChecked = event.target.checked;
+            if (isChecked) {
+                this.checkedIdsForDecline = this.Declineitems.map((item) => item.id);
+            } else {
+                this.checkedIdsForDecline = [];
+            }
+            this.$nextTick(() => {
+                document.getElementById("check-all-for-Decline").checked = isChecked;
+            });
+            console.log("Checked IDs For Decline:", this.checkedIdsForDecline);
+        },
+        toggleCheckedForDecline(id) {
+            if (this.checkedIdsForDecline.includes(id)) {
+                this.checkedIdsForDecline = this.checkedIdsForDecline.filter((checkedId) => checkedId !== id);
+            } else {
+                this.checkedIdsForDecline.push(id);
+            }
+            console.log("Checked IDs For Decline:", this.checkedIdsForDecline);
+        },
+
     },
     computed: {
         isCheckedAll() {
             return this.checkedIds.length === this.items.length && this.checkedIds.length > 0;
-        }
+        },
+        isCheckedAllForApproved() {
+            return this.checkedIdsForApproved.length === this.Approveitems.length && this.checkedIdsForApproved.length > 0;
+        },
+        isCheckedAllForDecline() {
+            return this.checkedIdsForDecline.length === this.Declineitems.length && this.checkedIdsForDecline.length > 0;
+        },
     },
 };
 </script>
