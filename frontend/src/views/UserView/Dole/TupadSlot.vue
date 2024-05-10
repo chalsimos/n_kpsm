@@ -3,107 +3,127 @@
 
     <Head />
     <div class="flex-grow p-4 mt-[5vh]">
-        <div class="flex">
-            <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 w-1/3">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    New Tupad Slot Available: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalNoCodeSlots }}</span>
-                    <Flex v-show="totalNoCodeSlots !== 0 " gap="small" wrap="wrap">
-                    </Flex>
-                    <Button v-show="totalNoCodeSlots !== 0 " @click="generateCodes" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate {{ totalNoCodeSlots }} Code</Button>
-                </h2>
-                <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
-                    <v-card flat>
-                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Slot
-                            <v-spacer></v-spacer>
-                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-data-table v-model:search="search" :items="items" :items-per-page="5">
-                            <template #headers="{ headers }">
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">Slot Number</th>
-                                    <th class="text-center whitespace-nowrap">Slot Code</th>
-                                    <th class="text-center whitespace-nowrap">Slot Available At</th>
-                                    <th class="text-center whitespace-nowrap">Slot Status</th>
-                                </tr>
-                            </template>
-                            <template v-slot:item="{ item }">
-                                <tr class="h-[7vh]">
-                                    <td class="whitespace-nowrap text-center ">{{ item.id }}</td>
-                                    <td class="whitespace-nowrap text-center ">
-                                        {{ item.code_generated }}
-                                    </td>
-                                    <td class="whitespace-nowrap text-center ">
-                                        {{ item.month_year_available }}
-                                    </td>
-                                    <td class="whitespace-nowrap text-center ">{{ item.status }}</td>
-                                </tr>
-                            </template>
-                        </v-data-table>
-                    </v-card>
+        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 w-full">
+            <div class="md:flex">
+                <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
+                    <li>
+                        <a href="#" class="whitespace-nowrap inline-flex items-center px-4 py-3 rounded-lg hover:text-gray-900 w-full dark:hover:text-white" :class="{ 'bg-blue-700 text-white': activeTab === 'TupadSlot', 'bg-gray-50': activeTab !== 'TupadSlot', 'dark:bg-blue-600': activeTab === 'TupadSlot', 'dark:bg-gray-800': activeTab !== 'TupadSlot' }" @click="toggleTab('TupadSlot')">
+                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />
+                            Tupad Slot
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="whitespace-nowrap inline-flex items-center px-4 py-3 rounded-lg hover:text-gray-900 w-full dark:hover:text-white" :class="{ 'bg-blue-700 text-white': activeTab === 'TupadInvites', 'bg-gray-50': activeTab !== 'TupadInvites', 'dark:bg-blue-600': activeTab === 'TupadInvites', 'dark:bg-gray-800': activeTab !== 'TupadInvites' }" @click="toggleTab('TupadInvites')">
+                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />
+                            Tupad Invites
+                        </a>
+                    </li>
+                </ul>
+                <div id="TupadSlotContent" class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full md:w-[86vw] md:h-[70vh]" v-show="activeTab === 'TupadSlot'">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        New Tupad Slot Available: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalNoCodeSlots }}</span>
+                        <Flex v-show="totalNoCodeSlots !== 0 " gap="small" wrap="wrap">
+                        </Flex>
+                        <Button v-show="totalNoCodeSlots !== 0 " @click="generateCodes" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate {{ totalNoCodeSlots }} Code</Button>
+                    </h2>
+                    <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
+                        <v-card flat>
+                            <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                                <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Slot
+                                <v-spacer></v-spacer>
+                                <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                                <template #headers="{ headers }">
+                                    <tr>
+                                        <th class="text-center whitespace-nowrap">Slot Number</th>
+                                        <th class="text-center whitespace-nowrap">Slot Code</th>
+                                        <th class="text-center whitespace-nowrap">Slot Available At</th>
+                                        <th class="text-center whitespace-nowrap">Slot Status</th>
+                                    </tr>
+                                </template>
+                                <template v-slot:item="{ item }">
+                                    <tr class="h-[7vh]">
+                                        <td class="whitespace-nowrap text-center ">{{ item.id }}</td>
+                                        <td class="whitespace-nowrap text-center ">
+                                            {{ item.code_generated }}
+                                        </td>
+                                        <td class="whitespace-nowrap text-center ">
+                                            {{ item.month_year_available }}
+                                        </td>
+                                        <td class="whitespace-nowrap text-center ">{{ item.status }}</td>
+                                    </tr>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </div>
                 </div>
-            </div>
-            <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 w-2/3">
-                <div class="flex">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        Total Tupad Invited: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
-                    </h2>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        Total Tupad Accepted: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
-                    </h2>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        Total Tupad Declined: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
-                    </h2>
-                </div>
-                <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
-                    <v-card flat>
-                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Invites
-                            <v-spacer></v-spacer>
-                            <v-text-field v-model="searchTupadInvites" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
-                            <template #headers="{ headers }">
-                                <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center whitespace-nowrap">Fullname</th>
-                                    <th class="text-center whitespace-nowrap">Age & Birthday</th>
-                                    <th class="text-center whitespace-nowrap">Gender</th>
-                                    <th class="text-center whitespace-nowrap">Address</th>
-                                    <th class="text-center whitespace-nowrap">Civil Status</th>
-                                    <th class="text-center whitespace-nowrap">Contact Number</th>
-                                    <th class="text-center whitespace-nowrap">Benificiary Name</th>
-                                    <th class="text-center whitespace-nowrap">Id & Id Number</th>
-                                    <th class="text-center whitespace-nowrap">Used Code</th>
-                                    <th class="text-center whitespace-nowrap">Status</th>
-                                    <th class="text-center whitespace-nowrap">Action</th>
-                                </tr>
-                            </template>
-                            <template v-slot:item="{ item }">
-                                <tr class="h-[2vh]">
-                                    <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
-                                    <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.code_generated }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.status }}</td>
-                                    <td class="whitespace-nowrap text-center">
-                                        <button @click="AcceptRequest(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="item.status === 'pending'">
-                                            Accept
-                                        </button>
-                                        <button @click="DeclineModal(item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="item.status === 'pending'">
-                                            Decline
-                                        </button>
-                                    </td>
-                                </tr>
-                            </template>
-                        </v-data-table>
-                    </v-card>
+                <div id="TupadInvitesContent" class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full md:w-[86vw] md:h-[70vh]" v-show="activeTab === 'TupadInvites'">
+                    <div class="flex">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                            Total Invited: <span class="whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
+                        </h2>
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                            Total Accepted: <span class="whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
+                        </h2>
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                            Total Declined: <span class="whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
+                        </h2>
+                    </div>
+                        <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
+                            <v-card flat>
+                                <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                                    <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Invites
+                                    <v-spacer></v-spacer>
+                                    <v-text-field v-model="searchTupadInvites" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                                </v-card-title>
+                                <v-divider></v-divider>
+                                <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
+                                    <template #headers="{ headers }">
+                                        <tr class="text-center whitespace-nowrap">
+                                            <th class="text-center"> <input @change="checkAllForInvite" :checked="isCheckedAllForInvite" id="check-all-for-Invite" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                            <th class="text-center whitespace-nowrap">Fullname</th>
+                                            <th class="text-center whitespace-nowrap">Age & Birthday</th>
+                                            <th class="text-center whitespace-nowrap">Gender</th>
+                                            <th class="text-center whitespace-nowrap">Address</th>
+                                            <th class="text-center whitespace-nowrap">Civil Status</th>
+                                            <th class="text-center whitespace-nowrap">Contact Number</th>
+                                            <th class="text-center whitespace-nowrap">Benificiary Name</th>
+                                            <th class="text-center whitespace-nowrap">Id & Id Number</th>
+                                            <th class="text-center whitespace-nowrap">Used Code</th>
+                                            <th class="text-center whitespace-nowrap">Status</th>
+                                            <th class="text-center whitespace-nowrap action-column">Action</th>
+                                        </tr>
+                                    </template>
+                                    <template v-slot:item="{ item }">
+                                        <tr class="h-[2vh]">
+                                            <td class="whitespace-nowrap uppercase text-center">
+                                                <input @change="toggleCheckedForInvite(item.id)" :checked="tupadInvite.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            </td>
+                                            <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
+                                            <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.code_generated }}</td>
+                                            <td class="whitespace-nowrap text-center">{{ item.status }}</td>
+                                            <td class="whitespace-nowrap text-center action-column">
+                                                <button @click="AcceptRequest(item.id)" class="block mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="item.status === 'pending'">
+                                                    Accept
+                                                </button>
+                                                <button @click="DeclineModal(item.id)" class="block mb-2 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="item.status === 'pending'">
+                                                    Decline
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </v-data-table>
+                            </v-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,6 +187,7 @@ export default {
     },
     data() {
         return {
+            activeTab: 'TupadSlot',
             search: "",
             searchTupadInvites: '',
             totalNoCodeSlots: '',
@@ -174,7 +195,8 @@ export default {
             totalAccepted: '',
             totalDeclined: '',
             items: [],
-            tupad_invites: []
+            tupad_invites: [],
+            tupadInvite: [],
         };
     },
     mounted() {
@@ -189,6 +211,9 @@ export default {
         this.fetchTupadInvites();
     },
     methods: {
+        toggleTab(tabName) {
+            this.activeTab = tabName;
+        },
         AcceptRequest(id) {
             axios.put(`/api/dole/accept-tupad-request/${id}`, null, {
                     headers: {
@@ -328,11 +353,46 @@ export default {
                 .catch(error => {
                     console.error('Error generating codes:', error);
                 });
-        }
+        },
+        checkAllForInvite(event) {
+            const isChecked = event.target.checked;
+            if (isChecked) {
+                this.tupadInvite = this.tupad_invites.map((item) => item.id);
+            } else {
+                this.tupadInvite = [];
+            }
+            this.$nextTick(() => {
+                document.getElementById("check-all-for-Invite").checked = isChecked;
+            });
+            console.log("Checked IDs For Invite:", this.tupadInvite);
+        },
+        toggleCheckedForInvite(id) {
+            if (this.tupadInvite.includes(id)) {
+                this.tupadInvite = this.tupadInvite.filter((checkedId) => checkedId !== id);
+            } else {
+                this.tupadInvite.push(id);
+            }
+            console.log("Checked IDs For Invite:", this.tupadInvite);
+        },
 
     },
     watch: {},
 
-    computed: {},
+    computed: {
+        isCheckedAllForInvite() {
+            return this.tupadInvite.length === this.tupad_invites.length && this.tupadInvite.length > 0;
+        },
+    },
 };
 </script>
+
+<style>
+@media screen and (min-width: 1024px) {
+    .action-column {
+        position: sticky;
+        right: -0.01vw;
+        background-color: rgb(226, 178, 88);
+        z-index: 1;
+    }
+}
+</style>

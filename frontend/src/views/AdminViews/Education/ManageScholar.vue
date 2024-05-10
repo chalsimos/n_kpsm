@@ -155,7 +155,7 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
-                                        <button @click="sendEmail(checkedIds.length > 0 ? checkedIds : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                        <button @click="emailModal(checkedIds.length > 0 ? checkedIds : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
                                         </button>
                                     </td>
@@ -227,7 +227,7 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
-                                        <button @click="sendEmail(checkedIds.length > 0 ? checkedIds : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                        <button @click="emailModal(checkedIds.length > 0 ? checkedIds : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
                                         </button>
                                     </td>
@@ -264,6 +264,32 @@
         </div>
     </div>
 </div>
+<div id="emailModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Send a Email Message
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="emailModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <form @submit.prevent="sendEmail">
+          <label for="toEmail">To:</label>
+          <input type="email" id="toEmail" v-model="toEmail" required><br>
+          <label for="subject">Subject:</label>
+          <input type="text" id="subject" v-model="subject" required><br>
+          <label for="message">Message:</label>
+          <editor v-model="message" :extensions="extensions"></editor><br>
+          <button type="submit">Send Email</button>
+        </form>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -290,7 +316,6 @@ const toastr = useToast()
 export default {
     data() {
         return {
-            imagePath: '',
             search: '',
             Approvesearch: '',
             Declinesearch: '',
@@ -300,7 +325,6 @@ export default {
             checkedIds: [],
             checkedIdsForApproved: [],
             checkedIdsForDecline: [],
-            medicalRequest: [],
             contentStyle: {
                 margin: 0,
                 height: '160px',
@@ -309,9 +333,6 @@ export default {
                 textAlign: 'center',
                 background: '#364d79',
             },
-            previewedImage: {
-                url: ''
-            }
         };
     },
     components: {
@@ -379,6 +400,19 @@ export default {
                 .catch(error => {
                     console.error('Error fetching medical requests:', error);
                 });
+        },
+        emailModal(itemId) {
+            this.itemId = itemId;
+            const modal = document.getElementById('emailModal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // Add event listener to close modal on close button click
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="emailModal"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
         },
         DeclineModal(itemId) {
             this.itemId = itemId;
@@ -463,7 +497,6 @@ export default {
             this.$nextTick(() => {
                 document.getElementById("check-all").checked = isChecked;
             });
-            console.log("Checked IDs:", this.checkedIds);
         },
         toggleChecked(id) {
             if (this.checkedIds.includes(id)) {
@@ -471,7 +504,6 @@ export default {
             } else {
                 this.checkedIds.push(id);
             }
-            console.log("Checked IDs:", this.checkedIds);
         },
         checkAllForApproved(event) {
             const isChecked = event.target.checked;
@@ -483,7 +515,6 @@ export default {
             this.$nextTick(() => {
                 document.getElementById("check-all-for-approved").checked = isChecked;
             });
-            console.log("Checked IDs For Approved:", this.checkedIdsForApproved);
         },
         toggleCheckedForApproved(id) {
             if (this.checkedIdsForApproved.includes(id)) {
@@ -491,7 +522,6 @@ export default {
             } else {
                 this.checkedIdsForApproved.push(id);
             }
-            console.log("Checked IDs For Approved:", this.checkedIdsForApproved);
         },
         checkAllForDecline(event) {
             const isChecked = event.target.checked;
@@ -503,7 +533,6 @@ export default {
             this.$nextTick(() => {
                 document.getElementById("check-all-for-Decline").checked = isChecked;
             });
-            console.log("Checked IDs For Decline:", this.checkedIdsForDecline);
         },
         toggleCheckedForDecline(id) {
             if (this.checkedIdsForDecline.includes(id)) {
@@ -511,7 +540,6 @@ export default {
             } else {
                 this.checkedIdsForDecline.push(id);
             }
-            console.log("Checked IDs For Decline:", this.checkedIdsForDecline);
         },
 
     },
