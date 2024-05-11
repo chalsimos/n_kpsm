@@ -28,7 +28,7 @@
                         <v-data-table v-model:search="search" :items="items" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center"> <input @change="checkAll" :checked="isCheckedAll" id="check-all" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                    <th class="text-center"> <input @change="checkAll" :checked="isCheckedAll" id="check-all" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
@@ -57,7 +57,7 @@
                                 <tr class="h-[10vh] text-center">
                                     <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
-                                        <input @change="toggleChecked(item.id)" :checked="checkedIds.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input @change="toggleChecked(item.id)" :checked="checkedIds.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.beneficiary_lastname + ' ' + item.beneficiary_firstname + ' ' + item.beneficiary_middlename }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ formatDateToWords(item.beneficiary_birthday) }}</td>
@@ -103,7 +103,7 @@
                         <v-data-table v-model:search="Approvesearch" :items="Approveitems" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center"> <input @change="checkAllForApproved" :checked="isCheckedAllForApproved" id="check-all-for-approved" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                    <th class="text-center"> <input @change="checkAllForApproved" :checked="isCheckedAllForApproved" id="check-all-for-approved" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
@@ -132,7 +132,7 @@
                                 <tr class="h-[10vh] text-center">
                                     <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
-                                        <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.beneficiary_lastname + ' ' + item.beneficiary_firstname + ' ' + item.beneficiary_middlename }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ formatDateToWords(item.beneficiary_birthday) }}</td>
@@ -175,7 +175,7 @@
                         <v-data-table v-model:search="Declinesearch" :items="Declineitems" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center"> <input @change="checkAllForDecline" :checked="isCheckedAllForDecline" id="check-all-for-Decline" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                    <th class="text-center"> <input @change="checkAllForDecline" :checked="isCheckedAllForDecline" id="check-all-for-Decline" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
@@ -204,7 +204,7 @@
                                 <tr class="h-[10vh] text-center">
                                     <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
-                                        <input @change="toggleCheckedForDecline(item.id)" :checked="checkedIdsForDecline.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input @change="toggleCheckedForDecline(item.id)" :checked="checkedIdsForDecline.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.beneficiary_lastname + ' ' + item.beneficiary_firstname + ' ' + item.beneficiary_middlename }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ formatDateToWords(item.beneficiary_birthday) }}</td>

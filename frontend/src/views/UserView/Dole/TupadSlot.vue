@@ -62,67 +62,75 @@
                 <div id="TupadInvitesContent" class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full md:w-[86vw] md:h-[70vh]" v-show="activeTab === 'TupadInvites'">
                     <div class="flex">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                            Total Invited: <span class="whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
+                            Total Invited:
+                            <Tooltip title="Total Invited" color=volcano key=volcano>
+                                <span class="cursor-pointer whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalInvites }}</span>
+                            </Tooltip>
                         </h2>
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                            Total Accepted: <span class="whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
+                            Total Accepted:
+                            <Tooltip title="Total Accepted" color=volcano key=volcano>
+                                <span class="cursor-pointer whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
+                            </Tooltip>
                         </h2>
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                            Total Declined: <span class="whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
+                            Total Declined:
+                            <Tooltip title="Total Decline" color=volcano key=volcano> <span class="cursor-pointer whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
+                            </Tooltip>
                         </h2>
                     </div>
-                        <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
-                            <v-card flat>
-                                <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                                    <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Invites
-                                    <v-spacer></v-spacer>
-                                    <v-text-field v-model="searchTupadInvites" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-                                </v-card-title>
-                                <v-divider></v-divider>
-                                <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
-                                    <template #headers="{ headers }">
-                                        <tr class="text-center whitespace-nowrap">
-                                            <th class="text-center"> <input @change="checkAllForInvite" :checked="isCheckedAllForInvite" id="check-all-for-Invite" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
-                                            <th class="text-center whitespace-nowrap">Fullname</th>
-                                            <th class="text-center whitespace-nowrap">Age & Birthday</th>
-                                            <th class="text-center whitespace-nowrap">Gender</th>
-                                            <th class="text-center whitespace-nowrap">Address</th>
-                                            <th class="text-center whitespace-nowrap">Civil Status</th>
-                                            <th class="text-center whitespace-nowrap">Contact Number</th>
-                                            <th class="text-center whitespace-nowrap">Benificiary Name</th>
-                                            <th class="text-center whitespace-nowrap">Id & Id Number</th>
-                                            <th class="text-center whitespace-nowrap">Used Code</th>
-                                            <th class="text-center whitespace-nowrap">Status</th>
-                                            <th class="text-center whitespace-nowrap action-column">Action</th>
-                                        </tr>
-                                    </template>
-                                    <template v-slot:item="{ item }">
-                                        <tr class="h-[2vh]">
-                                            <td class="whitespace-nowrap uppercase text-center">
-                                                <input @change="toggleCheckedForInvite(item.id)" :checked="tupadInvite.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            </td>
-                                            <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
-                                            <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.code_generated }}</td>
-                                            <td class="whitespace-nowrap text-center">{{ item.status }}</td>
-                                            <td class="whitespace-nowrap text-center action-column">
-                                                <button @click="AcceptRequest(item.id)" class="block mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="item.status === 'pending'">
-                                                    Accept
-                                                </button>
-                                                <button @click="DeclineModal(item.id)" class="block mb-2 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="item.status === 'pending'">
-                                                    Decline
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </v-data-table>
-                            </v-card>
+                    <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
+                        <v-card flat>
+                            <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                                <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Invites
+                                <v-spacer></v-spacer>
+                                <v-text-field v-model="searchTupadInvites" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
+                                <template #headers="{ headers }">
+                                    <tr class="text-center whitespace-nowrap">
+                                        <th class="text-center"> <input @change="checkAllForInvite" :checked="isCheckedAllForInvite" id="check-all-for-Invite" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
+                                        <th class="text-center whitespace-nowrap">Fullname</th>
+                                        <th class="text-center whitespace-nowrap">Age & Birthday</th>
+                                        <th class="text-center whitespace-nowrap">Gender</th>
+                                        <th class="text-center whitespace-nowrap">Address</th>
+                                        <th class="text-center whitespace-nowrap">Civil Status</th>
+                                        <th class="text-center whitespace-nowrap">Contact Number</th>
+                                        <th class="text-center whitespace-nowrap">Benificiary Name</th>
+                                        <th class="text-center whitespace-nowrap">Id & Id Number</th>
+                                        <th class="text-center whitespace-nowrap">Used Code</th>
+                                        <th class="text-center whitespace-nowrap">Status</th>
+                                        <th class="text-center whitespace-nowrap action-column">Action</th>
+                                    </tr>
+                                </template>
+                                <template v-slot:item="{ item }">
+                                    <tr class="h-[2vh]">
+                                        <td class="whitespace-nowrap uppercase text-center">
+                                            <input @change="toggleCheckedForInvite(item.id)" :checked="tupadInvite.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        </td>
+                                        <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
+                                        <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.code_generated }}</td>
+                                        <td class="whitespace-nowrap text-center">{{ item.status }}</td>
+                                        <td class="whitespace-nowrap text-center action-column">
+                                            <button @click="AcceptRequest(tupadInvite.length > 0 ? tupadInvite : item.id)" class="block mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="item.status === 'pending'">
+                                                Accept
+                                            </button>
+                                            <button @click="DeclineModal(tupadInvite.length > 0 ? tupadInvite : item.id)" class="block mb-2 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="item.status === 'pending'">
+                                                Decline
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </v-data-table>
+                        </v-card>
                     </div>
                 </div>
             </div>
@@ -160,10 +168,8 @@
 
 <script>
 import {
-    Modal,
-    Tooltip,
-    initTWE
-} from "tw-elements";
+    Tooltip
+} from "ant-design-vue";
 import {
     Button,
     Flex
@@ -183,7 +189,8 @@ export default {
         Head,
         Foot,
         Button,
-        Flex
+        Flex,
+        Tooltip
     },
     data() {
         return {
@@ -200,10 +207,6 @@ export default {
         };
     },
     mounted() {
-        initTWE({
-            Modal,
-            Tooltip,
-        });
         initFlowbite();
         document.title = "KPSM - Tupad Slot";
         this.fetchTupadCode();
@@ -214,7 +217,16 @@ export default {
         toggleTab(tabName) {
             this.activeTab = tabName;
         },
-        AcceptRequest(id) {
+        AcceptRequest(itemId) {
+            if (Array.isArray(itemId)) {
+                itemId.forEach(id => {
+                    this.acceptApplication(id);
+                });
+            } else {
+                this.acceptApplication(itemId);
+            }
+        },
+        acceptApplication(id) {
             axios.put(`/api/dole/accept-tupad-request/${id}`, null, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -223,6 +235,7 @@ export default {
                 .then(response => {
                     toastr.success("Request Accepted");
                     this.fetchTupadInvites();
+                    this.checkedIds = [];
                 })
                 .catch(error => {
                     console.error(error.response.data);
@@ -243,6 +256,20 @@ export default {
         },
         DeclineRequest() {
             const itemId = this.itemId;
+            if (itemId instanceof Event) {
+                console.error("Invalid itemId:", itemId);
+                return;
+            }
+            if (Array.isArray(itemId)) {
+                itemId.forEach(id => {
+                    this.sendDeclineRequest(id);
+                });
+            } else {
+                this.sendDeclineRequest(itemId);
+            }
+        },
+        sendDeclineRequest() {
+            const itemId = this.itemId;
             const decline_reason = document.getElementById('Reason').value;
             axios.put(`/api/dole/decline-tupad-request/${itemId}`, {
                     decline_reason
@@ -254,6 +281,7 @@ export default {
                 .then(response => {
                     toastr.success("Request Decline")
                     this.fetchTupadInvites();
+                    this.checkedIds = [];
                 })
                 .catch(error => {
                     console.error(error.response.data);
