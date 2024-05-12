@@ -41,7 +41,9 @@ const router = createRouter({
         { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-scholarship', name: 'Manage Scholarship', component: () => import('../views/AdminViews/Education/ManageScholar.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {  requiresAdmin: true }},
-    
+        { path: '/manage-logo', name: 'Manage Logo', component: () => import('../views/AdminViews/Utility/Logo.vue') ,meta: {  requiresAdmin: true }},
+        { path: '/manage-educational-amount', name: 'Manage Educational Amount', component: () => import('../views/AdminViews/Utility/EducationalAmount.vue') ,meta: {  requiresAdmin: true }},
+
     ]
 });
 
