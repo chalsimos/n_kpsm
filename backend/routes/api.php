@@ -9,6 +9,7 @@ use App\Http\Controllers\LogoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicalRequestController;
 use App\Http\Controllers\DoleController;
+use App\Http\Controllers\NewsPortal;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,7 +32,10 @@ Route::get('/getUserType', [AuthController::class, 'getUserType']);
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 
-
+Route::get('/news', [NewsPortal::class, 'index']);
+Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
+Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
+Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
 Route::prefix('medical-requests')->group(function () {
     Route::post('/request', [MedicalRequestController::class, 'store']);
     //admin
@@ -40,9 +44,12 @@ Route::prefix('medical-requests')->group(function () {
     Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
     Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
 });
+Route::post('/post-news', [NewsPortal::class, 'addNews']);
 Route::prefix('dole')->group(function () {
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     //admin
     Route::get('/captain-list', [DoleController::class, 'captain_list']);
+    
     Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
 });
+ 

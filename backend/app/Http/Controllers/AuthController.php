@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    public function checkmail(Request $request)
+{
+    $email = $request->input('email');
+    $exists = User::where('email', $email)->exists();
+    return response()->json(['exists' => $exists]);
+}
+
     public function register(Request $request)
     {
         $validatedData = $request->validate([

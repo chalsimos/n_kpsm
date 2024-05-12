@@ -3,31 +3,36 @@ import store from '@/store';
 import axios from '../main.js';
 import {
 	useToast
-} from 'vue-toastification'   
+} from 'vue-toastification'
 const toastr = useToast()
 
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
         //Account
-        { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') }, 
-        { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') }, 
+        { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') },
+        { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') },
         { path: '/forgot-password', name: 'Forgot Password', component: () => import('../views/Account/ForgotPassword.vue') }, 
         { path: '/change-password', name: 'Change Password', component: () => import('../views/Account/ChangePassword.vue') },
-    
+
         //User Side
         { path:'/', name:'Home Page', component:() => import('../views/UserView/Home/HomePage.vue')},
         { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue'),meta: { requiresClient: true}},
         { path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresClient: true}},
-    
+
         //Brgy. Captain Side
         { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue'),meta: {  requiresCaptain: true}},
         { path:'/gip', name:'GIP', component:() => import('../views/UserView/Dole/GIP.vue'),meta: {  requiresCaptain: true }},
+<<<<<<< Updated upstream
     
+=======
+        { path:'/tupad-slot', name:'GIP', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
+
+>>>>>>> Stashed changes
         //Admin
         { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {  requiresAdmin: true }},
-    
+        // { path: '/admin/all-news', name: 'Home', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdmin: true }},
     ]
 });
 

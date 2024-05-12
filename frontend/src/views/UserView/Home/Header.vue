@@ -261,6 +261,11 @@ export default {
     computed: {
   },
     methods: {
+        async getNews(){
+            const news = await axios.get('api/admin/ge-news',{
+                
+            })
+        },
         getUser() {
             const config = {
                 headers: {
@@ -269,7 +274,7 @@ export default {
             };
             axios.get('/api/getuser', config)
                 .then(response => {
-                    console.log('User Data:', response.data);
+                    // console.log('User Data:', response.data);
                     this.information = response.data.user;
                 })
                 .catch(error => {
