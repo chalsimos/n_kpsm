@@ -3,21 +3,33 @@ import store from '@/store';
 import axios from '../main.js';
 import {
 	useToast
-} from 'vue-toastification'   
+} from 'vue-toastification'
 const toastr = useToast()
 
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
         //need invitation code from captain
+        // { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
+
         { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
         //Account
-        { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') }, 
-        { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') }, 
+        { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') },
+        { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') },
         { path: '/forgot-password', name: 'Forgot Password', component: () => import('../views/Account/ForgotPassword.vue') }, 
         { path: '/change-password', name: 'Change Password', component: () => import('../views/Account/ChangePassword.vue') },
-    
+
         //User Side
+        { path:'/', name:'HomePage', component:() => import('../views/UserView/Home/HomePage.vue')},
+        { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue'),meta: { requiresClient: true}},
+        { path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresClient: true}},
+
+        // Brgy. Captain Side
+        { path:'/gip', name:'GIP', component:() => import('../views/UserView/Dole/GIP.vue'),meta: {  requiresCaptain: true }},
+        // { path:'/tupad-slot', name:'GIP', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
+
+        //Admin
+        // { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdmin: true }},
         { path:'/', name:'Home Page', component:() => import('../views/UserView/Home/HomePage.vue')},
         { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
         { path:'/educational-assistance', name:'Scholarship Request', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue')},
@@ -31,7 +43,7 @@ const router = createRouter({
         { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-scholarship', name: 'Manage Scholarship', component: () => import('../views/AdminViews/Education/ManageScholar.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {  requiresAdmin: true }},
-    
+        // { path: '/admin/all-news', name: 'Home', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdmin: true }},
     ]
 });
 

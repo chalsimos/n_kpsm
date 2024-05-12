@@ -9,6 +9,7 @@ use App\Http\Controllers\LogoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicalRequestController;
 use App\Http\Controllers\DoleController;
+use App\Http\Controllers\NewsPortal;
 use App\Http\Controllers\EducationalAssistanceController;
 
 /*
@@ -32,7 +33,10 @@ Route::get('/getUserType', [AuthController::class, 'getUserType']);
 
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
-
+Route::get('/news', [NewsPortal::class, 'index']);
+Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
+Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
+Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
     Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);
@@ -64,12 +68,16 @@ Route::prefix('medical-requests')->group(function () {
         Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
     });
 });
+Route::post('/post-news', [NewsPortal::class, 'addNews']);
 Route::prefix('dole')->group(function () {
     //no need authentication
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //admin
+    Route::get('/captain-list', [DoleController::class, 'captain_list']);
+    
+    Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
     Route::middleware(['admin'])->group(function () {
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
         Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
@@ -86,3 +94,4 @@ Route::prefix('dole')->group(function () {
         Route::put('/accept-tupad-request/{id}', [DoleController::class, 'accept_tupad_invites']);
     });
 });
+ 
