@@ -17,7 +17,13 @@ class LogoController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $educationalAssistances = Logo::get();
+            return response()->json($educationalAssistances, 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**

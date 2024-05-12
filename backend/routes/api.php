@@ -30,9 +30,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/getuser', [AuthController::class, 'getUser']);
 Route::get('/getUserType', [AuthController::class, 'getUserType']);
 
-Route::post('/logos', [LogoController::class, 'store']);
-Route::get('/active-logos', [LogoController::class, 'displayImage']);
+Route::prefix('utility')->group(function () {
 
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/get-logos', [LogoController::class, 'index']);
+        Route::post('/logos', [LogoController::class, 'store']);
+        Route::get('/active-logos', [LogoController::class, 'displayImage']);
+    });
+});
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
     Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);

@@ -1,5 +1,5 @@
 <template>
-<nav  class="fixed top-0 z-50 w-full bg-white border-2 border-b-orange-200 dark:bg-gray-800 dark:border-gray-700">
+<nav class="fixed top-0 z-50 w-full bg-white border-2 border-b-orange-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center justify-start rtl:justify-end">
@@ -107,7 +107,7 @@
                         </router-link>
                     </li>
                     <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Education
+                        Manage Educational Assistance
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                     <li data-tooltip-target="Medical" data-tooltip-placement="right">
@@ -126,7 +126,7 @@
                         </router-link>
                     </li>
                     <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Medical
+                        Manage Medical Assistance
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </ul>
@@ -143,12 +143,12 @@
                     <li data-tooltip-target="Tupad" data-tooltip-placement="right">
                         <router-link to="/manage-tupad" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />
-                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Manage Tupad</span>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Tupad</span>
                             <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
                         </router-link>
                     </li>
                     <div id="Tupad" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Tupad
+                        Manage Tupad
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                     <li data-tooltip-target="GIP" data-tooltip-placement="right">
@@ -158,7 +158,7 @@
                         </router-link>
                     </li>
                     <div id="GIP" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        GIP
+                        Manage GIP
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </ul>
@@ -181,6 +181,59 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
             <li>
+                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="utility" data-collapse-toggle="utility">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
+                        <circle cx="24" cy="24" r="3.97" fill="none" stroke="orange" stroke-linecap="round" stroke-linejoin="round" />
+                        <path fill="none" stroke="orange" stroke-linecap="round" stroke-linejoin="round" d="M34.89 30.29V17.71L24 11.43l-10.89 6.28v12.58L24 36.57z" />
+                        <path fill="none" stroke="orange" stroke-linecap="round" stroke-linejoin="round" d="M41.61 21.3c.58-.92.97-2 1.1-3.2c.32-3.08-1.43-6.11-4.26-7.36c-1.1-.49-2.23-.69-3.33-.64c-1.97.09-3.79-1.09-4.73-2.83c-.49-.9-1.19-1.72-2.11-2.39c-2.52-1.84-6.05-1.84-8.57 0c-.92.67-1.61 1.49-2.11 2.39c-.94 1.74-2.76 2.92-4.73 2.83c-1.09-.05-2.23.15-3.33.64C6.72 12 4.96 15.03 5.28 18.1c.12 1.19.51 2.27 1.1 3.19a5.1 5.1 0 0 1 0 5.4c-.58.92-.97 2-1.1 3.2c-.32 3.07 1.43 6.11 4.26 7.36c1.1.49 2.23.69 3.33.64c1.97-.09 3.79 1.09 4.73 2.83c.49.9 1.19 1.72 2.11 2.39c2.52 1.84 6.05 1.84 8.57 0c.92-.67 1.62-1.49 2.11-2.39c.94-1.74 2.76-2.92 4.73-2.83c1.09.05 2.23-.15 3.33-.64c2.83-1.26 4.58-4.29 4.26-7.36a7.3 7.3 0 0 0-1.1-3.2a5.1 5.1 0 0 1 0-5.4Z" /></svg>
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Utilities</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                    </svg>
+                </button>
+                <ul id="utility" class="hidden py-2 space-y-2">
+                    <li data-tooltip-target="logo" data-tooltip-placement="right">
+                        <router-link to="/manage-logo" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 48 48">
+                                <radialGradient id="52OGP6ofDoPraLbQHhywRa_kzOUpp1wcsyz_gr1" cx="48.477" cy="36.475" r="22.942" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" stop-color="#ffcf7b"></stop>
+                                    <stop offset=".195" stop-color="#fecd76"></stop>
+                                    <stop offset=".439" stop-color="#fac666"></stop>
+                                    <stop offset=".71" stop-color="#f3bc4d"></stop>
+                                    <stop offset=".997" stop-color="#eaad29"></stop>
+                                    <stop offset="1" stop-color="#eaad29"></stop>
+                                </radialGradient>
+                                <path fill="url(#52OGP6ofDoPraLbQHhywRa_kzOUpp1wcsyz_gr1)" d="M40,6H8C6.895,6,6,6.895,6,8v32c0,1.105,0.895,2,2,2h32c1.105,0,2-0.895,2-2V8	C42,6.895,41.105,6,40,6z"></path>
+                                <path fill="#d6742d" d="M32.065,23.065c-1.149-1.149-3.005-1.174-4.185-0.057L18,32.368V42h22c1.105,0,2-0.895,2-2v-7	L32.065,23.065z"></path>
+                                <circle cx="30.5" cy="14.5" r="3.5" fill="#fff8de"></circle>
+                                <linearGradient id="52OGP6ofDoPraLbQHhywRb_kzOUpp1wcsyz_gr2" x1="23.91" x2="23.91" y1="18.133" y2="42.415" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" stop-color="#c26715"></stop>
+                                    <stop offset=".508" stop-color="#b85515"></stop>
+                                    <stop offset="1" stop-color="#ad3f16"></stop>
+                                </linearGradient>
+                                <path fill="url(#52OGP6ofDoPraLbQHhywRb_kzOUpp1wcsyz_gr2)" d="M8,42h32c0.811,0,1.507-0.485,1.82-1.18L20.065,19.065c-1.149-1.149-3.005-1.174-4.185-0.057	L6,28.368V40C6,41.105,6.895,42,8,42z"></path>
+                            </svg>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Logo</span>
+                            <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
+                        </router-link>
+                    </li>
+                    <div id="logo" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Website Logo
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <li data-tooltip-target="Amount" data-tooltip-placement="right">
+                        <router-link to="/manage-educational-amount" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img width="32" height="32" src="https://img.icons8.com/ultraviolet/80/peso-symbol.png" alt="peso-symbol" />
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Educational Amount</span>
+                        </router-link>
+                    </li>
+                    <div id="Amount" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Educational Amount
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                </ul>
+            </li>
+            <li>
                 <router-link to="/login" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
@@ -201,13 +254,10 @@
         </ul>
     </div>
 </aside>
-
 </template>
 
 <script>
-
 export default {
-    components: {
-    },
+    components: {},
 };
 </script>
