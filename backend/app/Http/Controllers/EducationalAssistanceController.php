@@ -31,8 +31,6 @@ class EducationalAssistanceController extends Controller
             }
             return response()->json($educationalAssistances, 200);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('Error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -49,8 +47,6 @@ class EducationalAssistanceController extends Controller
             }
             return response()->json($educationalAssistances, 200);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('Error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -117,8 +113,6 @@ class EducationalAssistanceController extends Controller
             }
             return response()->json($educationalAssistances, 200);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('Error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

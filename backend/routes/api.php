@@ -30,13 +30,20 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/getuser', [AuthController::class, 'getUser']);
 Route::get('/getUserType', [AuthController::class, 'getUserType']);
-
-Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 Route::get('/news', [NewsPortal::class, 'index']);
 Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
 Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
 Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
+
+Route::prefix('utility')->group(function () {
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/get-logos', [LogoController::class, 'index']);
+        Route::post('/add-logos', [LogoController::class, 'store']);
+        Route::delete('/delete-logos/{id}', [LogoController::class, 'deleteLogo']);
+    });
+});
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
     Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);
@@ -76,7 +83,7 @@ Route::prefix('dole')->group(function () {
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //admin
     Route::get('/captain-list', [DoleController::class, 'captain_list']);
-    
+
     Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
     Route::middleware(['admin'])->group(function () {
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
@@ -94,4 +101,3 @@ Route::prefix('dole')->group(function () {
         Route::put('/accept-tupad-request/{id}', [DoleController::class, 'accept_tupad_invites']);
     });
 });
- 

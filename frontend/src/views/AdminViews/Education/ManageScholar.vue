@@ -29,7 +29,6 @@
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
                                     <th class="text-center"> <input @change="checkAll" :checked="isCheckedAll" id="check-all" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
-                                    <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
                                     <th class="text-center">Beneficiary Age</th>
@@ -55,7 +54,6 @@
                             </template>
                             <template v-slot:item="{ item }">
                                 <tr class="h-[10vh] text-center">
-                                    <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
                                         <input @change="toggleChecked(item.id)" :checked="checkedIds.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
@@ -104,7 +102,6 @@
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
                                     <th class="text-center"> <input @change="checkAllForApproved" :checked="isCheckedAllForApproved" id="check-all-for-approved" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
-                                    <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
                                     <th class="text-center">Beneficiary Age</th>
@@ -130,7 +127,6 @@
                             </template>
                             <template v-slot:item="{ item }">
                                 <tr class="h-[10vh] text-center">
-                                    <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
                                         <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
@@ -176,7 +172,6 @@
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
                                     <th class="text-center"> <input @change="checkAllForDecline" :checked="isCheckedAllForDecline" id="check-all-for-Decline" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
-                                    <th class="text-center">Multiple Accept/Decline</th>
                                     <th class="text-center">Beneficiary Fullname</th>
                                     <th class="text-center">Beneficiary Birthday</th>
                                     <th class="text-center">Beneficiary Age</th>
@@ -202,7 +197,6 @@
                             </template>
                             <template v-slot:item="{ item }">
                                 <tr class="h-[10vh] text-center">
-                                    <td class="whitespace-nowrap uppercase"></td>
                                     <td class="whitespace-nowrap uppercase">
                                         <input @change="toggleCheckedForDecline(item.id)" :checked="checkedIdsForDecline.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>

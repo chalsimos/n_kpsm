@@ -312,14 +312,12 @@ export default {
                     }
                 });
         },
-
         submitCode() {
             if (this.accessCode !== this.accessCode.toUpperCase()) {
                 this.accessCode = '';
                 toastr.error("Please type 'CONFIRM' in all uppercase letters to proceed.");
                 return;
             }
-
             axios.post('/api/educational-assistance/confirm-code', {
                     code: this.accessCode
                 })
