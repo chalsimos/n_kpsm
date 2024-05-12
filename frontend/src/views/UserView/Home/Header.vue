@@ -259,6 +259,11 @@ export default {
     computed: {
   },
     methods: {
+        async getNews(){
+            const news = await axios.get('api/admin/ge-news',{
+                
+            })
+        },
         getUser() {
             const config = {
                 headers: {
