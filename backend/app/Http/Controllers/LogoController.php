@@ -15,16 +15,36 @@ class LogoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function deleteLogo(Request $request, $id)
     {
         try {
-            $educationalAssistances = Logo::get();
-            return response()->json($educationalAssistances, 200);
+            $logo = Logo::findOrFail($id);
+            if ($logo->status === 1) {
+                return response()->json(['error' => 'Cannot delete active logo'], 400);
+            }
+            $logo->delete();
+            return response()->json(['message' => 'Logo deleted successfully'], 200);
         } catch (\Exception $e) {
-            // Log the error for debugging
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function index()
+    {
+        try {
+            $logos = Logo::all();
+            $imageUrls = $logos->map(function ($logo) {
+                return [
+                    'id' => $logo->id,
+                    'image_path' => Storage::url($logo->image_path),
+                    'status' => $logo->status,
+                ];
+            });
+            return response()->json($imageUrls, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -32,7 +52,7 @@ class LogoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
