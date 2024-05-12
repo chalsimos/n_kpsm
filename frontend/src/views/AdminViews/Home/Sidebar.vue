@@ -103,7 +103,7 @@
 
             <!-- end news -->
             <li>
-                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-request" data-collapse-toggle="manage-request">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                         <g fill="none">
                             <rect width="30" height="22" x="1" y="8" fill="#B4ACBC" rx="1.5" />
@@ -119,9 +119,9 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
-                <ul id="dropdown-example" class="hidden py-2 space-y-2">
+                <ul id="manage-request" class="hidden py-2 space-y-2">
                     <li data-tooltip-target="Education" data-tooltip-placement="right">
-                        <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <router-link to="/manage-scholarship" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64">
                                 <path fill="#86a7ac" d="M31.791 24.612v38.919c0 .32.227.589.491.589h31.473c.265 0 .487-.269.487-.589V24.613a.604.604 0 0 0-.132-.402s-.011-.006-.011-.001c0 0-.001-.012-.02-.018a.405.405 0 0 0-.325-.16H32.279c-.263 0-.49.271-.49.59" />
                                 <path fill="#6c888c" d="M51.856 34.411h3.98c.033 0 .064-.036.064-.071v-4.502c0-.039-.031-.069-.064-.069h-3.98s-.035.008-.045.021v.004c-.008.014-.018.025-.018.043v4.502c0 .037.028.072.063.072m0 7.579h3.98c.033 0 .064-.035.064-.07v-4.502c0-.04-.031-.069-.064-.069h-3.98s-.035.008-.045.022v.004c-.008.014-.018.025-.018.043v4.502c0 .034.028.07.063.07m6.644-7.579h3.981c.028 0 .062-.036.062-.071v-4.502c0-.039-.033-.069-.062-.069H58.5s-.035.008-.046.021v.004c-.008.014-.016.025-.016.043v4.502c0 .037.027.072.062.072m0 7.579h3.981c.028 0 .062-.035.062-.07v-4.502c0-.04-.033-.069-.062-.069H58.5s-.035.008-.046.022v.004c-.008.014-.016.025-.016.043v4.502c0 .034.027.07.062.07m-6.644 6.532h3.98c.033 0 .064-.036.064-.071v-4.502a.067.067 0 0 0-.064-.068h-3.98s-.035.008-.045.021v.004c-.008.014-.018.025-.018.043v4.502c0 .035.028.071.063.071m0 7.579h3.98c.033 0 .064-.035.064-.07v-4.502c0-.04-.031-.069-.064-.069h-3.98s-.035.008-.045.021v.004c-.008.015-.018.026-.018.044v4.502c0 .035.028.07.063.07m6.644-7.579h3.981c.028 0 .062-.036.062-.071v-4.502c0-.039-.033-.068-.062-.068H58.5s-.035.008-.046.021v.004c-.008.014-.016.025-.016.043v4.502c0 .035.027.071.062.071m0 7.579h3.981c.028 0 .062-.035.062-.07v-4.502c0-.04-.033-.069-.062-.069H58.5s-.035.008-.046.021v.004c-.008.015-.016.026-.016.044v4.502c0 .035.027.07.062.07" />
@@ -164,6 +164,38 @@
                     </li>
                     <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Medical
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                </ul>
+            </li>
+            <li>
+                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-dole" data-collapse-toggle="manage-dole">
+                    <img src="../../../assets/dole.png" class="h-8 me-3" alt="KPSM Logo" />
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Dole</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                    </svg>
+                </button>
+                <ul id="manage-dole" class="hidden py-2 space-y-2">
+                    <li data-tooltip-target="Tupad" data-tooltip-placement="right">
+                        <router-link to="/manage-tupad" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Manage Tupad</span>
+                            <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
+                        </router-link>
+                    </li>
+                    <div id="Tupad" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Tupad
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <li data-tooltip-target="GIP" data-tooltip-placement="right">
+                        <router-link to="/gip" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img src="../../../assets/gip.jpg" class="h-8 me-3" alt="KPSM Logo" />
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">GIP</span>
+                        </router-link>
+                    </li>
+                    <div id="GIP" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        GIP
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </ul>

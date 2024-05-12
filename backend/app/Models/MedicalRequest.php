@@ -7,9 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 class MedicalRequest extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-
+    protected $fillable = [
+        'firstname',
+        'middlename',
+        'lastname',
+        'age',
+        'birthday',
+        'gender',
+        'province',
+        'municipality',
+        'barangay',
+        'representativefullname',
+        'contactnumber',
+        'diagnosis',
+        'hospital',
+        'request',
+        'status',
+        'Hor_code',
+        'decline_reason',
+        'barangay_clearance_imagepath',
+        'hospital_document_imagepath',
+        'valid_id_imagepath'
+    ];
 }

@@ -24,7 +24,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('medical_requests', function (Blueprint $table) {
-            $table->integer('contactnumber')->nullable()->change();
+            $table->string('contactnumber')->nullable()->change();
         });
     }
 };

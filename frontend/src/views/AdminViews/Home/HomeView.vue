@@ -110,6 +110,8 @@ import {
     Tooltip,
     initTWE
 } from "tw-elements";
+import {
+} from "ant-design-vue";
 
 import {
     initFlowbite
