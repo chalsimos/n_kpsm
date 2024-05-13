@@ -31,8 +31,8 @@
                             <th>Status</th>
                             <th>Decline Reason</th>
                             <th>Amount</th>
-                            <th class="requirements-column">Check Requirements</th>
-                            <th class="action-column">Action</th>
+                            <th >Check Requirements</th>
+                            <th >Action</th>
                         </tr>
                     </template>
                     <template v-slot:item="{ item }">
@@ -55,12 +55,12 @@
                             <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.decline_reason || '' }}</td>
                             <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
-                            <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase requirements-column">
-                                <button  @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                            <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
                                     Requiements
                                 </button>
                             </td>
-                            <td class="whitespace-nowrap uppercase action-column">
+                            <td class="whitespace-nowrap uppercase ">
                                 <button @click="amountModal(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="!item.amount">
                                     Input Amount
                                 </button>
@@ -243,6 +243,38 @@ export default {
         this.fetchMedicalRequests();
     },
     methods: {
+        amountModal(itemId) {
+            this.itemId = itemId;
+            const modal = document.getElementById('amountModal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // Add event listener to close modal on close button click
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="amountModal"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
+        },
+        updateAmount() {
+            const itemId = this.itemId;
+            const amount = document.getElementById('Amount').value;
+            axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
+                    amount
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    toastr.success("Amount Approve")
+                    this.fetchMedicalRequests();
+                })
+                .catch(error => {
+                    console.error(error.response.data);
+                    toastr.error("Please input the amount value.")
+                });
+        },
         previewImage(imagePath) {
             this.previewedImage.url = imagePath;
             document.getElementById('RequirementsModal').classList.add('hidden');
@@ -325,38 +357,6 @@ export default {
                     console.error('Error fetching medical request data:', error);
                 });
         },
-        amountModal(itemId) {
-            this.itemId = itemId;
-            const modal = document.getElementById('amountModal');
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden', 'false');
-            // Add event listener to close modal on close button click
-            modal.addEventListener('click', function (e) {
-                if (e.target && e.target.closest('[data-modal-hide="amountModal"]')) {
-                    modal.classList.add('hidden');
-                    modal.setAttribute('aria-hidden', 'true');
-                }
-            });
-        },
-        updateAmount() {
-            const itemId = this.itemId;
-            const amount = parseFloat(document.getElementById('Amount').value);
-            axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
-                    amount
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    toastr.success("Amount Approve")
-                    this.fetchMedicalRequests();
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error("Please input the amount value.")
-                });
-        }
     }
 };
 </script>
@@ -369,6 +369,7 @@ export default {
         background-color: rgb(226, 178, 88);
         z-index: 1;
     }
+
     .requirements-column {
         position: sticky;
         right: 7vw;

@@ -50,6 +50,7 @@ Route::prefix('educational-assistance')->group(function () {
     Route::post('/confirm-code', [EducationalAssistanceController::class, 'confirm_code']);
     Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
     //admin
+    Route::get('/get-all-amount', [EducationalAssistanceController::class, 'index']);
 
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-all-approved_shcolarship-request', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request']);

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EducationalAssistanceMail;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class EducationalAssistanceController extends Controller
@@ -228,9 +229,9 @@ class EducationalAssistanceController extends Controller
     public function educational_assistance_amount(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'elemantary_amount' => 'nullable|integer',
-            'highschool_amount' => 'nullable|integer',
-            'senior_highschool_amount' => 'nullable|integer',
+            'elementary_amount' => 'nullable|integer',
+            'high_school_amount' => 'nullable|integer',
+            'senior_high_school_amount' => 'nullable|integer',
             'vocational_amount' => 'nullable|integer',
             'college_amount' => 'nullable|integer',
             'total_target' => 'nullable|integer',
@@ -242,9 +243,9 @@ class EducationalAssistanceController extends Controller
             DB::beginTransaction();
             EducationalAssistanceAmount::where('status', 'active')->update(['status' => 'inactive']);
             $data = new EducationalAssistanceAmount();
-            $data->elemantary_amount = $request->input('elemantary_amount');
-            $data->highschool_amount = $request->input('highschool_amount');
-            $data->senior_highschool_amount = $request->input('senior_highschool_amount');
+            $data->elementary_amount = $request->input('elementary_amount');
+            $data->high_school_amount = $request->input('high_school_amount');
+            $data->senior_high_school_amount = $request->input('senior_high_school_amount');
             $data->college_amount = $request->input('college_amount');
             $data->vocational_amount = $request->input('vocational_amount');
             $data->total_target = $request->input('total_target');
@@ -260,9 +261,9 @@ class EducationalAssistanceController extends Controller
     public function educational_assistance_amount_update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'elemantary_amount' => 'nullable|integer',
-            'highschool_amount' => 'nullable|integer',
-            'senior_highschool_amount' => 'nullable|integer',
+            'elementary_amount' => 'nullable|integer',
+            'high_school_amount' => 'nullable|integer',
+            'senior_high_school_amount' => 'nullable|integer',
             'vocational_college_amount' => 'nullable|integer',
             'total_target' => 'nullable|integer',
         ]);
@@ -275,9 +276,9 @@ class EducationalAssistanceController extends Controller
             if (!$data) {
                 return response()->json(['error' => 'Educational assistance amount not found'], 404);
             }
-            $data->elemantary_amount = $request->input('elemantary_amount', $data->elemantary_amount);
-            $data->highschool_amount = $request->input('highschool_amount', $data->highschool_amount);
-            $data->senior_highschool_amount = $request->input('senior_highschool_amount', $data->senior_highschool_amount);
+            $data->elementary_amount = $request->input('elementary_amount', $data->elementary_amount);
+            $data->high_school_amount = $request->input('highschool_amount', $data->highschool_amount);
+            $data->senior_high_school_amount = $request->input('senior_high_school_amount', $data->senior_high_school_amount);
             $data->vocational_college_amount = $request->input('vocational_college_amount', $data->vocational_college_amount);
             $data->total_target = $request->input('total_target', $data->total_target);
             $data->save();
@@ -307,6 +308,16 @@ class EducationalAssistanceController extends Controller
             return response()->json(['message' => 'Status updated successfully'], 200);
         } catch (\Exception $e) {
             DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function index(Request $request)
+    {
+        try{
+            $amount = EducationalAssistanceAmount::all();
+
+            return response()->json($amount, 200);
+        }catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
