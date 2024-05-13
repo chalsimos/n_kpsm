@@ -170,7 +170,7 @@ class MedicalRequestController extends Controller
         try {
             $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
-                'amount' => 'required|numeric',
+                'amount' => 'required',
             ]);
             $medicalRequest->amount = $validatedData['amount'];
             if ($medicalRequest->save()) {
@@ -187,18 +187,7 @@ class MedicalRequestController extends Controller
     public function decline(Request $request, $id)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'admin') {
-                return response()->json(['error' => 'User is not a admin'], 400);
-            }
+
             $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
                 'decline_reason' => 'required|string',

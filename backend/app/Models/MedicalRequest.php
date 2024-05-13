@@ -32,6 +32,7 @@ class MedicalRequest extends Model
         'decline_reason',
         'barangay_clearance_imagepath',
         'hospital_document_imagepath',
-        'valid_id_imagepath'
+        'valid_id_imagepath',
+        'amount'
     ];
 }
