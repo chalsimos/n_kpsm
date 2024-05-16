@@ -39,7 +39,14 @@ Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
 Route::prefix('utility')->group(function () {
 
     Route::middleware(['admin'])->group(function () {
+        Route::get('/get-all-amount', [EducationalAssistanceController::class, 'index']);
+        Route::post('/school-level-amount', [EducationalAssistanceController::class, 'add_educational_assistance_amount']);
+        Route::put('/school-level-amount-change-status/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_change_status']);
+        Route::put('/school-level-amount-update/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_update']);
+        Route::delete('/school-level-amount-delte/{id}', [EducationalAssistanceController::class, 'deleteAmount']);
+
         Route::get('/get-logos', [LogoController::class, 'index']);
+        Route::put('/active-logos/{id}', [LogoController::class, 'activeLogo']);
         Route::post('/add-logos', [LogoController::class, 'store']);
         Route::delete('/delete-logos/{id}', [LogoController::class, 'deleteLogo']);
     });
@@ -50,17 +57,12 @@ Route::prefix('educational-assistance')->group(function () {
     Route::post('/confirm-code', [EducationalAssistanceController::class, 'confirm_code']);
     Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
     //admin
-    Route::get('/get-all-amount', [EducationalAssistanceController::class, 'index']);
-
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-all-approved_shcolarship-request', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request']);
         Route::get('/get-all-decline_shcolarship-request', [EducationalAssistanceController::class, 'get_all_decline_scholarship_request']);
         Route::get('/get-all-pending_shcolarship-request', [EducationalAssistanceController::class, 'get_all_pending_scholarship_request']);
-        Route::post('/school-level-amount', [EducationalAssistanceController::class, 'educational_assistance_amount']);
         Route::put('/approve-scholarship-request/{id}', [EducationalAssistanceController::class, 'accept_educational_assistance']);
         Route::put('/decline-scholarship-request/{id}', [EducationalAssistanceController::class, 'decline_educational_assistance']);
-        Route::put('/school-level-amount-change-status/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_change_status']);
-        Route::put('/school-level-amount-update/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_update']);
     });
 });
 

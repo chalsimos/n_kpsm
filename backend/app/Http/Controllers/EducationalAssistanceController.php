@@ -226,18 +226,17 @@ class EducationalAssistanceController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    public function educational_assistance_amount(Request $request)
+    public function add_educational_assistance_amount(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'elementary_amount' => 'nullable|integer',
-            'high_school_amount' => 'nullable|integer',
-            'senior_high_school_amount' => 'nullable|integer',
-            'vocational_amount' => 'nullable|integer',
-            'college_amount' => 'nullable|integer',
-            'total_target' => 'nullable|integer',
+            'elementary_amount' => 'required|integer',
+            'high_school_amount' => 'required|integer',
+            'senior_high_school_amount' => 'required|integer',
+            'vocational_amount' => 'required|integer',
+            'college_amount' => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['error' => $validator->errors()], 422);
         }
         try {
             DB::beginTransaction();
@@ -248,7 +247,6 @@ class EducationalAssistanceController extends Controller
             $data->senior_high_school_amount = $request->input('senior_high_school_amount');
             $data->college_amount = $request->input('college_amount');
             $data->vocational_amount = $request->input('vocational_amount');
-            $data->total_target = $request->input('total_target');
             $data->status = 'active';
             $data->save();
             DB::commit();
@@ -318,6 +316,19 @@ class EducationalAssistanceController extends Controller
 
             return response()->json($amount, 200);
         }catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function deleteAmount(Request $request, $id)
+    {
+        try {
+            $Amount = EducationalAssistanceAmount::findOrFail($id);
+            if ($Amount->status === 'active') {
+                return response()->json(['error' => 'Cannot delete active Amount'], 400);
+            }
+            $Amount->delete();
+            return response()->json(['message' => 'Amount deleted successfully'], 200);
+        } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

@@ -317,7 +317,7 @@
                     The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
                 </p> -->
                 <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-            <editor
+            <!-- <editor
                 api-key="tjh6y7k4ssd8bp02fmeohr8mpccvozf6f0b9pab6qbxqkkte"
                 :init="{
                 height: 500,
@@ -335,7 +335,7 @@
                 }"
                 initial-value="Enter your news / announcement content here"
                 v-model="editorContent"
-            />
+            /> -->
             </div>
             <!-- Modal footer -->
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
