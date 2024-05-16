@@ -170,7 +170,7 @@ class MedicalRequestController extends Controller
         try {
             $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
-                'amount' => 'required',
+                'amount' => 'required|numeric',
             ]);
             $medicalRequest->amount = $validatedData['amount'];
             if ($medicalRequest->save()) {

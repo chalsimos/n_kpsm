@@ -28,6 +28,25 @@ class LogoController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function activeLogo(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            Logo::where('status', 1)->update(['status' => 0]);
+            $logo = Logo::findOrFail($id);
+            if ($logo->status === 1) {
+                return response()->json(['error' => 'Logo is already active'], 400);
+            }
+            $logo->status = 1;
+            $logo->save();
+            DB::commit();
+            return response()->json(['message' => 'Logo updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function index()
     {
         try {
