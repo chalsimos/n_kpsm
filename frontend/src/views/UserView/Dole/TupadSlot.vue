@@ -207,8 +207,7 @@ export default {
         };
     },
     mounted() {
-        initFlowbite();
-        document.title = "KPSM - Tupad Slot";
+        initFlowbite(); 
         this.fetchTupadCode();
         this.fetchTupadSlot();
         this.fetchTupadInvites();

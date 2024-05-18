@@ -63,7 +63,6 @@ export default {
         };
     },
     mounted() {
-        document.title = "KPSM - Login";
     },
     methods: {
         async login() {

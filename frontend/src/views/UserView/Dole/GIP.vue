@@ -216,8 +216,7 @@ export default {
             Tooltip
         });
         initFlowbite();
-        Flatpickr('#Birthday', {});
-        document.title = "KPSM - GIP";
+        Flatpickr('#Birthday', {}); 
         this.fetchCities();
     },
     methods: {

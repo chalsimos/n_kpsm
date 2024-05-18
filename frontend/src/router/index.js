@@ -43,11 +43,15 @@ const router = createRouter({
         { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-logo', name: 'Manage Logo', component: () => import('../views/AdminViews/Utility/Logo.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-educational-amount', name: 'Manage Educational Amount', component: () => import('../views/AdminViews/Utility/EducationalAmount.vue') ,meta: {  requiresAdmin: true }},
+        { path: '/manage-hospital', name: 'Manage Hospital', component: () => import('../views/AdminViews/Utility/ManageHospital.vue') ,meta: {  requiresAdmin: true }},
+        { path: '/hospital-request', name: 'Manage Hospital Request', component: () => import('../views/AdminViews/Utility/ManageHospitalRequest.vue') ,meta: {  requiresAdmin: true }},
 
     ]
 });
 
 router.beforeEach(async (to, from, next) => {
+    document.title = to.name || 'Default Title';
+    next();
     if (to.meta.requiresAdmin || to.meta.requiresCaptain || to.meta.requiresClient) {
         const token = localStorage.getItem('token');
         if (!token) {

@@ -276,8 +276,7 @@ export default {
     },
     mounted() {
         initFlowbite();
-        Flatpickr('#Birthday', {});
-        document.title = "KPSM - Medical Request";
+        Flatpickr('#Birthday', {}); 
         this.fetchCities();
     },
     methods: {

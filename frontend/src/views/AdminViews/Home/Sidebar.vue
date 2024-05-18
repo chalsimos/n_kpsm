@@ -69,7 +69,8 @@
             <!-- news start here -->
             <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-request" data-collapse-toggle="manage-news">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                    <path fill="none" d="M0 0h24v24H0z"/><path d="M18 4h-2V2h-4v2H8c-1.1 0-1.99.9-1.99 2L6 18c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H6V8h12v10zM8 6v2h8V6H8z"/>
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path d="M18 4h-2V2h-4v2H8c-1.1 0-1.99.9-1.99 2L6 18c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H6V8h12v10zM8 6v2h8V6H8z" />
                 </svg>
                 <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">News/Announcement</span>
                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -77,29 +78,29 @@
                 </svg>
             </button>
             <ul id="manage-news" class="hidden py-2 space-y-2">
-    <li data-tooltip-target="Education" data-tooltip-placement="right">
-        <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-            <i class="fas fa-newspaper"></i>
-            <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span>
-        </router-link>
-    </li>
+                <li data-tooltip-target="Education" data-tooltip-placement="right">
+                    <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="fas fa-newspaper"></i>
+                        <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span>
+                    </router-link>
+                </li>
 
-    <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-        Add new News or Announcement
-        <div class="tooltip-arrow" data-popper-arrow></div>
-    </div>
-    <li data-tooltip-target="Medical" data-tooltip-placement="right">
-        <router-link to="/admin/all-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-            <!-- Font Awesome icon for modifying news -->
-            <i class="fas fa-edit"></i>
-            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Modify News</span>
-        </router-link>
-    </li>
-    <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-        Modify news or announcement
-        <div class="tooltip-arrow" data-popper-arrow></div>
-    </div>
-</ul>
+                <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Add new News or Announcement
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                <li data-tooltip-target="Medical" data-tooltip-placement="right">
+                    <router-link to="/admin/all-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <!-- Font Awesome icon for modifying news -->
+                        <i class="fas fa-edit"></i>
+                        <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Modify News</span>
+                    </router-link>
+                </li>
+                <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Modify news or announcement
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+            </ul>
 
             <!-- end news -->
             <li>
@@ -268,6 +269,77 @@
                         Manage Educational Amount
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <li data-tooltip-target="Amount" data-tooltip-placement="right">
+                        <router-link to="/manage-hospital" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
+                                <path fill="#45413c" d="M3.5 45.5a20.5 1.5 0 1 0 41 0a20.5 1.5 0 1 0-41 0" opacity=".15" />
+                                <path fill="#8ca4b8" d="M4 15h40v3H4Z" />
+                                <path fill="#adc4d9" d="M43 15H5a1 1 0 0 0-1 1v1a1 1 0 0 0 0 .25a1 1 0 0 1 1-.75h38a1 1 0 0 1 1 .75a1 1 0 0 0 0-.25v-1a1 1 0 0 0-1-1" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M4 15h40v3H4Z" />
+                                <path fill="#fff" d="M5 18h38v25.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z" />
+                                <path fill="#e0e0e0" d="M5 18h38v2.25H5z" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M5 18h38v25.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z" />
+                                <path fill="#fff" d="M13.5 12.5h21v32h-21z" />
+                                <path fill="#e0e0e0" d="M13.5 12.5h21v1.79h-21z" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M13.5 12.5h21v32h-21z" />
+                                <path fill="#00b8f0" d="M18 33.5h12v11H18z" />
+                                <path fill="#4acfff" d="M20.44 44.5h5.2L30 33.93v-.43h-5.03z" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M18 33.5h12v11H18z" />
+                                <path fill="#8ca4b8" d="M17 30h14v3.5H17Z" />
+                                <path fill="#adc4d9" d="M30 30H18a1 1 0 0 0-1 1v1.5a.53.53 0 0 0 0 .12a1 1 0 0 1 1-.87h12a1 1 0 0 1 1 .87a.53.53 0 0 0 0-.12V31a1 1 0 0 0-1-1" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M17 30h14v3.5H17Z" />
+                                <path fill="#8ca4b8" d="M12.5 9.5h23v3h-23Z" />
+                                <path fill="#adc4d9" d="M34.5 9.5h-21a1 1 0 0 0-1 1v1a1 1 0 0 0 .05.25a1 1 0 0 1 .95-.75h21a1 1 0 0 1 1 .75a1 1 0 0 0 0-.25v-1a1 1 0 0 0-1-1" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M12.5 9.5h23v3h-23Z" />
+                                <path fill="#ff6242" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M27.5 19H26a.5.5 0 0 1-.5-.5V17a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 1-.5.5h-1.5a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5H22a.5.5 0 0 1 .5.5V24a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1.5a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5" />
+                                <path fill="#00b8f0" d="M8 20.5h2.5V25H8Z" />
+                                <path fill="#4acfff" d="M8.5 25H10a.5.5 0 0 0 .5-.5V21a.5.5 0 0 0-.11-.3l-2.22 4.17a.49.49 0 0 0 .33.13" />
+                                <path fill="#00b8f0" d="M8 27.5h2.5V32H8Z" />
+                                <path fill="#4acfff" d="M8.5 32H10a.5.5 0 0 0 .5-.5V28a.5.5 0 0 0-.11-.3l-2.22 4.17a.49.49 0 0 0 .33.13" />
+                                <path fill="#00b8f0" d="M8 34.5h2.5V39H8Z" />
+                                <path fill="#4acfff" d="M8.5 39H10a.5.5 0 0 0 .5-.5V35a.5.5 0 0 0-.11-.3l-2.22 4.17a.49.49 0 0 0 .33.13" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M8 20.5h2.5V25H8Zm0 7h2.5V32H8Zm0 7h2.5V39H8Z" />
+                                <path fill="#00b8f0" d="M37.5 20.5H40V25h-2.5Z" />
+                                <path fill="#4acfff" d="M38 25h1.5a.5.5 0 0 0 .5-.5V21a.5.5 0 0 0-.11-.3l-2.22 4.17A.49.49 0 0 0 38 25" />
+                                <path fill="#00b8f0" d="M37.5 27.5H40V32h-2.5Z" />
+                                <path fill="#4acfff" d="M38 32h1.5a.5.5 0 0 0 .5-.5V28a.5.5 0 0 0-.11-.3l-2.22 4.17A.49.49 0 0 0 38 32" />
+                                <path fill="#00b8f0" d="M37.5 34.5H40V39h-2.5Z" />
+                                <path fill="#4acfff" d="M38 39h1.5a.5.5 0 0 0 .5-.5V35a.5.5 0 0 0-.11-.3l-2.22 4.17A.49.49 0 0 0 38 39" />
+                                <path fill="none" stroke="#45413c" stroke-linecap="round" stroke-linejoin="round" d="M37.5 20.5H40V25h-2.5Zm0 7H40V32h-2.5Zm0 7H40V39h-2.5Zm-13.5-1v11" /></svg>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Hospitals</span>
+                        </router-link>
+                    </li>
+                    <div id="Amount" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Hospital
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <li data-tooltip-target="Amount" data-tooltip-placement="right">
+                        <router-link to="/hospital-request" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64">
+                                <path fill="#e8e8e8" d="M40 18H14c-2.2 0-4 1.8-4 4v38h34V22c0-2.2-1.8-4-4-4" />
+                                <path fill="#62727a" d="M60 36H26c-1.1 0-2 .9-2 2v22h38V38c0-1.1-.9-2-2-2M7 36c-.6 0-1.2.4-1.6.8l-2.9 4.3c-.3.5-.5 1.4-.5 1.9v17h8V36z" />
+                                <path fill="#b4d7ee" d="M12 53h10v7H12z" />
+                                <path fill="#62727a" d="M63 60H1c-.6 0-1 .5-1 1v2c0 .6.4 1 1 1h62c.5 0 1-.4 1-1v-2c0-.5-.5-1-1-1" />
+                                <path fill="#b4d7ee" d="M14 34.5c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm-16 8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm-8 8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zM32 44h30v16H32zM7 46.5c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm0 9c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5z" />
+                                <g fill="#fff">
+                                    <path d="M21 53h-9v7h1v-6h3.5v6h1v-6H21v6h1v-7z" />
+                                    <path d="M17.5 56h-1c-.3 0-.5.2-.5.5v1c0 .3.2.5.5.5h1c.3 0 .5-.2.5-.5v-1c0-.3-.2-.5-.5-.5" />
+                                </g>
+                                <path fill="#b2c1c0" d="M13 60h8v2h-8z" />
+                                <path fill="#e8e8e8" d="M13 62h8v2h-8z" />
+                                <path fill="#fff" d="M33 44h29v-2H31c-.5 0-1 .5-1 1v17h2v-3c0-.5.5-1 1-1h29v-2H33c-.5 0-1-.4-1-1v-2c0-.5.5-1 1-1h29v-2H33c-.5 0-1-.5-1-1v-2c0-.5.5-1 1-1" />
+                                <path fill="#b4d7ee" d="M14 26.5c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 0c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm0-8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm0-8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm4 8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5zm0-8c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5h1c.3 0 .5.2.5.5z" />
+                                <path fill="#b2c1c0" d="M19 8h16v10H19z" />
+                                <circle cx="27" cy="8" r="8" fill="#e8e8e8" />
+                                <path fill="#f15744" d="M32 6h-3V3c0-.5-.5-1-1-1h-2c-.5 0-1 .5-1 1v3h-3c-.5 0-1 .4-1 1v2c0 .6.5 1 1 1h3v3c0 .6.5 1 1 1h2c.5 0 1-.4 1-1v-3h3c.5 0 1-.4 1-1V7c0-.6-.5-1-1-1" />
+                            </svg>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Hospital Request</span>
+                        </router-link>
+                    </li>
+                    <div id="Amount" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Hospital Available Request
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </ul>
             </li>
             <li>
@@ -291,8 +363,8 @@
         </ul>
     </div>
 </aside>
-  <!-- Main modal -->
-  <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<!-- Main modal -->
+<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-2xl max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -303,7 +375,7 @@
                 </h3>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
@@ -317,7 +389,7 @@
                     The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
                 </p> -->
                 <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-            <!-- <editor
+                <!-- <editor
                 api-key="tjh6y7k4ssd8bp02fmeohr8mpccvozf6f0b9pab6qbxqkkte"
                 :init="{
                 height: 500,
@@ -352,26 +424,26 @@
 import Editor from '@tinymce/tinymce-vue'
 import axios from '../../../main.js'
 export default {
-    data(){
-        return{
-            editorContent:'',
+    data() {
+        return {
+            editorContent: '',
         };
     },
     components: {
         'editor': Editor
     },
-    mounted(){
-        
+    mounted() {
+
     },
-    methods:{
-      
-        async postDataToBackend(){
-            try{ 
+    methods: {
+
+        async postDataToBackend() {
+            try {
                 const response = await axios.post('/api/post-news', {
                     body: this.editorContent
                 });
                 console.log(response);
-            }catch(error){
+            } catch (error) {
                 console.log('error', error);
             }
         }

@@ -342,7 +342,6 @@ export default {
 
         });
         initFlowbite();
-        document.title = "KPSM - Manage Scholarship";
         this.fetchEducationalAssistance();
         this.fetchDeclineEducationalAssistance();
         this.fetchApprovedEducationalAssistance();
