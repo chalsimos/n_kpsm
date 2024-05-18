@@ -197,7 +197,6 @@ export default {
     };
   },
   mounted() {
-    document.title = "KPSM - Register";
   },
   methods: {
     async register() {

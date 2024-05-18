@@ -131,7 +131,6 @@
             Tooltip
         });
         initFlowbite();
-            document.title = "Home";
         },
     };
     </script>

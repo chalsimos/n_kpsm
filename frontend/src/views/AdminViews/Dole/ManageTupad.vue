@@ -215,7 +215,6 @@ export default {
             Tooltip
         });
         initFlowbite();
-        document.title = "Manage Medical Request";
         this.fetchCaptainList();
         this.fetchTupadMember();
     },

@@ -11,6 +11,7 @@ use App\Http\Controllers\MedicalRequestController;
 use App\Http\Controllers\DoleController;
 use App\Http\Controllers\NewsPortal;
 use App\Http\Controllers\EducationalAssistanceController;
+use App\Http\Controllers\HospitalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,16 +40,25 @@ Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
 Route::prefix('utility')->group(function () {
 
     Route::middleware(['admin'])->group(function () {
+        //Educational Amount
         Route::get('/get-all-amount', [EducationalAssistanceController::class, 'index']);
         Route::post('/school-level-amount', [EducationalAssistanceController::class, 'add_educational_assistance_amount']);
         Route::put('/school-level-amount-change-status/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_change_status']);
         Route::put('/school-level-amount-update/{id}', [EducationalAssistanceController::class, 'educational_assistance_amount_update']);
         Route::delete('/school-level-amount-delte/{id}', [EducationalAssistanceController::class, 'deleteAmount']);
-
+        //Website Logo
         Route::get('/get-logos', [LogoController::class, 'index']);
         Route::put('/active-logos/{id}', [LogoController::class, 'activeLogo']);
         Route::post('/add-logos', [LogoController::class, 'store']);
         Route::delete('/delete-logos/{id}', [LogoController::class, 'deleteLogo']);
+        //Manage Hospitals
+        Route::get('/get-hospitals', [HospitalController::class, 'index']);
+        Route::delete('/delete-hospital/{id}', [HospitalController::class, 'delete_hospital']);
+        Route::post('/save-hospital', [HospitalController::class, 'save_hospital']);
+        Route::put('/active-hospital/{id}', [HospitalController::class, 'active_hospital']);
+        Route::put('/edit-hospital/{id}', [HospitalController::class, 'edit_hospital']);
+        Route::put('/deactivate-hospital/{id}', [HospitalController::class, 'deactivate_hospital']);
+
     });
 });
 Route::prefix('educational-assistance')->group(function () {

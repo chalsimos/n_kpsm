@@ -220,8 +220,7 @@ export default {
         };
     },
     mounted() {
-        Flatpickr('#Birthday', {});
-        document.title = "KPSM - Tupad";
+        Flatpickr('#Birthday', {}); 
         this.fetchCities();
         initFlowbite();
         const accessGranted = localStorage.getItem('accessGranted');

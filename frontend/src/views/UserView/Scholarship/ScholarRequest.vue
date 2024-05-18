@@ -263,8 +263,7 @@ export default {
     },
     mounted() {
         Flatpickr('#representative_birthday', {});
-        Flatpickr('#beneficiary_birthday', {});
-        document.title = "KPSM - Scholarship";
+        Flatpickr('#beneficiary_birthday', {}); 
         this.fetchCities();
         initFlowbite();
         const scholarGranted = localStorage.getItem('scholarGranted');

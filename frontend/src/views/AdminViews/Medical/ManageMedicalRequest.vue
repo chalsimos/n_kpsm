@@ -239,7 +239,6 @@ export default {
 
         });
         initFlowbite();
-        document.title = "Manage Medical Request";
         this.fetchMedicalRequests();
     },
     methods: {

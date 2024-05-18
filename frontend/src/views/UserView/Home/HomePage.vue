@@ -315,8 +315,7 @@ export default {
         Modal,
         Tooltip
     });
-    initFlowbite();
-    document.title = "KPSM - Kongreso para sa Mamamayan";
+    initFlowbite(); 
   },
 };
 </script>

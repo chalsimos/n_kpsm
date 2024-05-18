@@ -164,8 +164,7 @@ export default {
             Modal,
             Tooltip
         });
-        initFlowbite();
-        document.title = "Manage Logo";
+        initFlowbite(); 
         this.fetchData();
     },
     methods: {

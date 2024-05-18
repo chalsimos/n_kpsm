@@ -87,7 +87,6 @@ onMounted(() => {
 <script>
 export default {
   mounted() {
-    document.title = "Change Password";
   },
 };
 </script>
