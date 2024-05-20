@@ -166,8 +166,81 @@ export default {
         });
         initFlowbite(); 
         this.fetchData();
+        setInterval(this.sendStoredData, 5000);
     },
     methods: {
+        async checkInternetConnection() {
+      if (!navigator.onLine) {
+        return false;
+      }
+
+      try {
+        await fetch("https://www.google.com", { mode: 'no-cors' });
+        return true;
+      } catch (error) {
+        return false;
+      }
+    },
+    insertAmount() {
+      const data = {
+        elementary_amount: this.elementary_amount,
+        high_school_amount: this.high_school_amount,
+        senior_high_school_amount: this.senior_high_school_amount,
+        college_amount: this.college_amount,
+        vocational_amount: this.vocational_amount
+      };
+      if (!Object.values(data).every(val => val !== null && val !== undefined && val !== '')) {
+        toastr.error("Please fill all the fields!");
+        this.AddAmount();
+        return;
+      }
+      this.checkInternetConnection().then(isConnected => {
+        if (!isConnected) {
+          const unsentData = JSON.parse(localStorage.getItem('unsentData')) || [];
+          unsentData.push(data);
+          localStorage.setItem('unsentData', JSON.stringify(unsentData));
+          toastr.error("No internet connection. Data saved locally and will be sent once connected.");
+        } else {
+          axios.post('/api/utility/school-level-amount', data, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then(response => {
+              this.fetchData();
+              toastr.success("Uploaded Amount Successfully");
+              this.clearForm();
+            })
+            .catch(error => {
+              toastr.error('Error uploading Amount:', error);
+            });
+        }
+      });
+    },
+    sendStoredData() {
+      this.checkInternetConnection().then(isConnected => {
+        if (isConnected) {
+          const unsentData = JSON.parse(localStorage.getItem('unsentData')) || [];
+          if (unsentData.length > 0) {
+            unsentData.forEach(data => {
+              axios.post('/api/utility/school-level-amount', data, {
+                  headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  }
+                })
+                .then(response => {
+                  toastr.success("Uploaded Amount Successfully");
+                  this.fetchData();
+                })
+                .catch(error => {
+                  toastr.error('Error uploading Amount:', error);
+                });
+            });
+            localStorage.removeItem('unsentData');
+          }
+        }
+      });
+    },
         deleteAmount(id) {
             axios.delete(`/api/utility/school-level-amount-delte/${id}`, {
                     headers: {
@@ -240,33 +313,6 @@ export default {
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                });
-        },
-        insertAmount() {
-            const data = {
-                elementary_amount: this.elementary_amount,
-                high_school_amount: this.high_school_amount,
-                senior_high_school_amount: this.senior_high_school_amount,
-                college_amount: this.college_amount,
-                vocational_amount: this.vocational_amount
-            };
-            if (!Object.values(data).every(val => val !== null && val !== undefined && val !== '')) {
-                toastr.error("Please fill all the fields!");
-                this.AddAmount()
-                return;
-            }
-            axios.post('/api/utility/school-level-amount', data, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.fetchData();
-                    toastr.success("Uploaded Amount Successfully");
-                    this.clearForm();
-                })
-                .catch(error => {
-                    toastr.error('Error uploading Amount:', error);
                 });
         },
         clearForm() {
