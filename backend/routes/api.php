@@ -58,8 +58,17 @@ Route::prefix('utility')->group(function () {
         Route::put('/active-hospital/{id}', [HospitalController::class, 'active_hospital']);
         Route::put('/edit-hospital/{id}', [HospitalController::class, 'edit_hospital']);
         Route::put('/deactivate-hospital/{id}', [HospitalController::class, 'deactivate_hospital']);
+        //hospital offer
+        Route::post('/create-hospital-offer/{id}', [HospitalController::class, 'createHospitalRequest']);
+        Route::get('/get-hospital-with-offer', [HospitalController::class, 'hospitalsWithServiceOffers']);
+        Route::put('/active-offer/{id}', [HospitalController::class, 'active_offer']);
+        Route::put('/edit-offer/{id}', [HospitalController::class, 'edit_offer']);
+        Route::put('/deactivate-offer/{id}', [HospitalController::class, 'deactivate_offer']);
+        Route::get('/get-hospital-service-offer/{id}', [HospitalController::class, 'getServiceOffersForHospital']);
+        Route::delete('/delete-offer/{id}', [HospitalController::class, 'delete_offer']);
 
     });
+
 });
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
