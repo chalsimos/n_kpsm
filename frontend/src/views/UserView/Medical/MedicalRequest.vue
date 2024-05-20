@@ -238,6 +238,12 @@ import {
     barangays
 } from 'select-philippines-address';
 import axios from '../../../main.js'
+import {
+    saveRequest,
+    getRequests,
+    clearRequests
+} from '@/utils/indexedDB';
+
 export default {
     components: {
         Head,
@@ -276,8 +282,9 @@ export default {
     },
     mounted() {
         initFlowbite();
-        Flatpickr('#Birthday', {}); 
+        Flatpickr('#Birthday', {});
         this.fetchCities();
+        setInterval(this.sendStoredData, 5000);
     },
     methods: {
         fetchCities() {
@@ -415,61 +422,133 @@ export default {
             document.getElementById('preview-modal').classList.add('hidden');
             document.getElementById('preview-image').classList.remove('hidden');
         },
-        saveToDatabase() {
-            const formattedBirthday = this.birthday.split('/').reverse().join('-');
-            const formData = new FormData();
-            formData.append('firstname', this.firstname);
-            formData.append('middlename', this.middlename);
-            formData.append('lastname', this.lastname);
-            formData.append('age', this.age);
-            formData.append('birthday', formattedBirthday);
-            formData.append('gender', this.gender);
-            formData.append('province', this.province);
-            formData.append('municipality', this.selectedMunicipality);
-            formData.append('barangay', this.selectedBarangay);
-            formData.append('representativefullname', this.representativefullname);
-            formData.append('contactnumber', this.contactnumber);
-            formData.append('diagnosis', this.diagnosis);
-            formData.append('hospital', this.hospital);
-            formData.append('request', this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest);
-            this.brgy_ClearanceImages.forEach(image => {
-                formData.append('brgy_ClearanceImages[]', image.brgy_Clearanceimage);
-            });
-            this.valid_IdImages.forEach(image => {
-                formData.append('valid_IdImages[]', image.valid_IdImagesimage);
-            });
-            this.hospital_DocumentImages.forEach(image => {
-                formData.append('hospital_DocumentImages[]', image.hospital_DocumentImagesimage);
-            });
-            axios.post('/api/medical-requests/request', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                .then(response => {
-                    this.firstname = '';
-                    this.middlename = '';
-                    this.lastname = '';
-                    this.age = null;
-                    this.birthday = '';
-                    this.gender = '';
-                    this.province = '';
-                    this.selectedMunicipality = '';
-                    this.selectedBarangay = '';
-                    this.representativefullname = '';
-                    this.contactnumber = '';
-                    this.diagnosis = '';
-                    this.hospital = '';
-                    this.typeOfRequest = '';
-                    this.brgy_ClearanceImages = [];
-                    this.valid_IdImages = [];
-                    this.hospital_DocumentImages = [];
-                    toastr.success('Medical Request Successfully Send');
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error(error.response.data)
+        async checkInternetConnection() {
+            if (!navigator.onLine) {
+                return false;
+            }
+
+            try {
+                await fetch("https://www.google.com", {
+                    mode: 'no-cors'
                 });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        },
+
+        base64ToFile(base64, filename) {
+            let arr = base64.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {
+                type: mime
+            });
+        },
+        async saveToDatabase() {
+            const brgy_ClearanceImagesBase64 = await Promise.all(this.brgy_ClearanceImages.map(image => this.fileToBase64(image.brgy_Clearanceimage)));
+            const valid_IdImagesBase64 = await Promise.all(this.valid_IdImages.map(image => this.fileToBase64(image.valid_IdImagesimage)));
+            const hospital_DocumentImagesBase64 = await Promise.all(this.hospital_DocumentImages.map(image => this.fileToBase64(image.hospital_DocumentImagesimage)));
+
+            const formattedBirthday = this.birthday.split('/').reverse().join('-');
+            const data = {
+                firstname: this.firstname,
+                middlename: this.middlename,
+                lastname: this.lastname,
+                age: this.age,
+                birthday: formattedBirthday,
+                gender: this.gender,
+                province: this.province,
+                municipality: this.selectedMunicipality,
+                barangay: this.selectedBarangay,
+                representativefullname: this.representativefullname,
+                contactnumber: this.contactnumber,
+                diagnosis: this.diagnosis,
+                hospital: this.hospital,
+                request: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
+                brgy_ClearanceImages: brgy_ClearanceImagesBase64,
+                valid_IdImages: valid_IdImagesBase64,
+                hospital_DocumentImages: hospital_DocumentImagesBase64
+            };
+
+            const isConnected = await this.checkInternetConnection();
+
+            if (!isConnected) {
+                await saveRequest(data);
+                toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
+            } else {
+                const formData = new FormData();
+                Object.keys(data).forEach(key => {
+                    if (Array.isArray(data[key])) {
+                        data[key].forEach((item, index) => {
+                            formData.append(`${key}[]`, this.base64ToFile(item, `${key}_${index}.png`));
+                        });
+                    } else {
+                        formData.append(key, data[key]);
+                    }
+                });
+
+                axios.post('/api/medical-requests/request', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(response => {
+                        this.clearForm();
+                        toastr.success('Medical Request Successfully Sent');
+                    })
+                    .catch(error => {
+                        toastr.error(error.response.data);
+                    });
+            }
+        },
+        sendStoredData() {
+            this.checkInternetConnection().then(async (isConnected) => {
+                if (isConnected) {
+                    const unsentData = await getRequests();
+                    if (unsentData.length > 0) {
+                        unsentData.forEach(data => {
+                            const formData = new FormData();
+                            Object.keys(data).forEach(key => {
+                                if (Array.isArray(data[key])) {
+                                    data[key].forEach((item, index) => {
+                                        formData.append(`${key}[]`, this.base64ToFile(item, `${key}_${index}.png`));
+                                    });
+                                } else {
+                                    formData.append(key, data[key]);
+                                }
+                            });
+
+                            axios.post('/api/medical-requests/request', formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                })
+                                .then(response => {
+                                    this.clearForm();
+                                    toastr.success("Uploaded Medical Request Successfully");
+                                })
+                                .catch(error => {
+                                    toastr.error('Error uploading Medical Request:', error);
+                                });
+                        });
+                        await clearRequests();
+                    }
+                }
+            });
         },
         calculateAge() {
             if (!this.birthday) return;
@@ -483,6 +562,25 @@ export default {
             this.age = age;
         }
     },
+    clearForm() {
+    this.firstname = '';
+    this.middlename = '';
+    this.lastname = '';
+    this.age = null;
+    this.birthday = '';
+    this.gender = '';
+    this.province = '';
+    this.selectedMunicipality = '';
+    this.selectedBarangay = '';
+    this.representativefullname = '';
+    this.contactnumber = '';
+    this.diagnosis = '';
+    this.hospital = '';
+    this.typeOfRequest = '';
+    this.brgy_ClearanceImages = [];
+    this.valid_IdImages = [];
+    this.hospital_DocumentImages = [];
+  },
     watch: {
         barangay(newBarangay) {
             const selectedBarangayObject = this.barangays.find(barangay => barangay.brgy_code === newBarangay);

@@ -341,7 +341,6 @@ export default {
                     }
                 });
         },
-
         hideModal() {
             document.getElementById('static-modal').classList.add('hidden');
         },
