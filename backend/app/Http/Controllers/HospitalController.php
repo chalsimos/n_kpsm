@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hospital;
+use App\Models\HospitalRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\ValidationException;
 
 class HospitalController extends Controller
 {
@@ -25,7 +26,6 @@ class HospitalController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
     public function save_hospital(Request $request)
     {
@@ -134,12 +134,108 @@ class HospitalController extends Controller
         }
     }
 
+    //Hospital Request
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function createHospitalRequest(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'service_offer' => 'required|string|max:255',
+        ]);
+        DB::beginTransaction();
+        try {
+            $hospital = Hospital::findOrFail($id);
+            $hospitalRequest = new HospitalRequest();
+            $hospitalRequest->hospital_id = $hospital->id;
+            $hospitalRequest->service_offer = $validatedData['service_offer'];
+            $hospitalRequest->status = 'active';
+            $hospitalRequest->save();
+            DB::commit();
+            return response()->json($hospitalRequest, 201);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
+    public function hospitalsWithServiceOffers()
+    {
+        try {
+            $hospitals = Hospital::with('hospitalRequests')->orderBy('status', 'asc')->get();
+            $formattedHospitals = $hospitals->map(function ($hospital) {
+                $hospitalArray = $hospital->toArray();
+                $serviceOffers = $hospital->hospitalRequests->pluck('service_offer');
+                unset($hospitalArray['hospital_requests']);
+                $hospitalArray['service_offers'] = $serviceOffers;
+                return $hospitalArray;
+            });
+            return response()->json($formattedHospitals, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function getServiceOffersForHospital($hospitalId)
+    {
+        try {
+            $hospital = Hospital::with('hospitalRequests')->findOrFail($hospitalId);
+            $serviceOffers = $hospital->hospitalRequests->map(function ($request) {
+                return [
+                    'id' => $request->id,
+                    'service_offer' => $request->service_offer,
+                    'status' => $request->status
+                ];
+            });
+
+            return response()->json(['success' => true, 'service_offers' => $serviceOffers], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hospital or service offers not found.'], 404);
+        }
+    }
+    public function delete_offer(string $id)
+    {
+        try {
+            $hospital = HospitalRequest::findOrFail($id);
+            if ($hospital->status === 'active') {
+                return response()->json(['error' => 'Cannot delete active hospital'], 400);
+            }
+            $hospital->delete();
+            return response()->json(['message' => 'Hospital deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    /**
+     * Display the specified resource.
+     */
+    public function active_offer(string $id)
+    {
+        try {
+            DB::beginTransaction();
+            $Hospital = HospitalRequest::findOrFail($id);
+            $Hospital->status = 'active';
+            $Hospital->save();
+            DB::commit();
+            return response()->json(['message' => 'Hospital updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function deactivate_offer(string $id)
+    {
+        try {
+            DB::beginTransaction();
+            $Hospital = HospitalRequest::findOrFail($id);
+            $Hospital->status = 'inactive';
+            $Hospital->save();
+            DB::commit();
+            return response()->json(['message' => 'Hospital updated successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }
