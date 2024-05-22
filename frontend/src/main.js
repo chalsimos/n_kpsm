@@ -12,7 +12,7 @@ import Antd from 'ant-design-vue';
 import axios from 'axios'
 axios.defaults.baseURL="http://127.0.0.1:8000";
 export default axios;
-
+import VueApexCharts from "vue3-apexcharts";
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -32,5 +32,6 @@ createApp(App)
   maxToasts: 20,
   newestOnTop: true
 })
+.use(VueApexCharts)
 .use(vuetify)
 .mount('#app')

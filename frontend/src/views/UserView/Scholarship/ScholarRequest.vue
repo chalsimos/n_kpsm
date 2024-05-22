@@ -171,14 +171,14 @@
     </div>
 </div>
 <div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
-    <div class="relative  p-4 w-full max-w-2xl max-h-full">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                     Educational Assitance
                 </h3>
             </div>
-            <form @submit.prevent="submitForm" class="max-w-sm mx-auto mt-5 mb-5">
+            <form @submit.prevent="submitForm" class="max-w-sm mx-auto mt-5 mb-5 ml-10">
                 <label for="Code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Input confirm to proceed</label>
                 <input required v-model="accessCode" type="text" id="Code" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CONFIRM">
                 <div class="flex items-center mt-4">

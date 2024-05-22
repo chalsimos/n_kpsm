@@ -4,7 +4,7 @@
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
         <v-card class="bg-orange-200" flat>
             <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Educational Assistance Amount
+                <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; 
                 <v-spacer></v-spacer>
                 <Button type="primary" @click="AddAmount" style="background-color: #ffd666">
                     Add Amount
@@ -62,7 +62,7 @@
     </div>
 </div>
 <div id="AddAmount" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
-    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">

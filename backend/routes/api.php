@@ -12,6 +12,7 @@ use App\Http\Controllers\DoleController;
 use App\Http\Controllers\NewsPortal;
 use App\Http\Controllers\EducationalAssistanceController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,16 @@ Route::get('/news', [NewsPortal::class, 'index']);
 Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
 Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
 Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
+
+Route::prefix('dashboard')->group(function () {
+ //admin
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/get-hospital-count', [AdminDashboardController::class, 'getAllHospital']);
+
+    });
+
+});
+
 
 Route::prefix('utility')->group(function () {
 
@@ -68,7 +79,6 @@ Route::prefix('utility')->group(function () {
         Route::delete('/delete-offer/{id}', [HospitalController::class, 'delete_offer']);
 
     });
-
 });
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
@@ -104,10 +114,10 @@ Route::prefix('dole')->group(function () {
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //admin
-    Route::get('/captain-list', [DoleController::class, 'captain_list']);
 
-    Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
     Route::middleware(['admin'])->group(function () {
+        Route::get('/captain-list', [DoleController::class, 'captain_list']);
+        Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
         Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
         Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);

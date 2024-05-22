@@ -46,7 +46,7 @@
     </div>
 </div>
 <div id="AddLogo" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
-    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -59,7 +59,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <form @submit.prevent="insertLogo" class="max-w-sm mx-auto mt-5 mb-5">
+            <form @submit.prevent="insertLogo" class="max-w-sm mx-auto mt-5 ml-10 mb-5">
                 <div class="mb-5">
                     <label for="websiteLogo" class="block text-sm font-medium text-gray-900 dark:text-white">Logo</label>
                     <input type="file" required id="websiteLogo" ref="fileInput" accept="image/*" multiple @change="handleLogoUpload">
