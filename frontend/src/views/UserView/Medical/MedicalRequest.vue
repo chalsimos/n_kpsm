@@ -100,32 +100,19 @@
                         <label for="Hospital" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hospital</label>
                         <select v-model="hospital" id="Hospital" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                             <option value="" disabled selected>Choose Hospital</option>
-                            <option value="Maes">Maria Estrella General Hospital (MAES)</option>
-                            <option value="MMG">Medical Mission Group Hospital Multi Purpose Cooperative of Oriental Mindoro (MMG)</option>
-                            <option value="OMPH">Oriental Mindoro Provincial Hospital (OMPH)</option>
-                            <option value="SMV">Sta. Maria Village Hospital (SMV)</option>
-                            <option value="LGMC">Luna Goco Medical Center (LGMC)</option>
+                            <option v-for="hospital in hospitals" :key="hospital.id" :value="hospital.hospital_acronym">
+                                {{ hospital.hospital_name }} ({{ hospital.hospital_acronym }})
+                            </option>
                         </select>
                     </div>
+
                     <div class="mb-5">
                         <label for="TypeOfRequest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type of Request</label>
                         <select v-model="typeOfRequest" @change="handleTypeOfRequestChange" id="TypeOfRequest" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-small rounded-lg text-sm w-full py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                             <option value="" disabled selected>Choose Request</option>
-                            <option value="LABORATORY">Laboratory</option>
-                            <option value="BONE MARROW">Bone Marrow</option>
-                            <option value="MEDICINE">Medicine</option>
-                            <option value="HOSPITAL BILL">Hospital Bill</option>
-                            <option value="CHEMOTHERAPY">Chemotherapy</option>
-                            <option value="ENDOSCOPY">Endoscopy</option>
-                            <option value="CT-SCAN">CT-Scan</option>
-                            <option value="2D ECHO">2D Echo</option>
-                            <option value="SCROTAL UTZ">Scrotal Utz</option>
-                            <option value="MRI">MRI</option>
-                            <option value="BLOOD TRANSFUSION">Blood Transfusion</option>
-                            <option value="BIOPSY">Biopsy</option>
-                            <option value="FOR EGD">For EGD</option>
-                            <option value="BRONCOSCOPY">Broncoscopy</option>
-                            <option value="LARYNGOSCOPY">Laryngoscopy</option>
+                            <option v-for="offer in selectedHospitalOffers" :key="offer" :value="offer">
+                                {{ offer }}
+                            </option>
                             <option value="OTHERS">Others</option>
                         </select>
                     </div>
@@ -133,6 +120,7 @@
                         <label for="OtherRequest" class="block text-sm font-medium text-gray-900 dark:text-white">Other Type of Request</label>
                         <input v-model="otherRequestValue" type="text" id="OtherRequest" :disabled="isOtherRequestDisabled" class="bg-orange-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Flu" required />
                     </div>
+
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     Requirements Upload (Image Only)
@@ -277,7 +265,9 @@ export default {
             brgy_ClearanceImages: [],
             valid_IdImages: [],
             hospital_DocumentImages: [],
-            previewedImage: {}
+            previewedImage: {},
+            hospitals: [],
+            selectedHospitalOffers: []
         };
     },
     mounted() {
@@ -285,8 +275,32 @@ export default {
         Flatpickr('#Birthday', {});
         this.fetchCities();
         setInterval(this.sendStoredData, 5000);
+        this.fetchHospitals();
     },
     methods: {
+        fetchHospitals() {
+            axios.get('/api/medical-requests/get-hospital-and-offer', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.hospitals = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching hospitals:', error);
+                });
+        },
+        updateSelectedHospitalOffers(hospitalAcronym) {
+            const selectedHospital = this.hospitals.find(h => h.hospital_acronym === hospitalAcronym);
+            this.selectedHospitalOffers = selectedHospital ? selectedHospital.service_offers : [];
+            this.typeOfRequest = '';
+        },
+        handleTypeOfRequestChange() {
+            if (this.typeOfRequest !== 'OTHERS') {
+                this.otherRequestValue = '';
+            }
+        },
         fetchCities() {
             cities(this.provinceto)
                 .then(response => {
@@ -307,18 +321,15 @@ export default {
             barangays(this.municipality)
                 .then(response => {
                     this.barangays = response;
-                    this.selectedMunicipality = this.cities.find(city => city.city_code === this.municipality) ?.city_name || ''; // magkadikit lagi yang ?. error pag ? . naghihiwalay pag nag vue-format
+                    const selectedCity = this.cities.find(city => city.city_code === this.municipality);
+                    this.selectedMunicipality = selectedCity ? selectedCity.city_name : '';
                     this.selectedBarangay = this.barangays.length > 0 ? this.barangays[0].brgy_name : '';
                 })
                 .catch(error => {
                     console.error('Error fetching barangays:', error);
                 });
         },
-        handleTypeOfRequestChange() {
-            if (this.typeOfRequest !== 'OTHERS') {
-                this.otherRequestValue = '';
-            }
-        },
+
         handleClearanceUpload(event) {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
@@ -426,7 +437,6 @@ export default {
             if (!navigator.onLine) {
                 return false;
             }
-
             try {
                 await fetch("https://www.google.com", {
                     mode: 'no-cors'
@@ -444,7 +454,6 @@ export default {
                 reader.onerror = error => reject(error);
             });
         },
-
         base64ToFile(base64, filename) {
             let arr = base64.split(','),
                 mime = arr[0].match(/:(.*?);/)[1],
@@ -462,8 +471,9 @@ export default {
             const brgy_ClearanceImagesBase64 = await Promise.all(this.brgy_ClearanceImages.map(image => this.fileToBase64(image.brgy_Clearanceimage)));
             const valid_IdImagesBase64 = await Promise.all(this.valid_IdImages.map(image => this.fileToBase64(image.valid_IdImagesimage)));
             const hospital_DocumentImagesBase64 = await Promise.all(this.hospital_DocumentImages.map(image => this.fileToBase64(image.hospital_DocumentImagesimage)));
-
             const formattedBirthday = this.birthday.split('/').reverse().join('-');
+            const request = this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest || '';
+
             const data = {
                 firstname: this.firstname,
                 middlename: this.middlename,
@@ -478,14 +488,12 @@ export default {
                 contactnumber: this.contactnumber,
                 diagnosis: this.diagnosis,
                 hospital: this.hospital,
-                request: this.typeOfRequest === 'OTHERS' ? this.otherRequestValue : this.typeOfRequest,
+                request: request,
                 brgy_ClearanceImages: brgy_ClearanceImagesBase64,
                 valid_IdImages: valid_IdImagesBase64,
                 hospital_DocumentImages: hospital_DocumentImagesBase64
             };
-
             const isConnected = await this.checkInternetConnection();
-
             if (!isConnected) {
                 await saveRequest(data);
                 toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
@@ -500,7 +508,6 @@ export default {
                         formData.append(key, data[key]);
                     }
                 });
-
                 axios.post('/api/medical-requests/request', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
@@ -511,7 +518,8 @@ export default {
                         toastr.success('Medical Request Successfully Sent');
                     })
                     .catch(error => {
-                        toastr.error(error.response.data);
+                        console.error('Error in saving request:', error);
+                        toastr.error('An error occurred while processing your request.');
                     });
             }
         },
@@ -560,32 +568,37 @@ export default {
                 age--;
             }
             this.age = age;
-        }
+        },
+        clearForm() {
+            this.firstname = '';
+            this.middlename = '';
+            this.lastname = '';
+            this.age = null;
+            this.birthday = '';
+            this.gender = '';
+            this.province = '';
+            this.selectedMunicipality = '';
+            this.selectedBarangay = '';
+            this.representativefullname = '';
+            this.contactnumber = '';
+            this.diagnosis = '';
+            this.hospital = '';
+            this.typeOfRequest = '';
+            this.brgy_ClearanceImages = [];
+            this.valid_IdImages = [];
+            this.hospital_DocumentImages = [];
+        },
     },
-    clearForm() {
-    this.firstname = '';
-    this.middlename = '';
-    this.lastname = '';
-    this.age = null;
-    this.birthday = '';
-    this.gender = '';
-    this.province = '';
-    this.selectedMunicipality = '';
-    this.selectedBarangay = '';
-    this.representativefullname = '';
-    this.contactnumber = '';
-    this.diagnosis = '';
-    this.hospital = '';
-    this.typeOfRequest = '';
-    this.brgy_ClearanceImages = [];
-    this.valid_IdImages = [];
-    this.hospital_DocumentImages = [];
-  },
+
     watch: {
         barangay(newBarangay) {
             const selectedBarangayObject = this.barangays.find(barangay => barangay.brgy_code === newBarangay);
             this.selectedBarangay = selectedBarangayObject ? selectedBarangayObject.brgy_name : '';
-        }
+        },
+        hospital(newVal) {
+            this.updateSelectedHospitalOffers(newVal);
+            this.typeOfRequest = '';
+        },
     },
 
     computed: {

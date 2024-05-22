@@ -24,7 +24,7 @@
                         <td class="whitespace-nowrap uppercase">{{ item.hospital_address }}</td>
                         <td class="whitespace-nowrap uppercase">{{ item.hospital_district }}</td>
                         <td class="whitespace-normal uppercase">
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 mb-4">
                                 <template v-for="(offer, index) in item.offer">
                                     <span class="inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium bg-blue-400 text-white" :style="offerStyle(item.offer)">
                                         {{ offer }}
