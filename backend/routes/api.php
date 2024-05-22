@@ -71,14 +71,15 @@ Route::prefix('utility')->group(function () {
         Route::put('/deactivate-hospital/{id}', [HospitalController::class, 'deactivate_hospital']);
         //hospital offer
         Route::post('/create-hospital-offer/{id}', [HospitalController::class, 'createHospitalRequest']);
-        Route::get('/get-hospital-with-offer', [HospitalController::class, 'hospitalsWithServiceOffers']);
         Route::put('/active-offer/{id}', [HospitalController::class, 'active_offer']);
         Route::put('/edit-offer/{id}', [HospitalController::class, 'edit_offer']);
         Route::put('/deactivate-offer/{id}', [HospitalController::class, 'deactivate_offer']);
         Route::get('/get-hospital-service-offer/{id}', [HospitalController::class, 'getServiceOffersForHospital']);
         Route::delete('/delete-offer/{id}', [HospitalController::class, 'delete_offer']);
+        Route::get('/get-hospital-with-offer', [HospitalController::class, 'hospitalsWithServiceOffers']);
 
     });
+
 });
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
@@ -106,6 +107,8 @@ Route::prefix('medical-requests')->group(function () {
         Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
         Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
     });
+    Route::get('/get-hospital-and-offer', [MedicalRequestController::class, 'hospitalsWithServiceOffers']);
+
 });
 Route::post('/post-news', [NewsPortal::class, 'addNews']);
 Route::prefix('dole')->group(function () {

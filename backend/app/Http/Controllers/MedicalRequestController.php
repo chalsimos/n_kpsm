@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hospital;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MedicalRequest;
@@ -17,6 +18,30 @@ class MedicalRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function hospitalsWithServiceOffers()
+     {
+         try {
+             $hospitals = Hospital::with('hospitalRequests')
+                 ->where('status', 'active')
+                 ->whereNull('deleted_at')
+                 ->orderBy('status', 'asc')
+                 ->get();
+             $formattedHospitals = $hospitals->map(function ($hospital) {
+                 return [
+                     'id' => $hospital->id,
+                     'hospital_name' => $hospital->hospital_name,
+                     'hospital_acronym' => $hospital->hospital_acronym,
+                     'service_offers' => $hospital->hospitalRequests->pluck('service_offer')
+                 ];
+             });
+             return response()->json($formattedHospitals, 200);
+         } catch (\Exception $e) {
+             return response()->json(['error' => $e->getMessage()], 500);
+         }
+     }
+
+
     public function index()
     {
         try {
