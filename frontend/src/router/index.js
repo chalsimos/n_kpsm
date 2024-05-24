@@ -48,10 +48,8 @@ const router = createRouter({
 
     ]
 });
-
 router.beforeEach(async (to, from, next) => {
     document.title = to.name || 'Default Title';
-    next();
     if (to.meta.requiresAdmin || to.meta.requiresCaptain || to.meta.requiresClient) {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -74,7 +72,7 @@ router.beforeEach(async (to, from, next) => {
             } else if (to.meta.requiresClient && userType !== 'client') {
                 toastr.error('Sorry but this page is only for Client.');
                 next('/login');
-            }else {
+            } else {
                 next();
             }
         } catch (error) {

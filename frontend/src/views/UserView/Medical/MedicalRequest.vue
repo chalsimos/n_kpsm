@@ -539,7 +539,6 @@ export default {
                                     formData.append(key, data[key]);
                                 }
                             });
-
                             axios.post('/api/medical-requests/request', formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'

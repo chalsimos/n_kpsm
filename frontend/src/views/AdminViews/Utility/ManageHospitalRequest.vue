@@ -34,12 +34,12 @@
                         </td>
                         <td class="whitespace-nowrap uppercase">
                             <div class="mb-1 mt-1">
-                                <Button type="primary" class="px-7" danger @click="ServiceModal(item.id)" v-show="item.status === 'inactive'">
+                                <Button type="primary" class="px-7" danger @click="ServiceModal(item.id)" v-show="item.status === 'active'">
                                     Add Service
                                 </Button>
                             </div>
                             <div class="mb-1">
-                                <Button type="primary" primary @click="modifyOffer(item.id)" v-show="item.status === 'inactive'">
+                                <Button type="primary" primary @click="modifyOffer(item.id)" v-show="item.status === 'active'">
                                     Modify Service
                                 </Button>
                             </div>

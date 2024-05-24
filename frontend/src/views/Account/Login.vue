@@ -66,25 +66,27 @@ export default {
     },
     methods: {
         async login() {
-            try {
-                const response = await axios.post('/api/login', {
-                    email: this.email,
-                    password: this.password
-                });
+    try {
+        const response = await axios.post('/api/login', {
+            email: this.email,
+            password: this.password
+        });
 
-                const {
-                    user,
-                    token
-                } = response.data;
-                localStorage.setItem('token', token);
-                console.log('Login successful:', user);
+        const { user, token } = response.data;
+        localStorage.setItem('token', token);
+        console.log('Login successful:', user);
 
-                this.$router.push('/');
-            } catch (error) {
-                console.error('Login failed:', error.response.data.message);
-                this.error = error.response.data.message;
-            }
+        if (user.type === 'admin') {
+            this.$router.push('/admin');
+        } else {
+            this.$router.push('/');
         }
+    } catch (error) {
+        console.error('Login failed:', error.response.data.message);
+        this.error = error.response.data.message;
+    }
+}
+
     }
 };
 </script>

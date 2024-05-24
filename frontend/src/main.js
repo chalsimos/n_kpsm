@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp } from 'vue' 
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
@@ -10,6 +10,7 @@ import "vue-toastification/dist/index.css";
 import VueCameraLib from 'vue-camera-lib'
 import Antd from 'ant-design-vue';
 import axios from 'axios'
+// axios.defaults.baseURL="https://congress.kpsm.online";
 axios.defaults.baseURL="http://127.0.0.1:8000";
 export default axios;
 import VueApexCharts from "vue3-apexcharts";
