@@ -13,6 +13,8 @@ const router = createRouter({
         { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
         { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
         { path:'/educational-assistance', name:'Scholarship Request', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue')},
+        { path:'/educational-assistance-smart-grant', name:'Smart Grant Request', component:() => import('../views/UserView/Scholarship/SmartGrant.vue')},
+        { path:'/educational-assistance-tulong-dunong', name:'Tulong Dunong Request', component:() => import('../views/UserView/Scholarship/TulongDunong.vue')},
         //Account
         { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') },
         { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') },
@@ -40,6 +42,8 @@ const router = createRouter({
         { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdmin: true }},
         { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-scholarship', name: 'Manage Scholarship', component: () => import('../views/AdminViews/Education/ManageScholar.vue') ,meta: {  requiresAdmin: true }},
+        { path: '/manage-smart-grant', name: 'Manage Smart Grant', component: () => import('../views/AdminViews/Education/ManageSmartGrant.vue') ,meta: {  requiresAdmin: true }},
+        { path: '/manage-tulong-dunong', name: 'Manage Tulong Dunong', component: () => import('../views/AdminViews/Education/ManageTulongDunong.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-logo', name: 'Manage Logo', component: () => import('../views/AdminViews/Utility/Logo.vue') ,meta: {  requiresAdmin: true }},
         { path: '/manage-educational-amount', name: 'Manage Educational Amount', component: () => import('../views/AdminViews/Utility/EducationalAmount.vue') ,meta: {  requiresAdmin: true }},

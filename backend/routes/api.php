@@ -83,16 +83,24 @@ Route::prefix('utility')->group(function () {
 });
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
+    Route::post('/submit-educational-assistance-tulong-dunong', [EducationalAssistanceController::class, 'apply_educational_assistance_tulong_dunong']);
+    Route::post('/submit-educational-assistance-smart-grant', [EducationalAssistanceController::class, 'apply_educational_assistance_smart_grant']);
     Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);
-    Route::post('/confirm-code', [EducationalAssistanceController::class, 'confirm_code']);
     Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
     //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-all-approved_shcolarship-request', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request']);
         Route::get('/get-all-decline_shcolarship-request', [EducationalAssistanceController::class, 'get_all_decline_scholarship_request']);
         Route::get('/get-all-pending_shcolarship-request', [EducationalAssistanceController::class, 'get_all_pending_scholarship_request']);
+        Route::get('/get-all-approved_shcolarship-request-tulong-dunong', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request_tulong_dunong']);
+        Route::get('/get-all-decline_shcolarship-request-tulong-dunong', [EducationalAssistanceController::class, 'get_all_decline_scholarship_request_tulong_dunong']);
+        Route::get('/get-all-pending_shcolarship-request-tulong-dunong', [EducationalAssistanceController::class, 'get_all_pending_scholarship_request_tulong_dunong']);
+        Route::get('/get-all-approved_shcolarship-request-smart-grant', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request_smart_grant']);
+        Route::get('/get-all-decline_shcolarship-request-smart-grant', [EducationalAssistanceController::class, 'get_all_decline_scholarship_request_smart_grant']);
+        Route::get('/get-all-pending_shcolarship-request-smart-grant', [EducationalAssistanceController::class, 'get_all_pending_scholarship_request_smart_grant']);
         Route::put('/approve-scholarship-request/{id}', [EducationalAssistanceController::class, 'accept_educational_assistance']);
         Route::put('/decline-scholarship-request/{id}', [EducationalAssistanceController::class, 'decline_educational_assistance']);
+        Route::post('/send-email-to-student/{id}', [EducationalAssistanceController::class, 'send_email_to_student']);
     });
 });
 

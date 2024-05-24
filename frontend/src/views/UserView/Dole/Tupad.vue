@@ -334,13 +334,14 @@ export default {
             barangays(this.municipality)
                 .then(response => {
                     this.barangays = response;
-                    this.selectedMunicipality = this.cities.find(city => city.city_code === this.municipality) ?.city_name || ''; // magkadikit lagi yang ?. error pag ? . naghihiwalay pag nag vue-format
+                    const selectedCity = this.cities.find(city => city.city_code === this.municipality);
+                    this.selectedMunicipality = selectedCity ? selectedCity.city_name : '';
                     this.selectedBarangay = this.barangays.length > 0 ? this.barangays[0].brgy_name : '';
                 })
                 .catch(error => {
                     console.error('Error fetching barangays:', error);
                 });
-        },
+        },  
         handleTypeOfRequestChange() {
             if (this.typeOfRequest !== 'OTHERS') {
                 this.otherRequestValue = '';

@@ -329,7 +329,6 @@ export default {
                     console.error('Error fetching barangays:', error);
                 });
         },
-
         handleClearanceUpload(event) {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
