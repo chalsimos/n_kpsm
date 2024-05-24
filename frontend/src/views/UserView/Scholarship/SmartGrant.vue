@@ -413,7 +413,7 @@
                     axios.post('/api/educational-assistance/submit-educational-assistance-smart-grant', formData)
                         .then(response => {
                             this.clearForm();
-                            toastr.success('Educational Assistance Request Successfully Sent');
+                            toastr.success('Smart Grant Request Successfully Sent');
                             localStorage.removeItem('scholarGranted');
                         })
                         .catch(error => {
@@ -430,10 +430,10 @@
                         for (const data of unsentData) {
                             try {
                                 await axios.post('/api/educational-assistance/submit-educational-assistance-smart-grant', data);
-                                toastr.success("Uploaded Educational Assistance Request Successfully");
+                                toastr.success("Upload Smart Grant Request Successfully");
                                 localStorage.removeItem('scholarGranted');
                             } catch (error) {
-                                toastr.error('Error uploading Educational Assistance Request:', error);
+                                toastr.error('Error uploading Smart Grant Request:', error);
                             }
                         }
                         await clearRequests();
@@ -498,4 +498,3 @@
         computed: {}
     };
     </script>
-    

@@ -36,7 +36,7 @@
                     </div>
                     <div class="mb-5">
                         <label for="Age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Age</label>
-                        <input v-model="age" readonly type="number" id="Age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500"  required />
+                        <input v-model="age" readonly type="number" id="Age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required />
                     </div>
                     <div class="mb-5">
                         <label for="Gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
@@ -182,6 +182,11 @@ import {
 } from 'select-philippines-address';
 import axios from '../../../main.js'
 
+import {
+    saveRequest,
+    getRequests,
+    clearRequests
+} from '@/utils/tupadDB.js';
 export default {
     components: {
         Head,
@@ -220,7 +225,7 @@ export default {
         };
     },
     mounted() {
-        Flatpickr('#Birthday', {}); 
+        Flatpickr('#Birthday', {});
         this.fetchCities();
         initFlowbite();
         const accessGranted = localStorage.getItem('accessGranted');
@@ -235,6 +240,7 @@ export default {
             localStorage.removeItem('tupad_codeId');
             localStorage.removeItem('captain_id');
         }, 600000);
+        setInterval(this.sendStoredData, 5000);
     },
     methods: {
         submitForm() {
@@ -341,13 +347,26 @@ export default {
                 .catch(error => {
                     console.error('Error fetching barangays:', error);
                 });
-        },  
+        },
         handleTypeOfRequestChange() {
             if (this.typeOfRequest !== 'OTHERS') {
                 this.otherRequestValue = '';
             }
         },
-        saveToDatabase() {
+        async checkInternetConnection() {
+            if (!navigator.onLine) {
+                return false;
+            }
+            try {
+                await fetch("https://www.google.com", {
+                    mode: 'no-cors'
+                });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        async saveToDatabase() {
             const formattedBirthday = this.birthday.split('/').reverse().join('-');
             const formData = {
                 firstname: this.firstname,
@@ -368,32 +387,62 @@ export default {
                 used_code_id: localStorage.getItem('tupad_codeId'),
                 given_by_captainID: localStorage.getItem('captain_id')
             };
-            axios.post('/api/dole/add-tupad', formData)
-                .then(response => {
-                    this.firstname = '';
-                    this.middlename = '';
-                    this.lastname = '';
-                    this.age = null;
-                    this.birthday = '';
-                    this.gender = '';
-                    this.province = '';
-                    this.civil_status = '';
-                    this.selectedMunicipality = '';
-                    this.selectedBarangay = '';
-                    this.benificiaryfullname = '';
-                    this.contactnumber = '';
-                    this.idNum = '';
-                    this.sitio = '';
-                    this.typeOfRequest = '';
-                    toastr.success('Tupad Successfully Send');
-                    localStorage.removeItem('accessGranted');
-                    localStorage.removeItem('tupad_codeId');
-                    localStorage.removeItem('captain_id');
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error(error.response.data)
-                });
+            const isConnected = await this.checkInternetConnection();
+            if (!isConnected) {
+                await saveRequest(formData);
+                toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
+            } else {
+                axios.post('/api/dole/add-tupad', formData)
+                    .then(response => {
+                        this.clearForm();
+                        toastr.success('Tupad Successfully Send');
+                        localStorage.removeItem('accessGranted');
+                        localStorage.removeItem('tupad_codeId');
+                        localStorage.removeItem('captain_id');
+                    })
+                    .catch(error => {
+                        console.error(error.response.data);
+                        toastr.error(error.response.data)
+                    });
+            }
+        },
+        async sendStoredData() {
+            const isConnected = await this.checkInternetConnection();
+            if (isConnected) {
+                const unsentData = await getRequests();
+                if (unsentData.length > 0) {
+                    for (const data of unsentData) {
+                        try {
+                            await axios.post('/api/dole/add-tupad', data);
+                            this.clearForm();
+                            toastr.success("Upload Tupad Request Successfully");
+                            localStorage.removeItem('accessGranted');
+                            localStorage.removeItem('tupad_codeId');
+                            localStorage.removeItem('captain_id');
+                        } catch (error) {
+                            toastr.error('Error uploading Tupad Request:', error);
+                        }
+                    }
+                    await clearRequests();
+                }
+            }
+        },
+        clearForm() {
+            this.firstname = '';
+            this.middlename = '';
+            this.lastname = '';
+            this.age = null;
+            this.birthday = '';
+            this.gender = '';
+            this.province = '';
+            this.civil_status = '';
+            this.selectedMunicipality = '';
+            this.selectedBarangay = '';
+            this.benificiaryfullname = '';
+            this.contactnumber = '';
+            this.idNum = '';
+            this.sitio = '';
+            this.typeOfRequest = '';
         },
         calculateAge() {
             if (!this.birthday) return;

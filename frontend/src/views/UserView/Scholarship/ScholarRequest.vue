@@ -430,7 +430,7 @@ export default {
                     for (const data of unsentData) {
                         try {
                             await axios.post('/api/educational-assistance/submit-educational-assistance', data);
-                            toastr.success("Uploaded Educational Assistance Request Successfully");
+                            toastr.success("Upload Educational Assistance Request Successfully");
                             localStorage.removeItem('scholarGranted');
                         } catch (error) {
                             toastr.error('Error uploading Educational Assistance Request:', error);
