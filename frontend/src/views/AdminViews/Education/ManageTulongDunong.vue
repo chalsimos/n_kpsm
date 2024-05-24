@@ -359,7 +359,7 @@ export default {
             });
         },
         fetchDeclineEducationalAssistance() {
-            axios.get('/api/educational-assistance/get-all-decline_shcolarship-request', {
+            axios.get('/api/educational-assistance/get-all-decline_shcolarship-request-tulong-dunong', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -372,7 +372,7 @@ export default {
                 });
         },
         fetchApprovedEducationalAssistance() {
-            axios.get('/api/educational-assistance/get-all-approved_shcolarship-request', {
+            axios.get('/api/educational-assistance/get-all-approved_shcolarship-request-tulong-dunong', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -385,7 +385,7 @@ export default {
                 });
         },
         fetchEducationalAssistance() {
-            axios.get('/api/educational-assistance/get-all-pending_shcolarship-request', {
+            axios.get('/api/educational-assistance/get-all-pending_shcolarship-request-tulong-dunong', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }

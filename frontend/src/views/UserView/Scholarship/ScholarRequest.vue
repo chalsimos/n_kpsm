@@ -1,5 +1,6 @@
 <template>
 <div class="flex flex-col min-h-screen">
+
     <Head />
     <div class="flex-grow p-4 mt-[5vh]" :class="{ 'blur': showModal }">
         <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
@@ -216,6 +217,11 @@ import {
     barangays
 } from 'select-philippines-address';
 import axios from '../../../main.js'
+import {
+    saveRequest,
+    getRequests,
+    clearRequests
+} from '@/utils/educationalAssistanceDB.js';
 
 export default {
     components: {
@@ -263,7 +269,7 @@ export default {
     },
     mounted() {
         Flatpickr('#representative_birthday', {});
-        Flatpickr('#beneficiary_birthday', {}); 
+        Flatpickr('#beneficiary_birthday', {});
         this.fetchCities();
         initFlowbite();
         const scholarGranted = localStorage.getItem('scholarGranted');
@@ -276,6 +282,7 @@ export default {
         setTimeout(() => {
             localStorage.removeItem('scholarGranted');
         }, 1800000);
+        setInterval(this.sendStoredData, 5000);
     },
     methods: {
         submitForm() {
@@ -312,34 +319,18 @@ export default {
                 });
         },
         submitCode() {
-            if (this.accessCode !== this.accessCode.toUpperCase()) {
+            if (this.accessCode !== 'CONFIRM') {
                 this.accessCode = '';
                 toastr.error("Please type 'CONFIRM' in all uppercase letters to proceed.");
                 return;
             }
-            axios.post('/api/educational-assistance/confirm-code', {
-                    code: this.accessCode
-                })
-                .then(response => {
-                    if (response.status === 200) {
-                        this.accessCode = '';
-                        this.scholarGranted = true;
-                        this.showModal = false;
-                        document.querySelector('.flex-grow').classList.remove('blur');
-                        toastr.success("You can now fillup the form")
-                        localStorage.setItem('scholarGranted', 'true');
-                        this.hideModal();
-                    }
-                })
-                .catch(error => {
-                    if (error.response && error.response.status === 400) {
-                        this.accessCode = '';
-                        toastr.error(error.response.data);
-                    } else {
-                        this.accessCode = '';
-                        toastr.error('An error occurred. Please try again later.');
-                    }
-                });
+            this.accessCode = '';
+            this.scholarGranted = true;
+            this.showModal = false;
+            document.querySelector('.flex-grow').classList.remove('blur');
+            toastr.success("You can now fill up the form");
+            localStorage.setItem('scholarGranted', 'true');
+            this.hideModal();
         },
         hideModal() {
             document.getElementById('static-modal').classList.add('hidden');
@@ -364,14 +355,28 @@ export default {
             barangays(this.municipality)
                 .then(response => {
                     this.barangays = response;
-                    this.selectedMunicipality = this.cities.find(city => city.city_code === this.municipality) ?.city_name || ''; // magkadikit lagi yang ?. error pag ? . naghihiwalay pag nag vue-format
+                    const selectedCity = this.cities.find(city => city.city_code === this.municipality);
+                    this.selectedMunicipality = selectedCity ? selectedCity.city_name : '';
                     this.selectedBarangay = this.barangays.length > 0 ? this.barangays[0].brgy_name : '';
                 })
                 .catch(error => {
                     console.error('Error fetching barangays:', error);
                 });
         },
-        saveToDatabase() {
+        async checkInternetConnection() {
+            if (!navigator.onLine) {
+                return false;
+            }
+            try {
+                await fetch("https://www.google.com", {
+                    mode: 'no-cors'
+                });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        async saveToDatabase() {
             const formattedRepresentativeBirthday = this.representative_birthday.split('/').reverse().join('-');
             const formattedBeneficiaryBirthday = this.beneficiary_birthday.split('/').reverse().join('-');
             const formData = {
@@ -399,38 +404,41 @@ export default {
                 academic_year_stage: this.academic_year_stage,
                 sitio: this.sitio,
             };
-            axios.post('/api/educational-assistance/submit-educational-assistance', formData)
-                .then(response => {
-                    this.representative_lastname = '',
-                        this.representative_firstname = '',
-                        this.representative_middlename = '',
-                        this.representative_age = '',
-                        this.representative_birthday = '',
-                        this.representative_gender = '',
-                        this.beneficiary_lastname = '',
-                        this.beneficiary_firstname = '',
-                        this.beneficiary_middlename = '',
-                        this.beneficiary_age = '',
-                        this.beneficiary_birthday = '',
-                        this.beneficiary_gender = '',
-                        this.province = '',
-                        this.municipality = '',
-                        this.barangay = '',
-                        this.relationship_to_beneficiary = '',
-                        this.contact_number = '',
-                        this.school = '',
-                        this.school_level = '',
-                        this.year_level = '',
-                        this.email = '',
-                        this.academic_year_stage = '',
-                        this.sitio = '',
-                        toastr.success('Educational Assistance Request Successfully Send');
-                    localStorage.removeItem('scholarGranted');
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error(error.response.data)
-                });
+
+            const isConnected = await this.checkInternetConnection();
+            if (!isConnected) {
+                await saveRequest(formData);
+                toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
+            } else {
+                axios.post('/api/educational-assistance/submit-educational-assistance', formData)
+                    .then(response => {
+                        this.clearForm();
+                        toastr.success('Educational Assistance Request Successfully Sent');
+                        localStorage.removeItem('scholarGranted');
+                    })
+                    .catch(error => {
+                        console.error(error.response.data);
+                        toastr.error(error.response.data);
+                    });
+            }
+        },
+        async sendStoredData() {
+            const isConnected = await this.checkInternetConnection();
+            if (isConnected) {
+                const unsentData = await getRequests();
+                if (unsentData.length > 0) {
+                    for (const data of unsentData) {
+                        try {
+                            await axios.post('/api/educational-assistance/submit-educational-assistance', data);
+                            toastr.success("Uploaded Educational Assistance Request Successfully");
+                            localStorage.removeItem('scholarGranted');
+                        } catch (error) {
+                            toastr.error('Error uploading Educational Assistance Request:', error);
+                        }
+                    }
+                    await clearRequests();
+                }
+            }
         },
         calculateRepresentativeAge() {
             if (!this.representative_birthday) return;
@@ -453,6 +461,31 @@ export default {
                 beneficiary_age--;
             }
             this.beneficiary_age = beneficiary_age;
+        },
+        clearForm() {
+            this.representative_lastname = '';
+            this.representative_firstname = '';
+            this.representative_middlename = '';
+            this.representative_age = '';
+            this.representative_birthday = '';
+            this.representative_gender = '';
+            this.beneficiary_lastname = '';
+            this.beneficiary_firstname = '';
+            this.beneficiary_middlename = '';
+            this.beneficiary_age = '';
+            this.beneficiary_birthday = '';
+            this.beneficiary_gender = '';
+            this.province = '';
+            this.selectedMunicipality = '';
+            this.selectedBarangay = '';
+            this.relationship_to_beneficiary = '';
+            this.contact_number = '';
+            this.school = '';
+            this.school_level = '';
+            this.year_level = '';
+            this.email = '';
+            this.academic_year_stage = '';
+            this.sitio = '';
         }
     },
     watch: {
