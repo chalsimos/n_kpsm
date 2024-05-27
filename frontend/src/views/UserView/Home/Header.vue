@@ -68,14 +68,14 @@
                 <li>
                     <router-link to="/" class="block py-2 px-3 border-b border-gray-100 hover:text-orange-300 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-blue-500 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700 test-class" aria-current="page">Home</router-link>
                 </li>
-                <li v-show="this.information.type === 'client'">
+                <li>
                     <button id="mega-menu-dropdown-button" data-dropdown-toggle="mega-menu-dropdown" class="flex items-center justify-between w-full py-2 px-3 font-medium border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
-                        Assistance
+                        Request
                         <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                         </svg>
                     </button>
-                    <div id="mega-menu-dropdown" class="absolute z-10 grid hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700">
+                    <div id="mega-menu-dropdown" class="absolute z-10 hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700">
                         <div class="p-4 pb-0 text-black md:pb-4 dark:text-white">
                             <ul class="space-y-4" aria-labelledby="mega-menu-dropdown-button">
                                 <li>
@@ -84,8 +84,23 @@
                                     </router-link>
                                 </li>
                                 <li>
-                                    <router-link to="/scholarship" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
-                                        Scholarship
+                                    <router-link to="/educational-assistance" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Scholarship Assistance
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link to="/educational-assistance-smart-grant" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Smart Grant Scholarship Assistance
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link to="/educational-assistance-tulong-dunong" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Tulong Dunong Scholarship Assistance
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link to="/tupad" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Tupad
                                     </router-link>
                                 </li>
                             </ul>

@@ -32,7 +32,7 @@ class MedicalRequestController extends Controller
                      'id' => $hospital->id,
                      'hospital_name' => $hospital->hospital_name,
                      'hospital_acronym' => $hospital->hospital_acronym,
-                     'service_offers' => $hospital->hospitalRequests->pluck('service_offer')
+                     'service_offers' => $hospital->hospitalRequests->where('status','active')->pluck('service_offer')
                  ];
              });
              return response()->json($formattedHospitals, 200);

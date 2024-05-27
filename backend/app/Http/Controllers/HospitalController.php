@@ -166,7 +166,7 @@ class HospitalController extends Controller
             $hospitals = Hospital::with('hospitalRequests')->orderBy('status', 'asc')->get();
             $formattedHospitals = $hospitals->map(function ($hospital) {
                 $hospitalArray = $hospital->toArray();
-                $serviceOffers = $hospital->hospitalRequests->pluck('service_offer');
+                $serviceOffers = $hospital->hospitalRequests->where('status', 'active')->pluck('service_offer');
                 unset($hospitalArray['hospital_requests']);
                 $hospitalArray['service_offers'] = $serviceOffers;
                 return $hospitalArray;
