@@ -42,6 +42,7 @@ Route::prefix('dashboard')->group(function () {
  //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-hospital-count', [AdminDashboardController::class, 'getAllHospital']);
+        Route::get('/get-hospital-service-offer-count', [AdminDashboardController::class, 'getAllHospitalsWithServiceOffers']);
 
     });
 
@@ -130,7 +131,6 @@ Route::prefix('dole')->group(function () {
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
         Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
-        Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
         Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
         Route::get('/getAll-captains-tupad-invites', [DoleController::class, 'getAll_captains_tupad_invites']);
     });

@@ -13,6 +13,7 @@
     "apexcharts": "^3.49.1",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
+    "exceljs": "^4.4.0",
     "flatpickr": "^4.6.13",
     "flowbite": "^2.3.0",
     "idb": "^8.0.0",

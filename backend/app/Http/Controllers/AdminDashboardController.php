@@ -19,6 +19,42 @@ use Illuminate\Validation\ValidationException;
 
 class AdminDashboardController extends Controller
 {
+
+    public function getAllHospitalsWithServiceOffers()
+    {
+        return DB::transaction(function () {
+            $hospitals = DB::table('hospitals')
+                ->whereNull('deleted_at')
+                ->get();
+            $hospitalDetails = [];
+            foreach ($hospitals as $hospital) {
+                $hospitalId = $hospital->id;
+                $hospitalName = $hospital->hospital_name;
+                $hospitalAcronym = $hospital->hospital_acronym;
+                $activeOffers = DB::table('hospital_requests')
+                    ->where('hospital_id', $hospitalId)
+                    ->where('status', 'active')
+                    ->whereNull('deleted_at')
+                    ->pluck('service_offer');
+                $inactiveOffers = DB::table('hospital_requests')
+                    ->where('hospital_id', $hospitalId)
+                    ->where('status', 'inactive')
+                    ->whereNull('deleted_at')
+                    ->pluck('service_offer');
+                $hospitalDetails[] = [
+                    'hospital_name' => $hospitalName,
+                    'hospital_acronym' => $hospitalAcronym,
+                    'active_offers' => $activeOffers,
+                    'inactive_offers' => $inactiveOffers,
+                ];
+            }
+            return response()->json([
+                'hospitals' => $hospitalDetails,
+            ]);
+        });
+    }
+
+
     /**
      * Display a listing of the resource.
      */

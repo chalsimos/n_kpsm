@@ -105,6 +105,36 @@
             <!-- end news -->
             <li>
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-request" data-collapse-toggle="manage-request">
+                    <img width="32" height="32" src="https://img.icons8.com/nolan/96/ask-question.png" alt="ask-question"/>
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Medical</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                    </svg>
+                </button>
+                <ul id="manage-request" class="hidden py-2 space-y-2">
+                    <li data-tooltip-target="Medical" data-tooltip-placement="right">
+                        <router-link to="/manage-medical-request" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+                                <path fill="#AFC1C9" d="M483.114 208.091H149.055c-7.953 0-14.4 6.447-14.4 14.4v80.147H34.069c-7.953 0-14.4 6.447-14.4 14.4V482.6c0 7.953 6.447 14.4 14.4 14.4h449.046c7.953 0 14.4-6.447 14.4-14.4V222.491c-.001-7.953-6.449-14.4-14.401-14.4" />
+                                <path fill="#95AAAD" d="M498.737 188.996H214.701a7.2 7.2 0 0 0-7.2 7.2v16.99a8.505 8.505 0 0 0 8.505 8.505h281.427a8.505 8.505 0 0 0 8.505-8.505v-16.99a7.201 7.201 0 0 0-7.201-7.2M18.445 279.932h284.037a7.2 7.2 0 0 1 7.2 7.2v16.99a8.505 8.505 0 0 1-8.505 8.505H19.75a8.505 8.505 0 0 1-8.505-8.505v-16.99a7.2 7.2 0 0 1 7.2-7.2" />
+                                <path fill="#CFDBE2" d="M316.414 30.003H58.699c-4.162 0-7.536 3.994-7.536 8.92V488.08c0 4.926 3.374 8.92 7.536 8.92h257.715c4.162 0 7.536-3.994 7.536-8.92V38.923c0-4.926-3.374-8.92-7.536-8.92" />
+                                <path fill="#FF473E" d="M234.917 113.538h-33.14v-33.14a7.2 7.2 0 0 0-7.2-7.2h-14.04a7.2 7.2 0 0 0-7.2 7.2v33.14h-33.14a7.2 7.2 0 0 0-7.2 7.2v14.04a7.2 7.2 0 0 0 7.2 7.2h33.14v33.14a7.2 7.2 0 0 0 7.2 7.2h14.04a7.2 7.2 0 0 0 7.2-7.2v-33.14h33.14a7.2 7.2 0 0 0 7.2-7.2v-14.04a7.2 7.2 0 0 0-7.2-7.2" />
+                                <path fill="#0096D1" d="M463.893 368.367H358.115a7.2 7.2 0 0 1-7.2-7.2v-42.429a7.2 7.2 0 0 1 7.2-7.2h105.779a7.2 7.2 0 0 1 7.2 7.2v42.429a7.201 7.201 0 0 1-7.201 7.2m8.439 81.968v-42.429a7.2 7.2 0 0 0-7.2-7.2H356.876a7.2 7.2 0 0 0-7.2 7.2v42.429a7.2 7.2 0 0 0 7.2 7.2h108.256a7.2 7.2 0 0 0 7.2-7.2m0-181.17V255.15a7.2 7.2 0 0 0-7.2-7.2H356.876a7.2 7.2 0 0 0-7.2 7.2v14.015a7.2 7.2 0 0 0 7.2 7.2h108.256a7.2 7.2 0 0 0 7.2-7.2" />
+                                <path fill="#2B3B47" d="M100.843 421.106H274.27V497H100.843z" />
+                                <path fill="#00B1FF" d="M205.639 368.367h-35.71a7.2 7.2 0 0 1-7.2-7.2v-44.863a7.2 7.2 0 0 1 7.2-7.2h35.71a7.2 7.2 0 0 1 7.2 7.2v44.863a7.2 7.2 0 0 1-7.2 7.2m85.161-7.2v-44.863a7.2 7.2 0 0 0-7.2-7.2h-35.71a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h35.71a7.2 7.2 0 0 0 7.2-7.2m-155.921 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-35.71a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h35.71a7.2 7.2 0 0 0 7.2-7.2m-19.774-92.002v-44.863a7.2 7.2 0 0 0-7.2-7.2H91.969a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2H283.6a7.2 7.2 0 0 0 7.2-7.2" />
+                                <path fill="#67747C" d="M274.27 429.12H100.843v-8.22c0-5.442 4.412-9.854 9.854-9.854h153.718c5.442 0 9.854 4.412 9.854 9.854z" />
+                                <path fill="#95AAAD" d="M329.803 20.062H45.766a7.2 7.2 0 0 0-7.2 7.2v16.99a8.505 8.505 0 0 0 8.505 8.505h281.427a8.505 8.505 0 0 0 8.505-8.505v-16.99a7.2 7.2 0 0 0-7.2-7.2" /></svg>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Medical</span>
+                        </router-link>
+                    </li>
+                    <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Medical Assistance
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                </ul>
+            </li>
+            <li>
+                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="educational-assitance" data-collapse-toggle="educational-assitance">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                         <g fill="none">
                             <rect width="30" height="22" x="1" y="8" fill="#B4ACBC" rx="1.5" />
@@ -115,12 +145,12 @@
                             <path fill="#F92F60" d="M18.94 3.47v7.1c0 .16.13.28.28.28h.98c.62 0 .95.74.53 1.2l-4.01 4.41a.72.72 0 0 1-1.06 0l-4.02-4.41a.718.718 0 0 1 .53-1.2h.98c.16 0 .28-.13.28-.28v-7.1c0-.26.21-.47.47-.47h4.58c.25 0 .46.21.46.47" />
                         </g>
                     </svg>
-                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Request</span>
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">Educational</span>
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
-                <ul id="manage-request" class="hidden py-2 space-y-2">
+                <ul id="educational-assitance" class="hidden py-2 space-y-2">
                     <li data-tooltip-target="Education" data-tooltip-placement="right">
                         <router-link to="/manage-scholarship" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64">
@@ -140,31 +170,31 @@
                                 <path fill="#84929b" d="M19.241 26.18c0 .463-.272.841-.614.841c-.335 0-.608-.377-.608-.841v-6.813c0-.466.272-.841.608-.841c.341 0 .614.375.614.841z" />
                                 <path fill="#788187" d="M20.322 14.283c.205-.417.62-.632.92-.484c.302.15.381.61.173 1.026l-2.188 4.417c-.206.417-.618.632-.92.483c-.302-.148-.379-.61-.171-1.024z" />
                             </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Education</span>
-                            <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Educational Assistance</span>
                         </router-link>
                     </li>
                     <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Manage Educational Assistance
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <li data-tooltip-target="Medical" data-tooltip-placement="right">
-                        <router-link to="/manage-medical-request" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
-                                <path fill="#AFC1C9" d="M483.114 208.091H149.055c-7.953 0-14.4 6.447-14.4 14.4v80.147H34.069c-7.953 0-14.4 6.447-14.4 14.4V482.6c0 7.953 6.447 14.4 14.4 14.4h449.046c7.953 0 14.4-6.447 14.4-14.4V222.491c-.001-7.953-6.449-14.4-14.401-14.4" />
-                                <path fill="#95AAAD" d="M498.737 188.996H214.701a7.2 7.2 0 0 0-7.2 7.2v16.99a8.505 8.505 0 0 0 8.505 8.505h281.427a8.505 8.505 0 0 0 8.505-8.505v-16.99a7.201 7.201 0 0 0-7.201-7.2M18.445 279.932h284.037a7.2 7.2 0 0 1 7.2 7.2v16.99a8.505 8.505 0 0 1-8.505 8.505H19.75a8.505 8.505 0 0 1-8.505-8.505v-16.99a7.2 7.2 0 0 1 7.2-7.2" />
-                                <path fill="#CFDBE2" d="M316.414 30.003H58.699c-4.162 0-7.536 3.994-7.536 8.92V488.08c0 4.926 3.374 8.92 7.536 8.92h257.715c4.162 0 7.536-3.994 7.536-8.92V38.923c0-4.926-3.374-8.92-7.536-8.92" />
-                                <path fill="#FF473E" d="M234.917 113.538h-33.14v-33.14a7.2 7.2 0 0 0-7.2-7.2h-14.04a7.2 7.2 0 0 0-7.2 7.2v33.14h-33.14a7.2 7.2 0 0 0-7.2 7.2v14.04a7.2 7.2 0 0 0 7.2 7.2h33.14v33.14a7.2 7.2 0 0 0 7.2 7.2h14.04a7.2 7.2 0 0 0 7.2-7.2v-33.14h33.14a7.2 7.2 0 0 0 7.2-7.2v-14.04a7.2 7.2 0 0 0-7.2-7.2" />
-                                <path fill="#0096D1" d="M463.893 368.367H358.115a7.2 7.2 0 0 1-7.2-7.2v-42.429a7.2 7.2 0 0 1 7.2-7.2h105.779a7.2 7.2 0 0 1 7.2 7.2v42.429a7.201 7.201 0 0 1-7.201 7.2m8.439 81.968v-42.429a7.2 7.2 0 0 0-7.2-7.2H356.876a7.2 7.2 0 0 0-7.2 7.2v42.429a7.2 7.2 0 0 0 7.2 7.2h108.256a7.2 7.2 0 0 0 7.2-7.2m0-181.17V255.15a7.2 7.2 0 0 0-7.2-7.2H356.876a7.2 7.2 0 0 0-7.2 7.2v14.015a7.2 7.2 0 0 0 7.2 7.2h108.256a7.2 7.2 0 0 0 7.2-7.2" />
-                                <path fill="#2B3B47" d="M100.843 421.106H274.27V497H100.843z" />
-                                <path fill="#00B1FF" d="M205.639 368.367h-35.71a7.2 7.2 0 0 1-7.2-7.2v-44.863a7.2 7.2 0 0 1 7.2-7.2h35.71a7.2 7.2 0 0 1 7.2 7.2v44.863a7.2 7.2 0 0 1-7.2 7.2m85.161-7.2v-44.863a7.2 7.2 0 0 0-7.2-7.2h-35.71a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h35.71a7.2 7.2 0 0 0 7.2-7.2m-155.921 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-35.71a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h35.71a7.2 7.2 0 0 0 7.2-7.2m-19.774-92.002v-44.863a7.2 7.2 0 0 0-7.2-7.2H91.969a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2h15.936a7.2 7.2 0 0 0 7.2-7.2m58.565 0v-44.863a7.2 7.2 0 0 0-7.2-7.2h-15.936a7.2 7.2 0 0 0-7.2 7.2v44.863a7.2 7.2 0 0 0 7.2 7.2H283.6a7.2 7.2 0 0 0 7.2-7.2" />
-                                <path fill="#67747C" d="M274.27 429.12H100.843v-8.22c0-5.442 4.412-9.854 9.854-9.854h153.718c5.442 0 9.854 4.412 9.854 9.854z" />
-                                <path fill="#95AAAD" d="M329.803 20.062H45.766a7.2 7.2 0 0 0-7.2 7.2v16.99a8.505 8.505 0 0 0 8.505 8.505h281.427a8.505 8.505 0 0 0 8.505-8.505v-16.99a7.2 7.2 0 0 0-7.2-7.2" /></svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Medical</span>
+                    <li data-tooltip-target="Education" data-tooltip-placement="right">
+                        <router-link to="/manage-smart-grant" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img width="32" height="32" src="https://img.icons8.com/stickers/100/school--v1.png" alt="school--v1"/>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Smart Grant</span>
                         </router-link>
                     </li>
-                    <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Manage Medical Assistance
+                    <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Smart Grant
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <li data-tooltip-target="Education" data-tooltip-placement="right">
+                        <router-link to="/manage-tulong-dunong" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <img width="32" height="32" src="https://img.icons8.com/dusk/64/school.png" alt="school"/>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Tulong Dunong</span>
+                        </router-link>
+                    </li>
+                    <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Tulong Dunong
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </ul>
@@ -189,7 +219,7 @@
                         Manage Tupad
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <li data-tooltip-target="GIP" data-tooltip-placement="right">
+                    <!-- <li data-tooltip-target="GIP" data-tooltip-placement="right">
                         <router-link to="/gip" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <img src="../../../assets/gip.jpg" class="h-8 me-3" alt="KPSM Logo" />
                             <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">GIP</span>
@@ -198,7 +228,7 @@
                     <div id="GIP" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Manage GIP
                         <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    </div> -->
                 </ul>
             </li>
             <li data-tooltip-target="General Request" data-tooltip-placement="right">

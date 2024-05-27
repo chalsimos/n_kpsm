@@ -291,6 +291,7 @@ export default {
                 .then(response => {
                     toastr.success("Offer Updated");
                     this.fetchOffer(this.itemId);
+                    this.fetchData();
                 })
                 .catch(error => {
                     if (error.response && error.response.data && error.response.data.error) {
@@ -310,6 +311,7 @@ export default {
                 .then(response => {
                     toastr.success("Offer Updated");
                     this.fetchOffer(this.itemId);
+                    this.fetchData();
                 })
                 .catch(error => {
                     if (error.response && error.response.data && error.response.data.error) {

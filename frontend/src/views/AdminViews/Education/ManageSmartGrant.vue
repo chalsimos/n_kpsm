@@ -20,7 +20,7 @@
                 <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Pending-List" role="tabpanel" aria-labelledby="Pending-List-tab">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Pending Educational Assistance Requests
+                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Pending Smart Grant Requests
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
@@ -93,7 +93,7 @@
                 <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Approve-List" role="tabpanel" aria-labelledby="Approve-List-tab">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Approve Educational Assistance Requests
+                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Approve Smart Grant Requests
                             <v-spacer></v-spacer>
                             <v-text-field v-model="Approvesearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>
@@ -163,7 +163,7 @@
                 <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Decline-List" role="tabpanel" aria-labelledby="Decline-List-tab">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Decline Educational Assistance Requests
+                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Decline Smart Grant Requests
                             <v-spacer></v-spacer>
                             <v-text-field v-model="Declinesearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                         </v-card-title>

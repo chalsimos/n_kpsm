@@ -171,7 +171,6 @@ class DoleController extends Controller
     public function generateCodeAndSave(Request $request)
     {
         try {
-
             $user = $this->validateCaptain($request);
             $slotsWithNoCode = TupadSlot::where('captain_id', $user->id)
                 ->where('status', 'No Code')
@@ -191,11 +190,10 @@ class DoleController extends Controller
                     $code->captain_id = $user->id;
                     $code->slot_id = $slot->id;
                     $code->code_generated = $codeGenerated;
-                    $code->status = 'active';
+                    $code->status = 'inactive';
                     $code->save();
                 }
             }
-
             return response()->json(['message' => 'Codes generated and saved successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -260,7 +258,6 @@ class DoleController extends Controller
             $slot->date_obtained = now()->toDateString();
             $slot->status = 'No Code';
             $slot->save();
-
             return response()->json(['data' => $slot], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

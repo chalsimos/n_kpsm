@@ -24,7 +24,7 @@
                         New Tupad Slot Available: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalNoCodeSlots }}</span>
                         <Flex v-show="totalNoCodeSlots !== 0 " gap="small" wrap="wrap">
                         </Flex>
-                        <Button v-show="totalNoCodeSlots !== 0 " @click="generateCodes" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate {{ totalNoCodeSlots }} Code</Button>
+                        <Button v-show="totalNoCodeSlots !== 0 " @click="generateExcel"  class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900" >Generate Excel Form {{ totalNoCodeSlots }} Slots</Button>
                     </h2>
                     <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
                         <v-card flat>
@@ -182,6 +182,8 @@ import {
 import Foot from "@/views/UserView/Home/Footer.vue";
 const toastr = useToast();
 import axios from "../../../main.js";
+import ExcelJS from 'exceljs';
+
 export default {
     components: {
         Head,
@@ -195,17 +197,18 @@ export default {
             activeTab: 'TupadSlot',
             search: "",
             searchTupadInvites: '',
-            totalNoCodeSlots: '',
+            totalNoCodeSlots: 0,
             totalInvites: '',
             totalAccepted: '',
             totalDeclined: '',
             items: [],
+            slots: [],
             tupad_invites: [],
             tupadInvite: [],
         };
     },
     mounted() {
-        initFlowbite(); 
+        initFlowbite();
         this.fetchTupadCode();
         this.fetchTupadSlot();
         this.fetchTupadInvites();
@@ -341,29 +344,6 @@ export default {
                     console.error("Error fetching tupad slot:", error);
                 });
         },
-        fetchTupadSlot() {
-            axios.get('/api/dole/captain-slot-list', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.slots = response.data.data;
-                    this.totalNoCodeSlots = this.calculateTotalNoCodeSlots(this.slots);
-                })
-                .catch(error => {
-                    console.error('Error fetching tupad slot:', error);
-                });
-        },
-        calculateTotalNoCodeSlots(slots) {
-            let total = 0;
-            slots.forEach(slot => {
-                if (slot.status === 'No Code') {
-                    total += slot.slot_get;
-                }
-            });
-            return total;
-        },
         generateCodes() {
             axios.post('/api/dole/generate-code', {}, {
                     headers: {
@@ -389,7 +369,6 @@ export default {
             this.$nextTick(() => {
                 document.getElementById("check-all-for-Invite").checked = isChecked;
             });
-            console.log("Checked IDs For Invite:", this.tupadInvite);
         },
         toggleCheckedForInvite(id) {
             if (this.tupadInvite.includes(id)) {
@@ -397,8 +376,162 @@ export default {
             } else {
                 this.tupadInvite.push(id);
             }
-            console.log("Checked IDs For Invite:", this.tupadInvite);
         },
+        fetchTupadSlot() {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/dole/captain-slot-list', {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        this.slots = response.data.data;
+                        this.totalNoCodeSlots = this.calculateTotalNoCodeSlots(this.slots);
+                        resolve(this.totalNoCodeSlots);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching tupad slot:', error);
+                        reject(error);
+                    });
+            });
+        },
+        calculateTotalNoCodeSlots(slots) {
+            let total = 0;
+            slots.forEach(slot => {
+                if (slot.status === 'No Code') {
+                    total += slot.slot_get;
+                }
+            });
+            return total;
+        },
+        async generateExcel() {
+            try {
+                const slotCount = await this.fetchTupadSlot();
+                if (slotCount === 0) {
+                    toastr.error('No available slots to generate Excel');
+                    return;
+                }
+                const workbook = new ExcelJS.Workbook();
+                const worksheet = workbook.addWorksheet('Captain Slots');
+                worksheet.columns = [{
+                        header: 'Available',
+                        key: 'slot_available',
+                        width: 15
+                    },
+                    {
+                        header: 'Firstname',
+                        key: 'firstname',
+                        width: 15
+                    },
+                    {
+                        header: 'Middlename',
+                        key: 'middlename',
+                        width: 15
+                    },
+                    {
+                        header: 'Lastname',
+                        key: 'lastname',
+                        width: 15
+                    },
+                    {
+                        header: 'Birthday',
+                        key: 'birthday',
+                        width: 15
+                    },
+                    {
+                        header: 'Age',
+                        key: 'age',
+                        width: 10
+                    },
+                    {
+                        header: 'Sex',
+                        key: 'sex',
+                        width: 10
+                    },
+                    {
+                        header: 'Address',
+                        key: 'address',
+                        width: 30
+                    },
+                    {
+                        header: 'Beneficiary',
+                        key: 'beneficiary',
+                        width: 20
+                    },
+                    {
+                        header: 'Number',
+                        key: 'number',
+                        width: 15
+                    },
+                ];
+                let slotsAdded = 0;
+                for (let i = 0; i < this.slots.length && slotsAdded < slotCount; i++) {
+                    const slot = this.slots[i];
+                    if (slot.status === 'No Code') {
+                        for (let j = 0; j < slot.slot_get && slotsAdded < slotCount; j++) {
+                            worksheet.addRow({
+                                slot_available: slotsAdded + 1,
+                                firstname: slot.firstname || '',
+                                middlename: slot.middlename || '',
+                                lastname: slot.lastname || '',
+                                birthday: slot.birthday || '',
+                                age: slot.age || '',
+                                sex: slot.sex || '',
+                                address: slot.address || '',
+                                beneficiary: slot.beneficiary || '',
+                                number: slot.number || ''
+                            });
+                            slotsAdded++;
+                        }
+                    }
+                }
+                worksheet.getRow(1).eachCell(cell => {
+                    cell.protection = {
+                        locked: true
+                    };
+                });
+                worksheet.eachRow((row, rowNumber) => {
+                    if (rowNumber > 1) {
+                        row.getCell('A').protection = {
+                            locked: true
+                        };
+                        row.eachCell((cell, colNumber) => {
+                            if (colNumber !== 1) {
+                                cell.protection = {
+                                    locked: false
+                                };
+                            }
+                        });
+                    }
+                });
+                worksheet.protect('your_password_here', {
+                    selectLockedCells: true,
+                    selectUnlockedCells: true,
+                    formatCells: false,
+                    formatColumns: false,
+                    formatRows: false,
+                    insertColumns: false,
+                    insertRows: false,
+                    insertHyperlinks: false,
+                    deleteColumns: false,
+                    deleteRows: false
+                });
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                this.generateCodes();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'tupad_form.xlsx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Error generating Excel:', error);
+                toastr.error('Failed to generate Excel');
+            }
+        }
 
     },
     watch: {},
