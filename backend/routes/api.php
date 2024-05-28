@@ -115,8 +115,9 @@ Route::prefix('medical-requests')->group(function () {
         Route::get('/get-all', [MedicalRequestController::class, 'index']);
         Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
         Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
+        Route::get('/get-hospital-and-offer', [MedicalRequestController::class, 'hospitalsWithServiceOffers']);
+
     });
-    Route::get('/get-hospital-and-offer', [MedicalRequestController::class, 'hospitalsWithServiceOffers']);
 
 });
 Route::post('/post-news', [NewsPortal::class, 'addNews']);
@@ -138,9 +139,13 @@ Route::prefix('dole')->group(function () {
     Route::middleware(['captain'])->group(function () {
         Route::get('/captain-slot-list', [DoleController::class, 'captain_tupad_slot']);
         Route::post('/generate-code', [DoleController::class, 'generateCodeAndSave']);
+        Route::post('/generate-excel', [DoleController::class, 'generateExcel']);
         Route::get('/tupad-code-list', [DoleController::class, 'tupad_code_list']);
         Route::get('/captain-tupad-invited', [DoleController::class, 'captain_tupad_invite']);
         Route::put('/decline-tupad-request/{id}', [DoleController::class, 'decline_tupad_invites']);
         Route::put('/accept-tupad-request/{id}', [DoleController::class, 'accept_tupad_invites']);
     });
+        Route::post('/captain-upload-file', [DoleController::class, 'excel_upload_by_captain']);
+        Route::post('/get-captain-slot', [DoleController::class, 'get_tupad_slot_count']);
+        Route::get('/get-nocode-slot', [DoleController::class, 'getSlotsWithNoCode']);
 });

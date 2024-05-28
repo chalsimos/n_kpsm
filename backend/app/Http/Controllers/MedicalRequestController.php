@@ -64,7 +64,7 @@ class MedicalRequestController extends Controller
             foreach ($imageUrls as $key => $imagePaths) {
                 $imagePaths = explode(',', $requestData[$key]);
                 foreach ($imagePaths as $imagePath) {
-                    $imageUrl = asset($imagePath);
+                    $imageUrl = Storage::url($imagePath);
                     $imageUrls[$key][] = $imageUrl;
                 }
             }
@@ -123,9 +123,9 @@ class MedicalRequestController extends Controller
             $data->status = 'pending';
             $data->save();
             $basePath = 'Request/Medical Request/' . now()->year . '/' . now()->format('F') . '/';
-            $directoryPath = public_path($basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/');
-            if (!File::isDirectory($directoryPath)) {
-                File::makeDirectory($directoryPath, 0700, true);
+            $directoryPath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/';
+            if (!Storage::exists('public/' . $directoryPath)) {
+                Storage::makeDirectory('public/' . $directoryPath);
             }
             $brgyClearanceImagePaths = [];
             $validIdImagePaths = [];
@@ -133,31 +133,25 @@ class MedicalRequestController extends Controller
             if ($request->hasFile('brgy_ClearanceImages')) {
                 foreach ($request->file('brgy_ClearanceImages') as $image) {
                     $imageName = 'brgy_Clearance_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
-                    if (!in_array($imagePath, $brgyClearanceImagePaths)) {
-                        $image->move($directoryPath, $imageName);
-                        $brgyClearanceImagePaths[] = $imagePath;
-                    }
+                    $imagePath = $directoryPath . $imageName;
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $brgyClearanceImagePaths[] = $imagePath;
                 }
             }
             if ($request->hasFile('valid_IdImages')) {
                 foreach ($request->file('valid_IdImages') as $image) {
                     $imageName = 'valid_id_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
-                    if (!in_array($imagePath, $validIdImagePaths)) {
-                        $image->move($directoryPath, $imageName);
-                        $validIdImagePaths[] = $imagePath;
-                    }
+                    $imagePath = $directoryPath . $imageName;
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $validIdImagePaths[] = $imagePath;
                 }
             }
             if ($request->hasFile('hospital_DocumentImages')) {
                 foreach ($request->file('hospital_DocumentImages') as $image) {
                     $imageName = 'hospital_documents_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
-                    if (!in_array($imagePath, $hospitalDocumentImagePaths)) {
-                        $image->move($directoryPath, $imageName);
-                        $hospitalDocumentImagePaths[] = $imagePath;
-                    }
+                    $imagePath = $directoryPath . $imageName;
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $hospitalDocumentImagePaths[] = $imagePath;
                 }
             }
             $data->update([
