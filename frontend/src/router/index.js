@@ -28,7 +28,7 @@ const router = createRouter({
 
         // Brgy. Captain Side
         { path:'/gip', name:'GIP', component:() => import('../views/UserView/Dole/GIP.vue'),meta: {  requiresCaptain: true }},
-        { path:'/tupad-slot', name:'GIP', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
+        { path:'/tupad-slot', name:'Tupad Slot', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
 
         //Admin
         { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdmin: true }},

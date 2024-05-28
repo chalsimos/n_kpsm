@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CaptainTupadExcelForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tupad;
 use App\Models\TupadSlot;
 use App\Models\TupadCode;
+use App\Models\TupadExcelForm;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -15,13 +17,52 @@ use Illuminate\Support\Str;
 
 class DoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function excel_upload_by_captain(Request $request)
     {
-        //
+        $user = $this->validateCaptain($request);
+        $request->validate([
+            'tupad_slot_id' => 'nullable',
+            'excel_file' => 'required|mimes:xls,xlsx',
+            'image_files.*' => 'required|image|mimes:jpeg,png,jpg',
+        ]);
+        $given_by_captainID = $user->id;
+        $tupad_code_id = TupadCode::where('slot_id', $request->tupad_slot_id)->value('id');
+        $captainName = $user->name;
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $excelFolderPath = "excelform/{$captainName}/{$timestamp}";
+        $excelFilePath = $request->file('excel_file')->storeAs($excelFolderPath, 'file.xlsx', 'public');
+        $imagePaths = [];
+        if ($request->hasFile('image_files')) {
+            foreach ($request->file('image_files') as $imageFile) {
+                $imageFolderPath = "excelform/{$captainName}/{$timestamp}/image";
+                $imageFileName = $imageFile->getClientOriginalName();
+                $imageFilePath = $imageFile->storeAs($imageFolderPath, $imageFileName, 'public');
+                $imagePaths[] = $imageFilePath;
+            }
+        }
+        $imagesPathString = implode(',', $imagePaths);
+        $form = CaptainTupadExcelForm::create([
+            'tupad_code_id' => $tupad_code_id,
+            'given_by_captainID' => $given_by_captainID,
+            'tupad_slot_id' => $request->tupad_slot_id,
+            'excel_path' => $excelFilePath ?? null,
+            'images_path' => $imagesPathString ?? null,
+            'status' => 'active',
+        ]);
+        return response()->json(['success' => true, 'data' => $form], 201);
     }
+
+
+    public function get_tupad_slot_count(Request $request)
+    {
+        $request->validate([
+            'tupad_slot_id' => 'nullable|exists:tupad_slots,id',
+        ]);
+        $tupad_slot_id = $request->input('tupad_slot_id');
+        $slot_get = TupadSlot::where('id', $tupad_slot_id)->value('slot_get');
+        return response()->json(['slot_get' => $slot_get]);
+    }
+
     public function tupad_request_status_checker(Request $request)
     {
         try {
@@ -167,10 +208,10 @@ class DoleController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
     public function generateCodeAndSave(Request $request)
     {
         try {
+
             $user = $this->validateCaptain($request);
             $slotsWithNoCode = TupadSlot::where('captain_id', $user->id)
                 ->where('status', 'No Code')
@@ -190,15 +231,55 @@ class DoleController extends Controller
                     $code->captain_id = $user->id;
                     $code->slot_id = $slot->id;
                     $code->code_generated = $codeGenerated;
-                    $code->status = 'inactive';
+                    $code->status = 'active';
                     $code->save();
                 }
             }
+
             return response()->json(['message' => 'Codes generated and saved successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function generateExcel(Request $request)
+    {
+        try {
+            $user = $this->validateCaptain($request);
+            $slotsWithNoCode = TupadSlot::where('captain_id', $user->id)
+                ->where('status', 'No Code')
+                ->get();
+            if ($slotsWithNoCode->isEmpty()) {
+                return response()->json(['message' => 'No slots available'], 400);
+            }
+            $slotsWithNoCode->each(function ($slot) {
+                $slot->status = 'Excel Generated';
+                $slot->save();
+            });
+            foreach ($slotsWithNoCode as $slot) {
+               $code = new TupadCode();
+                    $code->captain_id = $user->id;
+                    $code->slot_id = $slot->id;
+                    $code->code_generated = 'Used Excel Form';
+                    $code->status = 'Excel Downloaded';
+                    $code->save();
+                }
+            return response()->json(['message' => 'Excel generated and saved successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function getSlotsWithNoCode()
+    {
+        try {
+            $latestSlotWithNoCode = TupadSlot::where('status', 'Excel Generated')
+                ->latest()
+                ->value('id');
+            return response()->json($latestSlotWithNoCode, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 
     public function captain_tupad_slot(Request $request)
     {

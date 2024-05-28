@@ -46,7 +46,6 @@ class LogoController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
     public function index()
     {
         try {
@@ -54,8 +53,8 @@ class LogoController extends Controller
             $imageUrls = $logos->map(function ($logo) {
                 return [
                     'id' => $logo->id,
-                    'image_path' => Storage::url($logo->image_path),
                     'status' => $logo->status,
+                    'image_path' => asset('storage/logo/' . $logo->image_name),
                 ];
             });
             return response()->json($imageUrls, 200);
@@ -63,11 +62,6 @@ class LogoController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -80,9 +74,11 @@ class LogoController extends Controller
             DB::beginTransaction();
             Logo::where('status', 1)->update(['status' => 0]);
             $file = $request->file('image');
-            $imagePath = $file->store('public/images');
+            $extension = $file->getClientOriginalExtension();
+            $imageName = time() . '_' . mt_rand(1000, 9999) . '.' . $extension; // Generating a random name
+            $imagePath = $file->storeAs('public/logo', $imageName); // Storing image in public/logo directory
             $logo = new Logo();
-            $logo->image_name = $file->getClientOriginalName();
+            $logo->image_name = $imageName;
             $logo->image_path = $imagePath;
             $logo->status = 1;
             $logo->save();
@@ -100,9 +96,10 @@ class LogoController extends Controller
         if (!$logo) {
             abort(404);
         }
-        $imageUrl = Storage::url($logo->image_path);
+        $imageUrl = asset('storage/logo/' . $logo->image_name);
         return response()->json(['image_url' => $imageUrl]);
     }
+
     /**
      * Display the specified resource.
      */

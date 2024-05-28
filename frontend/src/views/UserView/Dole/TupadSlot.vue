@@ -24,39 +24,27 @@
                         New Tupad Slot Available: <span class=" bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalNoCodeSlots }}</span>
                         <Flex v-show="totalNoCodeSlots !== 0 " gap="small" wrap="wrap">
                         </Flex>
-                        <Button v-show="totalNoCodeSlots !== 0 " @click="generateExcel"  class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900" >Generate Excel Form {{ totalNoCodeSlots }} Slots</Button>
+                        <!-- <Button v-show="totalNoCodeSlots !== 0 " @click="excelGenerate" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate {{ totalNoCodeSlots }} Code</Button> -->
+                        <Button v-show="totalNoCodeSlots !== 0 " @click="generateExcel" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate Excel Form {{ totalNoCodeSlots }} Slots</Button>
                     </h2>
-                    <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
-                        <v-card flat>
-                            <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                                <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Manage Tupad Slot
-                                <v-spacer></v-spacer>
-                                <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-                            </v-card-title>
-                            <v-divider></v-divider>
-                            <v-data-table v-model:search="search" :items="items" :items-per-page="5">
-                                <template #headers="{ headers }">
-                                    <tr>
-                                        <th class="text-center whitespace-nowrap">Slot Number</th>
-                                        <th class="text-center whitespace-nowrap">Slot Code</th>
-                                        <th class="text-center whitespace-nowrap">Slot Available At</th>
-                                        <th class="text-center whitespace-nowrap">Slot Status</th>
-                                    </tr>
-                                </template>
-                                <template v-slot:item="{ item }">
-                                    <tr class="h-[7vh]">
-                                        <td class="whitespace-nowrap text-center ">{{ item.id }}</td>
-                                        <td class="whitespace-nowrap text-center ">
-                                            {{ item.code_generated }}
-                                        </td>
-                                        <td class="whitespace-nowrap text-center ">
-                                            {{ item.month_year_available }}
-                                        </td>
-                                        <td class="whitespace-nowrap text-center ">{{ item.status }}</td>
-                                    </tr>
-                                </template>
-                            </v-data-table>
-                        </v-card>
+                    <div v-if="isSlotIdsPresent" class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
+                        <a-upload name="file" :fileList="fileList" multiple :beforeUpload="beforeUpload" :on-change="handleChange" :on-drop="handleDrop" class="ant-upload-drag w-full h-full flex flex-col justify-center items-center" drag>
+                            <p class="ant-upload-drag-icon mb-8 text-4xl">
+                                <InboxOutlined />
+                            </p>
+                            <p class="ant-upload-text text-center text-lg mb-4">
+                                Click or drag file to this area to select
+                            </p>
+                            <p class="ant-upload-hint text-center text-base">
+                                Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+                            </p>
+                        </a-upload>
+                        <a-button type="primary" @click="handleUpload" :disabled="!fileList.length" class="mt-4">
+                            Upload Files
+                        </a-button>
+                    </div>
+                    <div v-else class="flex justify-center items-center mt-[10vh]">
+                        <Tag color="red" class="whitespace-normal text-xl md:text-1xl lg:text-2xl xl:text-3xl">Wala kapang Tupad Slot kaya hindi lalabas ang uploadan ng files.</Tag>
                     </div>
                 </div>
                 <div id="TupadInvitesContent" class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full md:w-[86vw] md:h-[70vh]" v-show="activeTab === 'TupadInvites'">
@@ -170,8 +158,14 @@
 import {
     Button,
     Flex,
-    Tooltip
+    Tooltip,
+    Upload,
+    message,
+    Tag
 } from "ant-design-vue";
+import {
+    InboxOutlined
+} from '@ant-design/icons-vue';
 import {
     initFlowbite
 } from "flowbite";
@@ -183,6 +177,10 @@ import Foot from "@/views/UserView/Home/Footer.vue";
 const toastr = useToast();
 import axios from "../../../main.js";
 import ExcelJS from 'exceljs';
+import {
+    read,
+    utils
+} from 'xlsx';
 
 export default {
     components: {
@@ -190,7 +188,11 @@ export default {
         Foot,
         Button,
         Flex,
-        Tooltip
+        Tooltip,
+        Tag,
+        'a-upload': Upload,
+        'a-button': Button,
+        InboxOutlined
     },
     data() {
         return {
@@ -205,6 +207,8 @@ export default {
             slots: [],
             tupad_invites: [],
             tupadInvite: [],
+            slotIds: null,
+            fileList: [],
         };
     },
     mounted() {
@@ -212,8 +216,183 @@ export default {
         this.fetchTupadCode();
         this.fetchTupadSlot();
         this.fetchTupadInvites();
+        const slotIds = JSON.parse(localStorage.getItem('slot_ids'));
+        if (slotIds !== null) {
+            this.slotIds = slotIds;
+        }
     },
     methods: {
+        async extractExcelData(file) {
+            try {
+                const buffer = await file.arrayBuffer();
+                const workbook = await read(buffer, {
+                    type: 'array'
+                });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rawData = utils.sheet_to_json(worksheet, {
+                    header: 1,
+                    dateNF: 'mm/dd/yyyy'
+                });
+                const headerRow = rawData[0];
+                const data = rawData.slice(1).map(row => {
+                    const rowData = {};
+                    Object.keys(headerRow).forEach((key, index) => {
+                        const value = row[index];
+                        if (headerRow[key] === 'BIRTH DATE' && !isNaN(value) && value >= 25569) {
+                            const date = this.excelSerialToJSDate(value);
+                            rowData[key] = date.toLocaleDateString('en-US');
+                        } else {
+                            rowData[key] = value || '';
+                        }
+                    });
+                    return rowData;
+                });
+                console.log('Extracted data:', data);
+                return data;
+            } catch (error) {
+                console.error('Error extracting Excel data:', error);
+                throw new Error('Failed to extract Excel data');
+            }
+        },
+        excelSerialToJSDate(serial) {
+            const utcDays = Math.floor(serial - 25569);
+            const utcValue = utcDays * 86400;
+            const dateInfo = new Date(utcValue * 1000);
+            const fractionalDay = serial - Math.floor(serial) + 0.0000001;
+            let totalSeconds = Math.floor(86400 * fractionalDay);
+            const seconds = totalSeconds % 60;
+            totalSeconds -= seconds;
+            const hours = Math.floor(totalSeconds / (60 * 60));
+            const minutes = Math.floor(totalSeconds / 60) % 60;
+            return new Date(dateInfo.getFullYear(), dateInfo.getMonth(), dateInfo.getDate(), hours, minutes, seconds);
+        },
+        beforeUpload(file) {
+            const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            const isImage = file.type.startsWith('image/');
+            if (!isExcel && !isImage) {
+                this.$message.error('You can only upload Excel files and images!');
+                return false;
+            }
+            if (isExcel) {
+                const existingExcel = this.fileList.find(item => item.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                if (existingExcel) {
+                    this.$message.error('You can only upload one Excel file!');
+                    return false;
+                }
+            }
+            return false;
+        },
+        handleChange(info) {
+            const {
+                status
+            } = info.file;
+            if (status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (status === 'done') {
+                this.$message.success(`${info.file.name} file uploaded successfully.`);
+            } else if (status === 'error') {
+                this.$message.error(`${info.file.name} file upload failed.`);
+            }
+            const isExcel = info.file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            const existingExcel = this.fileList.some(item => item.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            if (isExcel && existingExcel) {
+                this.fileList = this.fileList.filter(file => file.uid !== info.file.uid);
+                this.$message.error('You can only upload one Excel file!');
+                return;
+            }
+            const isImage = info.file.type.startsWith('image/');
+            const isSupportedFileType = isExcel || isImage;
+            if (!isSupportedFileType) {
+                this.fileList = this.fileList.filter(file => file.uid !== info.file.uid);
+                this.$message.error('Only Excel files and images are allowed!');
+                return;
+            }
+
+            const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
+            let formData = new FormData();
+            formData.append('tupad_slot_id', tupadSlotId);
+            axios.post('/api/dole/get-captain-slot', formData, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then(response => {
+                    const slot_get = response.data.slot_get;
+                    const uploadedImagesCount = this.fileList.filter(file => file.type.startsWith('image/')).length;
+                    if (isImage && uploadedImagesCount >= slot_get) {
+                        this.$message.error(`You can only upload ${slot_get} image(s)!`);
+                        this.fileList = this.fileList.filter(file => file.uid !== info.file.uid);
+                        return;
+                    }
+                    this.fileList = info.fileList;
+                })
+                .catch(error => {
+                    console.error('Error fetching slot_get:', error);
+                    this.$message.error('Failed to fetch slot_get value. Please try again.');
+                });
+        },
+        handleUpload() {
+            const excelFile = this.fileList.find(file => file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            if (!excelFile) {
+                return;
+            }
+            this.extractExcelData(excelFile.originFileObj)
+                .then(extractedData => {
+                    console.log('Extracted data:', extractedData);
+                })
+                .catch(error => {
+                    console.error('Error handling upload and extraction:', error);
+                });
+            const imageFiles = this.fileList.filter(file => file.type.startsWith('image/'));
+
+            const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
+            axios.post('/api/dole/get-captain-slot', {
+                    tupad_slot_id: tupadSlotId
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then(response => {
+                    const slot_get = response.data.slot_get;
+                    const uploadedImagesCount = imageFiles.length;
+                    const imageShortage = slot_get - uploadedImagesCount;
+                    if (imageShortage > 0) {
+                        this.$message.error(`You need to upload ${imageShortage} more image(s) to meet the requirement of ${slot_get}.`);
+                        return;
+                    }
+                    let formData = new FormData();
+                    formData.append('tupad_slot_id', tupadSlotId);
+                    if (excelFile) {
+                        formData.append('excel_file', excelFile.originFileObj);
+                    }
+                    imageFiles.forEach(file => {
+                        formData.append('image_files[]', file.originFileObj);
+                    });
+                    axios.post('/api/dole/captain-upload-file', formData, {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
+                        .then(response => {
+                            this.$message.success('Files uploaded successfully.');
+                            this.fileList = [];
+                        })
+                        .catch(error => {
+                            console.error('Upload error:', error);
+                            this.$message.error('File upload failed.');
+                        });
+                })
+                .catch(error => {
+                    console.error('Error fetching slot_get:', error);
+                    this.$message.error('Failed to fetch slot_get value. Please try again.');
+                });
+        },
+        handleDrop(e) {
+            console.log('Dropped files', e.dataTransfer.files);
+        },
         toggleTab(tabName) {
             this.activeTab = tabName;
         },
@@ -344,16 +523,30 @@ export default {
                     console.error("Error fetching tupad slot:", error);
                 });
         },
-        generateCodes() {
-            axios.post('/api/dole/generate-code', {}, {
+        excelGenerate() {
+            axios.post('/api/dole/generate-excel', {}, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
                 .then(response => {
-                    toastr.success("Generated Code Successfully!");
+                    toastr.success("Excel Form Generated and Downloaded Successfully!");
                     this.fetchTupadCode();
                     this.fetchTupadSlot();
+                    axios.get('/api/dole/get-nocode-slot', {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem('token')}`
+                            }
+                        })
+                        .then(response => {
+                            const slotIds = response.data;
+                            localStorage.setItem('slot_ids', JSON.stringify(slotIds));
+                            this.slotIds = slotIds;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching tupad slot:', error);
+                        });
+
                 })
                 .catch(error => {
                     console.error('Error generating codes:', error);
@@ -385,8 +578,9 @@ export default {
                         }
                     })
                     .then(response => {
-                        this.slots = response.data.data;
-                        this.totalNoCodeSlots = this.calculateTotalNoCodeSlots(this.slots);
+                        const slots = response.data.data;
+                        this.slots = slots;
+                        this.totalNoCodeSlots = this.calculateTotalNoCodeSlots(slots);
                         resolve(this.totalNoCodeSlots);
                     })
                     .catch(error => {
@@ -411,99 +605,115 @@ export default {
                     toastr.error('No available slots to generate Excel');
                     return;
                 }
+
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet('Captain Slots');
+
                 worksheet.columns = [{
-                        header: 'Available',
+                        header: 'SLOT',
                         key: 'slot_available',
-                        width: 15
+                        width: 6
                     },
                     {
-                        header: 'Firstname',
+                        header: 'FIRST NAME',
                         key: 'firstname',
-                        width: 15
+                        width: 20
                     },
                     {
-                        header: 'Middlename',
+                        header: 'MIDDLE NAME',
                         key: 'middlename',
-                        width: 15
+                        width: 20
                     },
                     {
-                        header: 'Lastname',
+                        header: 'LAST NAME',
                         key: 'lastname',
-                        width: 15
+                        width: 20
                     },
                     {
-                        header: 'Birthday',
+                        header: 'CONTANCT NUMBER',
+                        key: 'number',
+                        width: 20
+                    },
+                    {
+                        header: 'BIRTH DATE',
                         key: 'birthday',
-                        width: 15
+                        width: 20
                     },
                     {
-                        header: 'Age',
-                        key: 'age',
-                        width: 10
-                    },
-                    {
-                        header: 'Sex',
-                        key: 'sex',
-                        width: 10
-                    },
-                    {
-                        header: 'Address',
+                        header: 'ADDRESS',
                         key: 'address',
                         width: 30
                     },
                     {
-                        header: 'Beneficiary',
-                        key: 'beneficiary',
+                        header: 'SITIO',
+                        key: 'sitio',
                         width: 20
                     },
                     {
-                        header: 'Number',
-                        key: 'number',
+                        header: 'TYPE OF I.D',
+                        key: 'type_of_id',
+                        width: 20
+                    },
+                    {
+                        header: 'I.D NUMBER',
+                        key: 'id_number',
+                        width: 20
+                    },
+                    {
+                        header: 'CIVIL STATUS',
+                        key: 'civil_status',
                         width: 15
                     },
+                    {
+                        header: 'AGE',
+                        key: 'age',
+                        width: 10
+                    },
+                    {
+                        header: 'NAME OF BENEFICIARY',
+                        key: 'beneficiary',
+                        width: 30
+                    },
                 ];
+
                 let slotsAdded = 0;
                 for (let i = 0; i < this.slots.length && slotsAdded < slotCount; i++) {
                     const slot = this.slots[i];
                     if (slot.status === 'No Code') {
                         for (let j = 0; j < slot.slot_get && slotsAdded < slotCount; j++) {
+                            const birthday = slot.birthday ? new Date(slot.birthday) : null;
+                            const formattedBirthday = birthday ? birthday.toLocaleDateString('en-US') : '';
                             worksheet.addRow({
                                 slot_available: slotsAdded + 1,
                                 firstname: slot.firstname || '',
                                 middlename: slot.middlename || '',
                                 lastname: slot.lastname || '',
-                                birthday: slot.birthday || '',
+                                number: slot.number || '',
+                                birthday: formattedBirthday,
+                                address: slot.address || '',
+                                sitio: slot.sitio || '',
+                                type_of_id: slot.type_of_id || '',
+                                id_number: slot.id_number || '',
+                                civil_status: slot.civil_status || '',
                                 age: slot.age || '',
                                 sex: slot.sex || '',
-                                address: slot.address || '',
                                 beneficiary: slot.beneficiary || '',
-                                number: slot.number || ''
                             });
                             slotsAdded++;
                         }
                     }
                 }
-                worksheet.getRow(1).eachCell(cell => {
-                    cell.protection = {
-                        locked: true
-                    };
-                });
+
+                // Unlock cells for editing
                 worksheet.eachRow((row, rowNumber) => {
-                    if (rowNumber > 1) {
-                        row.getCell('A').protection = {
-                            locked: true
+                    row.eachCell((cell, colNumber) => {
+                        cell.protection = {
+                            locked: false
                         };
-                        row.eachCell((cell, colNumber) => {
-                            if (colNumber !== 1) {
-                                cell.protection = {
-                                    locked: false
-                                };
-                            }
-                        });
-                    }
+                    });
                 });
+
+                // Protect the worksheet
                 worksheet.protect('your_password_here', {
                     selectLockedCells: true,
                     selectUnlockedCells: true,
@@ -516,11 +726,12 @@ export default {
                     deleteColumns: false,
                     deleteRows: false
                 });
+
                 const buffer = await workbook.xlsx.writeBuffer();
                 const blob = new Blob([buffer], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
-                this.generateCodes();
+                this.excelGenerate();
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = 'tupad_form.xlsx';
@@ -531,12 +742,14 @@ export default {
                 console.error('Error generating Excel:', error);
                 toastr.error('Failed to generate Excel');
             }
-        }
-
+        },
     },
     watch: {},
 
     computed: {
+        isSlotIdsPresent() {
+            return this.slotIds !== null && this.slotIds !== '';
+        },
         isCheckedAllForInvite() {
             return this.tupadInvite.length === this.tupad_invites.length && this.tupadInvite.length > 0;
         },
@@ -552,5 +765,15 @@ export default {
         background-color: rgb(226, 178, 88);
         z-index: 1;
     }
+}
+
+.ant-upload-drag {
+    width: 100%;
+    height: 200px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 4px;
+    background-color: #fafafa;
+    text-align: center;
+    padding: 16px;
 }
 </style>
