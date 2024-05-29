@@ -14,9 +14,75 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DoleController extends Controller
 {
+    public function save_tupad_by_captain(Request $request)
+    {
+        $user = $this->validateCaptain($request);
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required',
+            'middlename' => 'required',
+            'lastname' => 'required',
+            'age' => 'required|integer|min:0',
+            'birthday' => 'required',
+            'gender' => 'required',
+            'address' => 'required',
+            'benificiaryfullname' => 'required',
+            'contactnumber' => 'required|integer',
+            'idNum' => 'required',
+            'sitio' => 'required',
+            'idType' => 'required',
+            'civilstatus' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        try {
+            DB::beginTransaction();
+            $data = new Tupad();
+            $data->firstname = $request->input('firstname');
+            $data->middlename = $request->input('middlename');
+            $data->lastname = $request->input('lastname');
+            $data->age = $request->input('age');
+            $data->birthday = $request->input('birthday');
+            $data->gender = $request->input('gender');
+            $data->address = $request->input('address');
+            $data->benificiary_name = $request->input('benificiaryfullname');
+            $data->contact_number = $request->input('contactnumber');
+            $data->id_number = $request->input('idNum');
+            $data->sitio = $request->input('sitio');
+            $data->id_type = $request->input('idType');
+            $data->civil_status = $request->input('civilstatus');
+            $data->status = 'Submit by Captain';
+            $usedCodeId = $request->input('slot_id');
+            $data->given_by_captainID =  $user->id;
+            $tupadCode = TupadCode::where('slot_id', $usedCodeId)->first();
+            if (!$tupadCode) {
+                throw new ModelNotFoundException("Tupad code not found for slot_id: $usedCodeId");
+            }
+            $data->used_code_id = $tupadCode->id;
+            $tupadCode->status = 'Code Used';
+            $tupadCode->save();
+            $slot = TupadSlot::where('id', $usedCodeId)->first();
+            if (!$slot) {
+                throw new ModelNotFoundException("Tupad slot not found for id: $usedCodeId");
+            }
+            $slot->slot_left = 0;
+            $slot->status = "Data Save by Captain";
+            $slot->save();
+
+            $data->save();
+            DB::commit();
+            return response()->json(['message' => 'Tupad saved successfully'], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+    }
+
     public function excel_upload_by_captain(Request $request)
     {
         $user = $this->validateCaptain($request);
