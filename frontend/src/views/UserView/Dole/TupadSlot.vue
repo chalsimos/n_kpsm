@@ -141,7 +141,16 @@ import {
     read,
     utils
 } from 'xlsx';
-
+// import {
+//     saveRequest,
+//     getRequests,
+//     clearRequests
+// } from '@/utils/captain_tupad_excel_form.js';
+// import {
+//     saveTupadRequest,
+//     getTupadRequests,
+//     clearTupadRequests
+// } from '@/utils/tupadDB.js';
 export default {
     components: {
         Head,
@@ -181,8 +190,23 @@ export default {
         if (slotIds !== null) {
             this.slotIds = slotIds;
         }
+        // setInterval(this.sendStoredData, 5000);
+        // setInterval(this.sendTupadStoredData, 5000);
     },
     methods: {
+        async checkInternetConnection() {
+            if (!navigator.onLine) {
+                return false;
+            }
+            try {
+                await fetch("https://www.google.com", {
+                    mode: 'no-cors'
+                });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
         loadSlotIds() {
             const slotIds = JSON.parse(localStorage.getItem('slot_ids'));
             if (slotIds !== null) {
@@ -263,25 +287,32 @@ export default {
                         sitio: item[7],
                         address: item[6],
                     };
-                    try {
-                        const response = await axios.post('/api/dole/save-captain-tupad-member', slotData, {
+                    // const isConnected = await this.checkInternetConnection();
+                    // if (!isConnected) {
+                    //     await saveTupadRequest(slotData);
+                    //     toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
+                    // } else {
+                    axios.post('/api/dole/save-captain-tupad-member', slotData, {
                             headers: {
                                 Authorization: `Bearer ${localStorage.getItem('token')}`,
                             },
+                        })
+                        .then(response => {
+                            toastr.success('Slot saved successfully');
+                            this.fileList = [];
+                            localStorage.removeItem('slot_ids');
+                            this.loadSlotIds();
+                            this.getSlotInfo();
+                            this.fetchTupadCode();
+                            this.fetchTupadSlot();
+                            this.fetchTupadInvites();
+                            this.slotIds = null;
+                        })
+                        .catch(error => {
+                            console.error('Error saving slot:', error.response.data.error);
+                            toastr.error('Failed to save slot:', error.response.data.error);
                         });
-                        toastr.success('Slot saved successfully');
-                        this.fileList = [];
-                        localStorage.removeItem('slot_ids');
-                        this.loadSlotIds();
-                        this.getSlotInfo();
-                        this.fetchTupadCode();
-                        this.fetchTupadSlot();
-                        this.fetchTupadInvites();
-                        this.slotIds = null;
-                    } catch (error) {
-                        console.error('Error saving slot:', error.response.data.error);
-                        toastr.error('Failed to save slot:', error.response.data.error);
-                    }
+                    // }
                 }
                 return data;
             } catch (error) {
@@ -289,6 +320,32 @@ export default {
                 throw new Error('Failed to extract Excel data');
             }
         },
+        // async sendTupadStoredData() {
+        //     const isConnected = await this.checkInternetConnection();
+        //     if (isConnected) {
+        //         const unsentData = await getTupadRequests();
+        //         if (unsentData.length > 0) {
+        //             for (const data of unsentData) {
+        //                 try {
+        //                     await axios.post('/api/dole/save-captain-tupad-member', data);
+        //                     toastr.success('Slot saved successfully');
+        //                     localStorage.removeItem('scholarGranted');
+        //                     this.fileList = [];
+        //                     localStorage.removeItem('slot_ids');
+        //                     this.loadSlotIds();
+        //                     this.getSlotInfo();
+        //                     this.fetchTupadCode();
+        //                     this.fetchTupadSlot();
+        //                     this.fetchTupadInvites();
+        //                     this.slotIds = null;
+        //                 } catch (error) {
+        //                     toastr.error('Error uploading Educational Assistance Request:', error);
+        //                 }
+        //             }
+        //             await clearTupadRequests();
+        //         }
+        //     }
+        // },
         excelSerialToJSDate(serial) {
             const utcDays = Math.floor(serial - 25569);
             const utcValue = utcDays * 86400;
@@ -423,6 +480,125 @@ export default {
                     this.$message.error('Failed to fetch slot_get value. Please try again.');
                 });
         },
+        //         handleUpload() {
+        //     const excelFile = this.fileList.find(file => file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        //     if (!excelFile) {
+        //         return;
+        //     }
+
+        //     this.extractExcelData(excelFile.originFileObj)
+        //         .then(extractedData => {
+        //             console.log('Extracted data:', extractedData);
+        //         })
+        //         .catch(error => {
+        //             console.error('Error handling upload and extraction:', error);
+        //         });
+
+        //     const imageFiles = this.fileList.filter(file => file.type.startsWith('image/'));
+        //     const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
+
+        //     axios.post('/api/dole/get-captain-slot', {
+        //         tupad_slot_id: tupadSlotId
+        //     }, {
+        //         headers: {
+        //             Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //         },
+        //     })
+        //     .then(async response => {
+        //         const slot_get = response.data.slot_get;
+        //         const uploadedImagesCount = imageFiles.length;
+        //         const imageShortage = slot_get - uploadedImagesCount;
+
+        //         if (imageShortage > 0) {
+        //             this.$message.error(`You need to upload ${imageShortage} more image(s) to meet the requirement of ${slot_get}.`);
+        //             return;
+        //         }
+
+        //         let formData = new FormData();
+        //         formData.append('tupad_slot_id', tupadSlotId);
+
+        //         if (excelFile) {
+        //             formData.append('excel_file', excelFile.originFileObj);
+        //         }
+
+        //         imageFiles.forEach(file => {
+        //             formData.append('image_files[]', file.originFileObj);
+        //         });
+
+        //         axios.post('/api/dole/captain-upload-file', formData, {
+        //             headers: {
+        //                 Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //                 'Content-Type': 'multipart/form-data',
+        //             },
+        //         })
+        //         .then(response => {
+        //             this.$message.success('Files uploaded successfully.');
+        //             this.fileList = [];
+        //         })
+        //         .catch(error => {
+        //             console.error('Upload error:', error);
+        //             this.$message.error('File upload failed.');
+        //         });
+        //     })
+        //     .catch(async error => {
+        //         console.error('Error fetching slot_get:', error);
+        //         this.$message.error('Failed to fetch slot_get value. Please try again.');
+
+        //         // Save data to IndexedDB
+        //         const data = {
+        //             excelFile: excelFile.originFileObj, // Pass the file itself, not the File object
+        //             imageFiles: imageFiles.map(file => file.originFileObj), // Pass the files themselves, not the File objects
+        //             tupadSlotId
+        //         };
+        //         await saveRequest(data); // Save to IndexedDB
+        //         toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
+        //     });
+        // },
+        //         async fileToBase64(file) {
+        //             const reader = new FileReader();
+        //             return new Promise((resolve, reject) => {
+        //                 reader.readAsDataURL(file);
+        //                 reader.onload = () => resolve(reader.result.split(',')[1]);
+        //                 reader.onerror = error => reject(error);
+        //             });
+        //         },
+        //         async base64ToFile(base64, filename) {
+        //             const arr = base64.split(',');
+        //             const mime = arr[0].match(/:(.*?);/)[1];
+        //             const bstr = atob(arr[1]);
+        //             let n = bstr.length;
+        //             const u8arr = new Uint8Array(n);
+        //             while (n--) {
+        //                 u8arr[n] = bstr.charCodeAt(n);
+        //             }
+        //             return new File([u8arr], filename, {
+        //                 type: mime
+        //             });
+        //         },
+        //         async sendStoredData() {
+        //             const unsentData = await getRequests();
+        //             if (unsentData.length > 0) {
+        //                 unsentData.forEach(async data => {
+        //                     const excelBase64 = await this.fileToBase64(data.excelFile);
+        //                     const imageFilesBase64 = await Promise.all(data.imageFiles.map(imageFile => this.fileToBase64(imageFile)));
+        //                     const formData = new FormData();
+        //                     formData.append('excelFile', this.base64ToFile(excelBase64, 'excel_file.xlsx'));
+        //                     imageFilesBase64.forEach((imageBase64, index) => {
+        //                         formData.append(`imageFile${index}`, this.base64ToFile(imageBase64, `image_${index}.png`));
+        //                     });
+        //                     axios.post('/api/upload-stored-data', formData)
+        //                         .then(response => {
+        //                             console.log('Stored data sent successfully:', response.data);
+        //                             toastr.success("Uploaded Tupad Form Successfully");
+        //                             clearRequests();
+        //                         })
+        //                         .catch(error => {
+        //                             console.error('Error sending stored data:', error);
+        //                         });
+        //                 });
+        //                 await clearRequests();
+        //             }
+        //         },
         handleDrop(e) {
             console.log('Dropped files', e.dataTransfer.files);
         },

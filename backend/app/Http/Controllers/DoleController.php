@@ -158,8 +158,7 @@ class DoleController extends Controller
     public function getAll_captains_tupad_invites(Request $request)
     {
         try {
-            $tupads = Tupad::where('status', 'accepted')
-                ->leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
+            $tupads = Tupad::leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
                 ->select('tupads.*', 'users.name as captain_name')
                 ->get();
 

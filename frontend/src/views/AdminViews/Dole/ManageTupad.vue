@@ -26,6 +26,7 @@
                         <v-data-table v-model:search="captain_search" :items="items" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
+                                    <th> <input @change="checkAllForApproved" :checked="isCheckedAllForApproved" id="check-all-for-approved" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Action</th>
@@ -33,11 +34,14 @@
                             </template>
                             <template v-slot:item="{ item }">
                                 <tr class="h-[2vh]">
+                                    <td class="whitespace-nowrap uppercase">
+                                        <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.name }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.email }}</td>
                                     <td class="whitespace-nowrap uppercase">
                                         <div class="flex space-x-4">
-                                            <button @click.stop="giveSlot(item.id)" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                            <button @click.stop="giveSlot(checkedIdsForApproved.length > 0 ? checkedIdsForApproved : item.id)" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                                                 Give slot
                                             </button>
                                             <button @click.stop="checkSlot(item.id)" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
@@ -107,7 +111,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <form @submit.prevent="updateSlot" class="max-w-sm mx-auto mt-5 mb-5 ml-10">
+            <form @submit.prevent="slotRequest" class="max-w-sm mx-auto mt-5 mb-5 ml-10">
                 <label for="Amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">How Many Slot</label>
                 <input v-model="slot_get" type="number" id="Amount" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
                 <label for="slotDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Slot Available</label>
@@ -192,6 +196,9 @@ import {
 } from 'vue-toastification'
 const toastr = useToast()
 import moment from 'moment';
+import {
+    computed
+} from "vue";
 
 export default {
     data() {
@@ -202,6 +209,7 @@ export default {
             month_year_available: '',
             slot_get: '',
             tupad_member: [],
+            checkedIdsForApproved: [],
             items: [],
             captain_slot: [],
         };
@@ -237,8 +245,35 @@ export default {
             console.log(date, formattedDate);
             this.month_year_available = formattedDate;
         },
-        updateSlot() {
+        
+        giveSlot(itemId) {
+            this.itemId = itemId;
+            const modal = document.getElementById('giveSlot');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // Add event listener to close modal on close button click
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="giveSlot"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
+        },
+        slotRequest() {
             const itemId = this.itemId;
+            if (itemId instanceof Event) {
+                console.error("Invalid itemId:", itemId);
+                return;
+            }
+            if (Array.isArray(itemId)) {
+                itemId.forEach(id => {
+                    this.updateSlot(id);
+                });
+            } else {
+                this.updateSlot(itemId);
+            }
+        },
+        updateSlot(itemId) {
             const formData = {
                 slot_get: this.slot_get,
                 month_year_available: this.month_year_available
@@ -250,10 +285,11 @@ export default {
                 })
                 .then(response => {
                     this.slot_get = '',
-                        this.month_year_available = ''
+                    this.month_year_available = ''
                     toastr.success("Slot Approved");
                     document.getElementById('giveSlot').classList.add('hidden');
                     this.fetchCaptainList();
+                    this.checkedIdsForApproved = [];
                 })
                 .catch(error => {
                     console.error(error.response.data);
@@ -301,19 +337,6 @@ export default {
                     console.error('Error fetching captain slot details:', error);
                 });
         },
-        giveSlot(itemId) {
-            this.itemId = itemId;
-            const modal = document.getElementById('giveSlot');
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden', 'false');
-            // Add event listener to close modal on close button click
-            modal.addEventListener('click', function (e) {
-                if (e.target && e.target.closest('[data-modal-hide="giveSlot"]')) {
-                    modal.classList.add('hidden');
-                    modal.setAttribute('aria-hidden', 'true');
-                }
-            });
-        },
         formatDateToWords(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
@@ -328,8 +351,30 @@ export default {
                 year: 'numeric',
                 month: 'long'
             });
+        },
+        checkAllForApproved(event) {
+            const isChecked = event.target.checked;
+            if (isChecked) {
+                this.checkedIdsForApproved = this.items.map((item) => item.id);
+            } else {
+                this.checkedIdsForApproved = [];
+            }
+            this.$nextTick(() => {
+                document.getElementById("check-all-for-approved").checked = isChecked;
+            });
+        },
+        toggleCheckedForApproved(id) {
+            if (this.checkedIdsForApproved.includes(id)) {
+                this.checkedIdsForApproved = this.checkedIdsForApproved.filter((checkedId) => checkedId !== id);
+            } else {
+                this.checkedIdsForApproved.push(id);
+            }
+        },
+        computed: {
+            isCheckedAllForApproved() {
+                return this.checkedIdsForApproved.length === this.items.length && this.checkedIdsForApproved.length > 0;
+            },
         }
-
     }
 };
 </script>

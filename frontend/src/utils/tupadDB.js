@@ -14,17 +14,17 @@ const initDB = async () => {
   return db;
 };
 
-export const saveRequest = async (request) => {
+export const saveTupadRequest = async (request) => {
   const db = await initDB();
   await db.put(STORE_NAME, request);
 };
 
-export const getRequests = async () => {
+export const getTupadRequests = async () => {
   const db = await initDB();
   return await db.getAll(STORE_NAME);
 };
 
-export const clearRequests = async () => {
+export const clearTupadRequests = async () => {
   const db = await initDB();
   await db.clear(STORE_NAME);
 };
