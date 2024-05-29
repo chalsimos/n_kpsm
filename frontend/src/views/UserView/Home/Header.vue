@@ -271,6 +271,7 @@ export default {
             this.getUser();
         }
     },
+
     computed: {
   },
     methods: {
@@ -303,18 +304,20 @@ export default {
                 });
         },
         fetchActiveLogos() {
-            axios.get('/api/active-logos')
-                .then(response => {
-                    if (response.data && response.data.image_url) {
-                        this.logoUrl = axios.defaults.baseURL + response.data.image_url;
-                    } else {
-                        console.error('Invalid response data:', response.data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching active logos:', error);
-                });
-        },
+      axios.get('/api/active-logos')
+        .then(response => {
+          if (response.data && response.data.image_url) {
+            
+            const baseURL = axios.defaults.baseURL;
+            this.logoUrl = new URL(response.data.image_url, baseURL).href;
+          } else {
+            console.error('Invalid response data:', response.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching active logos:', error);
+        });
+    },
         logout() {
             localStorage.removeItem('token');
             this.isLoggedIn = false;

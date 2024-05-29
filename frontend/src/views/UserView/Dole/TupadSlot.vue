@@ -28,20 +28,22 @@
                         <Button v-show="totalNoCodeSlots !== 0 " @click="generateExcel" class="bg-orange-400 hover:bg-orange-600 text-white border border-orange-900">Generate Excel Form {{ totalNoCodeSlots }} Slots</Button>
                     </h2>
                     <div v-if="isSlotIdsPresent" class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
-                        <a-upload name="file" :fileList="fileList" multiple :beforeUpload="beforeUpload" :on-change="handleChange" :on-drop="handleDrop" class="ant-upload-drag w-full h-full flex flex-col justify-center items-center" drag>
-                            <p class="ant-upload-drag-icon mb-8 text-4xl">
+                        <a-upload name="file" :fileList="fileList" multiple :beforeUpload="beforeUpload" :on-change="handleChange" :on-drop="handleDrop" class="w-full h-96 flex flex-col justify-center items-center border-dashed border-4 border-gray-400 rounded-lg">
+                            <p class="ant-upload-drag-icon mb-8 text-4xl flex justify-center items-center">
                                 <InboxOutlined />
                             </p>
                             <p class="ant-upload-text text-center text-lg mb-4">
-                                Click or drag file to this area to select
+                                Pindutin o Ilagay ang files para maiupload
                             </p>
                             <p class="ant-upload-hint text-center text-base">
-                                Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+                                Ilagay dito yung EXCEL file form na nadownload pagkatapos magfill-up, kasama ang picture ng id ng lahat ng nasa slot.
                             </p>
                         </a-upload>
-                        <a-button type="primary" @click="handleUpload" :disabled="!fileList.length" class="mt-4">
-                            Upload Files
-                        </a-button>
+                        <a-tooltip :title="tooltipMessage" placement="top">
+                            <a-button type="primary" @click="handleUpload" :disabled="isUploadDisabled" class="text-white mt-4">
+                                Upload Files
+                            </a-button>
+                        </a-tooltip>
                     </div>
                     <div v-else class="flex justify-center items-center mt-[10vh]">
                         <Tag color="red" class="whitespace-normal text-xl md:text-1xl lg:text-2xl xl:text-3xl">Wala kapang Tupad Slot kaya hindi lalabas ang uploadan ng files.</Tag>
@@ -61,11 +63,6 @@
                                 <span class="cursor-pointer whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalAccepted }}</span>
                             </Tooltip>
                         </h2>
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                            Total Declined:
-                            <Tooltip title="Total Decline" color=volcano key=volcano> <span class="cursor-pointer whitespace-nowrap bg-orange-100 text-orange-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ totalDeclined }}</span>
-                            </Tooltip>
-                        </h2>
                     </div>
                     <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-5">
                         <v-card flat>
@@ -78,7 +75,6 @@
                             <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
                                 <template #headers="{ headers }">
                                     <tr class="text-center whitespace-nowrap">
-                                        <th class="text-center"> <input @change="checkAllForInvite" :checked="isCheckedAllForInvite" id="check-all-for-Invite" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                         <th class="text-center whitespace-nowrap">Fullname</th>
                                         <th class="text-center whitespace-nowrap">Age & Birthday</th>
                                         <th class="text-center whitespace-nowrap">Gender</th>
@@ -89,14 +85,10 @@
                                         <th class="text-center whitespace-nowrap">Id & Id Number</th>
                                         <th class="text-center whitespace-nowrap">Used Code</th>
                                         <th class="text-center whitespace-nowrap">Status</th>
-                                        <th class="text-center whitespace-nowrap action-column">Action</th>
                                     </tr>
                                 </template>
                                 <template v-slot:item="{ item }">
                                     <tr class="h-[2vh]">
-                                        <td class="whitespace-nowrap uppercase text-center">
-                                            <input @change="toggleCheckedForInvite(item.id)" :checked="tupadInvite.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        </td>
                                         <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
                                         <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
                                         <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
@@ -107,14 +99,6 @@
                                         <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
                                         <td class="whitespace-nowrap text-center">{{ item.code_generated }}</td>
                                         <td class="whitespace-nowrap text-center">{{ item.status }}</td>
-                                        <td class="whitespace-nowrap text-center action-column">
-                                            <button @click="AcceptRequest(tupadInvite.length > 0 ? tupadInvite : item.id)" class="block mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="item.status === 'pending'">
-                                                Accept
-                                            </button>
-                                            <button @click="DeclineModal(tupadInvite.length > 0 ? tupadInvite : item.id)" class="block mb-2 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="item.status === 'pending'">
-                                                Decline
-                                            </button>
-                                        </td>
                                     </tr>
                                 </template>
                             </v-data-table>
@@ -126,30 +110,6 @@
     </div>
     <div>
         <Foot />
-    </div>
-</div>
-<div id="declineModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
-    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Decline Tupad Request
-                </h3>
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="declineModal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <form @submit.prevent="DeclineRequest" class="max-w-sm mx-auto mt-5 mb-5 ml-10">
-                <label for="Reason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Decline Reason</label>
-                <input type="text" id="Reason" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
-                <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                    <button data-modal-hide="declineModal" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 </template>
@@ -202,17 +162,18 @@ export default {
             totalNoCodeSlots: 0,
             totalInvites: '',
             totalAccepted: '',
-            totalDeclined: '',
             items: [],
             slots: [],
             tupad_invites: [],
-            tupadInvite: [],
             slotIds: null,
             fileList: [],
+            slotGet: 0,
         };
     },
     mounted() {
         initFlowbite();
+        this.loadSlotIds();
+        this.getSlotInfo();
         this.fetchTupadCode();
         this.fetchTupadSlot();
         this.fetchTupadInvites();
@@ -222,19 +183,56 @@ export default {
         }
     },
     methods: {
+        loadSlotIds() {
+            const slotIds = JSON.parse(localStorage.getItem('slot_ids'));
+            if (slotIds !== null) {
+                this.slotIds = slotIds;
+            }
+        },
         async extractExcelData(file) {
             try {
                 const buffer = await file.arrayBuffer();
                 const workbook = await read(buffer, {
                     type: 'array'
                 });
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const sheetName = 'Captain Slots';
+                if (!workbook.SheetNames.includes(sheetName)) {
+                    toastr.error(`Sheet named "${sheetName}" not found`);
+                    throw new Error(`Sheet named "${sheetName}" not found`);
+                }
+                const worksheet = workbook.Sheets[sheetName];
                 const rawData = utils.sheet_to_json(worksheet, {
                     header: 1,
                     dateNF: 'mm/dd/yyyy'
                 });
+                const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
+                let formData = new FormData();
+                formData.append('tupad_slot_id', tupadSlotId);
+                const response = await axios.post('/api/dole/get-captain-slot', formData, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const slot_get = response.data.slot_get;
+                console.log('Slot count:', slot_get);
                 const headerRow = rawData[0];
-                const data = rawData.slice(1).map(row => {
+                const requiredHeaders = ['SLOT', 'FIRST NAME', 'MIDDLE NAME', 'LAST NAME', 'CONTANCT NUMBER', 'BIRTH DATE', 'ADDRESS', 'SITIO', 'TYPE OF I.D', 'I.D NUMBER', 'SEX', 'CIVIL STATUS', 'AGE', 'NAME OF BENEFICIARY'];
+                const missingHeaders = requiredHeaders.filter(header => !headerRow.includes(header));
+                if (missingHeaders.length > 0) {
+                    toastr.error(`Required headers are missing: ${missingHeaders.join(', ')}`);
+                    throw new Error(`Required headers are missing: ${missingHeaders.join(', ')}`);
+                }
+                let dataRows = rawData.slice(1);
+                console.log('Data rows length:', dataRows.length);
+                console.log('Data rows:', dataRows);
+                if (dataRows.some(row => requiredHeaders.some((header, index) => !row[index]))) {
+                    toastr.error(`Some data rows are incomplete. Please provide all required data.`);
+                    return;
+                } else if (dataRows.length > slot_get) {
+                    toastr.error(`Your slot is only ${slot_get} and you passed ${dataRows.length} data. The only accepted data is the first ${slot_get} because that is your slot.`);
+                    dataRows = dataRows.slice(0, slot_get);
+                }
+                const data = dataRows.map(row => {
                     const rowData = {};
                     Object.keys(headerRow).forEach((key, index) => {
                         const value = row[index];
@@ -248,6 +246,43 @@ export default {
                     return rowData;
                 });
                 console.log('Extracted data:', data);
+                for (const item of data) {
+                    const slotData = {
+                        slot_id: tupadSlotId,
+                        firstname: item[1],
+                        middlename: item[2],
+                        lastname: item[3],
+                        age: item[12],
+                        birthday: item[5],
+                        gender: item[10],
+                        civilstatus: item[11],
+                        contactnumber: item[4],
+                        benificiaryfullname: item[13],
+                        idType: item[8],
+                        idNum: item[9],
+                        sitio: item[7],
+                        address: item[6],
+                    };
+                    try {
+                        const response = await axios.post('/api/dole/save-captain-tupad-member', slotData, {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                            },
+                        });
+                        toastr.success('Slot saved successfully');
+                        this.fileList = [];
+                        localStorage.removeItem('slot_ids');
+                        this.loadSlotIds();
+                        this.getSlotInfo();
+                        this.fetchTupadCode();
+                        this.fetchTupadSlot();
+                        this.fetchTupadInvites();
+                        this.slotIds = null;
+                    } catch (error) {
+                        console.error('Error saving slot:', error.response.data.error);
+                        toastr.error('Failed to save slot:', error.response.data.error);
+                    }
+                }
                 return data;
             } catch (error) {
                 console.error('Error extracting Excel data:', error);
@@ -275,7 +310,7 @@ export default {
             }
             if (isExcel) {
                 const existingExcel = this.fileList.find(item => item.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                if (existingExcel) {
+                if (existingExcel || this.fileList.filter(item => item.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').length > 0) {
                     this.$message.error('You can only upload one Excel file!');
                     return false;
                 }
@@ -308,7 +343,6 @@ export default {
                 this.$message.error('Only Excel files and images are allowed!');
                 return;
             }
-
             const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
             let formData = new FormData();
             formData.append('tupad_slot_id', tupadSlotId);
@@ -345,7 +379,6 @@ export default {
                     console.error('Error handling upload and extraction:', error);
                 });
             const imageFiles = this.fileList.filter(file => file.type.startsWith('image/'));
-
             const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
             axios.post('/api/dole/get-captain-slot', {
                     tupad_slot_id: tupadSlotId
@@ -476,7 +509,6 @@ export default {
                     this.tupad_invites = response.data.data;
                     this.totalInvites = this.calculatetotalInvites(this.tupad_invites);
                     this.totalAccepted = this.calculatetotalAccepted(this.tupad_invites);
-                    this.totalDeclined = this.calculatetotalDeclined(this.tupad_invites);
                 })
                 .catch(error => {
                     console.error('Error fetching tupad slot:', error);
@@ -485,16 +517,7 @@ export default {
         calculatetotalAccepted(invites) {
             let total = 0;
             invites.forEach(tupad_invites => {
-                if (tupad_invites.status === 'accepted') {
-                    total++;
-                }
-            });
-            return total;
-        },
-        calculatetotalDeclined(invites) {
-            let total = 0;
-            invites.forEach(tupad_invites => {
-                if (tupad_invites.status === 'declined') {
+                if (tupad_invites.status === 'Submit by Captain') {
                     total++;
                 }
             });
@@ -542,33 +565,16 @@ export default {
                             const slotIds = response.data;
                             localStorage.setItem('slot_ids', JSON.stringify(slotIds));
                             this.slotIds = slotIds;
+                            this.getSlotInfo();
+                            this.$forceUpdate();
                         })
                         .catch(error => {
                             console.error('Error fetching tupad slot:', error);
                         });
-
                 })
                 .catch(error => {
                     console.error('Error generating codes:', error);
                 });
-        },
-        checkAllForInvite(event) {
-            const isChecked = event.target.checked;
-            if (isChecked) {
-                this.tupadInvite = this.tupad_invites.map((item) => item.id);
-            } else {
-                this.tupadInvite = [];
-            }
-            this.$nextTick(() => {
-                document.getElementById("check-all-for-Invite").checked = isChecked;
-            });
-        },
-        toggleCheckedForInvite(id) {
-            if (this.tupadInvite.includes(id)) {
-                this.tupadInvite = this.tupadInvite.filter((checkedId) => checkedId !== id);
-            } else {
-                this.tupadInvite.push(id);
-            }
         },
         fetchTupadSlot() {
             return new Promise((resolve, reject) => {
@@ -605,10 +611,8 @@ export default {
                     toastr.error('No available slots to generate Excel');
                     return;
                 }
-
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet('Captain Slots');
-
                 worksheet.columns = [{
                         header: 'SLOT',
                         key: 'slot_available',
@@ -660,6 +664,11 @@ export default {
                         width: 20
                     },
                     {
+                        header: 'SEX',
+                        key: 'sex',
+                        width: 10
+                    },
+                    {
                         header: 'CIVIL STATUS',
                         key: 'civil_status',
                         width: 15
@@ -675,7 +684,6 @@ export default {
                         width: 30
                     },
                 ];
-
                 let slotsAdded = 0;
                 for (let i = 0; i < this.slots.length && slotsAdded < slotCount; i++) {
                     const slot = this.slots[i];
@@ -694,17 +702,15 @@ export default {
                                 sitio: slot.sitio || '',
                                 type_of_id: slot.type_of_id || '',
                                 id_number: slot.id_number || '',
+                                sex: slot.sex || '',
                                 civil_status: slot.civil_status || '',
                                 age: slot.age || '',
-                                sex: slot.sex || '',
                                 beneficiary: slot.beneficiary || '',
                             });
                             slotsAdded++;
                         }
                     }
                 }
-
-                // Unlock cells for editing
                 worksheet.eachRow((row, rowNumber) => {
                     row.eachCell((cell, colNumber) => {
                         cell.protection = {
@@ -712,8 +718,25 @@ export default {
                         };
                     });
                 });
-
-                // Protect the worksheet
+                worksheet.getRow(1).eachCell(cell => {
+                    cell.protection = {
+                        locked: true
+                    };
+                });
+                worksheet.eachRow((row, rowNumber) => {
+                    if (rowNumber > 1) {
+                        row.getCell('A').protection = {
+                            locked: true
+                        };
+                        row.eachCell((cell, colNumber) => {
+                            if (colNumber !== 1) {
+                                cell.protection = {
+                                    locked: false
+                                };
+                            }
+                        });
+                    }
+                });
                 worksheet.protect('your_password_here', {
                     selectLockedCells: true,
                     selectUnlockedCells: true,
@@ -726,7 +749,6 @@ export default {
                     deleteColumns: false,
                     deleteRows: false
                 });
-
                 const buffer = await workbook.xlsx.writeBuffer();
                 const blob = new Blob([buffer], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -743,6 +765,23 @@ export default {
                 toastr.error('Failed to generate Excel');
             }
         },
+        getSlotInfo() {
+            const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
+            axios.post('/api/dole/get-captain-slot', {
+                    tupad_slot_id: tupadSlotId
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then(response => {
+                    this.slotGet = response.data.slot_get;
+                })
+                .catch(error => {
+                    console.error('Error fetching slot_get:', error);
+                    this.$message.error('Failed to fetch slot_get value. Please try again.');
+                });
+        },
     },
     watch: {},
 
@@ -750,9 +789,32 @@ export default {
         isSlotIdsPresent() {
             return this.slotIds !== null && this.slotIds !== '';
         },
-        isCheckedAllForInvite() {
-            return this.tupadInvite.length === this.tupad_invites.length && this.tupadInvite.length > 0;
+        isUploadDisabled() {
+            const excelFiles = this.fileList.filter(file => file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            const imageFiles = this.fileList.filter(file => file.type.startsWith('image/'));
+            const hasExcel = excelFiles.length === 1;
+            const hasMultipleExcel = excelFiles.length > 1;
+            const hasRequiredImages = imageFiles.length === this.slotGet;
+            return !hasExcel || hasMultipleExcel || !hasRequiredImages;
         },
+        tooltipMessage() {
+            const excelFiles = this.fileList.filter(file => file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            const imageFiles = this.fileList.filter(file => file.type.startsWith('image/'));
+            const excelRequired = excelFiles.length === 0 ? 1 : 0;
+            const imagesRequired = this.slotGet - imageFiles.length;
+            const hasMultipleExcel = excelFiles.length > 1;
+            let message = '';
+            if (hasMultipleExcel) {
+                message = `You only need to upload 1 Excel file. Please remove the extra file(s) before you can upload.`;
+            } else if (excelRequired > 0 && imagesRequired > 0) {
+                message = `You still need to upload ${imagesRequired} image${imagesRequired > 1 ? 's' : ''} and ${excelRequired} Excel file.`;
+            } else if (excelRequired > 0) {
+                message = `You still need to upload ${excelRequired} Excel file.`;
+            } else if (imagesRequired > 0) {
+                message = `You still need to upload ${imagesRequired} image${imagesRequired > 1 ? 's' : ''}.`;
+            }
+            return message;
+        }
     },
 };
 </script>

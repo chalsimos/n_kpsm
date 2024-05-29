@@ -148,4 +148,5 @@ Route::prefix('dole')->group(function () {
         Route::post('/captain-upload-file', [DoleController::class, 'excel_upload_by_captain']);
         Route::post('/get-captain-slot', [DoleController::class, 'get_tupad_slot_count']);
         Route::get('/get-nocode-slot', [DoleController::class, 'getSlotsWithNoCode']);
+        Route::post('/save-captain-tupad-member', [DoleController::class, 'save_tupad_by_captain']);
 });
