@@ -27,11 +27,11 @@
                       <label
                         for="name"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >Complete Name</label
+                        >Username</label
                       >
                       <input
                         type="text"
-                        v-model="completename"
+                        v-model="username"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="Juan dela Cruz"
                         required
@@ -190,7 +190,7 @@ onMounted(() => {
 export default {
   data() {
     return {
-      completename: "",
+      username: "",
       email: "",
       password: "",
       error: null,
@@ -204,15 +204,12 @@ export default {
         const response = await axios.post(
           "/api/register",
           {
-            name: this.completename,
+            name: this.username,
             email: this.email,
             password: this.password,
           }
         );
         if (response.status === 201) {
-          // Registration successful
-          console.log("User registered successfully");
-          // Optionally redirect to login page after registration
           this.$router.push("/");
         } else {
           console.error("Registration failed");

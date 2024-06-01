@@ -48,6 +48,7 @@
                                     <th class="text-center">Year Level</th>
                                     <th class="text-center">Academic Year</th>
                                     <th class="text-center">Amount Budget</th>
+                                    <th class="text-center">Check Requirements</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center action-column">Action</th>
                                 </tr>
@@ -76,6 +77,11 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.year_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
                                         <button @click="acceptApplication(checkedIds.length > 0 ? checkedIds : item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
@@ -121,6 +127,7 @@
                                     <th class="text-center">Year Level</th>
                                     <th class="text-center">Academic Year</th>
                                     <th class="text-center">Amount Budget</th>
+                                    <th class="text-center">Check Requirements</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center action-column">Action</th>
                                 </tr>
@@ -150,6 +157,11 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
                                     <td class="whitespace-nowrap uppercase action-column">
                                         <button @click="emailModal(checkedIdsForApproved.length > 0 ? checkedIdsForApproved : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
@@ -191,6 +203,7 @@
                                     <th class="text-center">Year Level</th>
                                     <th class="text-center">Academic Year</th>
                                     <th class="text-center">Amount Budget</th>
+                                    <th class="text-center">Check Requirements</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center action-column">Action</th>
                                 </tr>
@@ -220,8 +233,13 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
                                     <td class="whitespace-nowrap uppercase action-column">
-                                        <button @click="emailModal(checkedIdsForDecline.length > 0 ? checkedIdsForDecline : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                        <button @click="declineEmailModal(checkedIdsForDecline.length > 0 ? checkedIdsForDecline : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
                                         </button>
                                     </td>
@@ -286,6 +304,103 @@
         </div>
     </div>
 </div>
+<div id="declineEmailModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Send an Email Message
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="declineEmailModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="my-6 mx-auto max-w-xl bg-white font-[sans-serif]">
+                <h1 class="text-3xl text-[#333] font-extrabold text-center">Message</h1>
+                <form class="mt-8 space-y-4" @submit.prevent="DeclinesendEmail">
+                    <input type="email" :value="emailList" placeholder="Email" disabled class="w-full rounded-md py-3 px-4 bg-gray-100 text-sm outline-blue-500" readonly />
+                    <input type="text" placeholder="Subject" id="subject" class="w-full rounded-md py-3 px-4 bg-gray-100 text-sm outline-blue-500" />
+                    <textarea placeholder="Message" rows="6" id="message" class="w-full rounded-md px-4 bg-gray-100 text-sm pt-3 outline-blue-500"></textarea>
+                    <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <button data-modal-hide="declineEmailModal" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="RequirementsModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{ educationalRequest.beneficiary_firstname }} {{ educationalRequest.beneficiary_middlename }} {{ educationalRequest.beneficiary_lastname }} Requirements
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="RequirementsModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4">
+                <div v-if="educationalRequest.valid_id_imagepath && educationalRequest.valid_id_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Valid ID Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.valid_id_imagepath" :key="'valid_id_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Valid ID Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+                <div v-if="educationalRequest.barangay_indigency_imagepath && educationalRequest.barangay_indigency_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Hospital Documents Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.barangay_indigency_imagepath" :key="'hospital_document_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Barangay Indigency Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+                <div v-if="educationalRequest.certificate_of_enrollment_imagepath && educationalRequest.certificate_of_enrollment_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Barangay Clearance Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.certificate_of_enrollment_imagepath" :key="'barangay_clearance_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Coe ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+                <div v-if="educationalRequest.certificate_of_registration_imagepath && educationalRequest.certificate_of_registration_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Barangay Clearance Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.certificate_of_registration_imagepath" :key="'barangay_clearance_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Cor ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="preview-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button data-modal-hide="preview-modal" @click="closePreviewModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <img :src="previewedImage.url" class="w-full h-auto" style="max-width: 100%; max-height: 80vh;">
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -318,6 +433,7 @@ export default {
             items: [],
             Approveitems: [],
             Declineitems: [],
+            educationalRequest: [],
             checkedIds: [],
             checkedIdsForApproved: [],
             checkedIdsForDecline: [],
@@ -330,6 +446,9 @@ export default {
                 textAlign: 'center',
                 background: '#364d79',
             },
+            previewedImage: {
+                url: ''
+            }
         };
     },
     components: {
@@ -350,6 +469,45 @@ export default {
         this.fetchApprovedEducationalAssistance();
     },
     methods: {
+        RequirementsModal(itemId) {
+            axios.get(`/api/educational-assistance/requirements-path/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.educationalRequest = response.data;
+                    const modal = document.getElementById('RequirementsModal');
+                    modal.classList.remove('hidden');
+                    modal.setAttribute('aria-hidden', 'false');
+                    // Add event listener to close modal on close button click
+                    modal.addEventListener('click', function (e) {
+                        if (e.target && e.target.closest('[data-modal-hide="RequirementsModal"]')) {
+                            modal.classList.add('hidden');
+                            modal.setAttribute('aria-hidden', 'true');
+                        }
+                    });
+                    this.educationalRequest.valid_id_imagepath = this.educationalRequest.valid_id_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.educationalRequest.barangay_indigency_imagepath = this.educationalRequest.barangay_indigency_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.educationalRequest.certificate_of_enrollment_imagepath = this.educationalRequest.certificate_of_enrollment_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.educationalRequest.certificate_of_registration_imagepath = this.educationalRequest.certificate_of_registration_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                })
+                .catch(error => {
+                    console.error('Error fetching medical request data:', error);
+                });
+        },
+        previewImage(imagePath) {
+            this.previewedImage.url = imagePath;
+            document.getElementById('RequirementsModal').classList.add('hidden');
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('preview-modal').focus();
+
+        },
+        closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('RequirementsModal').classList.remove('hidden');
+            this.previewedImage.url = '';
+        },
         formatDateToWords(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
@@ -439,6 +597,69 @@ export default {
             }
         },
         sendEmailRequest(id) {
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            axios.post(`/api/educational-assistance/send-email-to-student/${id}`, {
+                    subject,
+                    message
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    toastr.success('Email Sent!');
+                    this.checkedIds = [];
+                    document.getElementById('subject').value = '';
+                    document.getElementById('message').value = '';
+
+                })
+                .catch(error => {
+                    console.error('Error sending email:', error);
+                });
+        },
+        declineEmailModal(itemId) {
+            this.itemId = itemId;
+            let emails = [];
+            if (Array.isArray(itemId)) {
+                itemId.forEach(id => {
+                    const item = this.Approveitems.find(item => item.id === id);
+                    if (item) {
+                        emails.push(item.student_email);
+                    }
+                });
+            } else {
+                const item = this.Approveitems.find(item => item.id === itemId);
+                if (item) {
+                    emails.push(item.student_email);
+                }
+            }
+            this.emailList = emails.join(', ');
+            const modal = document.getElementById('declineEmailModal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="declineEmailModal"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
+        },
+        DeclinesendEmail() {
+            const itemId = this.itemId;
+            if (itemId instanceof Event) {
+                console.error("Invalid itemId:", itemId);
+                return;
+            }
+            if (Array.isArray(itemId)) {
+                itemId.forEach(id => {
+                    this.DeclinesendEmailRequest(id);
+                });
+            } else {
+                this.DeclinesendEmailRequest(itemId);
+            }
+        },
+        DeclinesendEmailRequest(id) {
             const subject = document.getElementById('subject').value;
             const message = document.getElementById('message').value;
             axios.post(`/api/educational-assistance/send-email-to-student/${id}`, {

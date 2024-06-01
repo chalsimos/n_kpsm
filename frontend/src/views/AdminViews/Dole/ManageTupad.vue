@@ -37,7 +37,7 @@
                                     <td class="whitespace-nowrap uppercase">
                                         <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.name }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.username }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.email }}</td>
                                     <td class="whitespace-nowrap uppercase">
                                         <div class="flex space-x-4">

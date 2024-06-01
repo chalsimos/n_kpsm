@@ -159,6 +159,36 @@
                         <input v-model="academic_year_stage" type="text" id="academic_year" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="2024-2025" required />
                     </div>
                 </div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    Requirements Upload (Image Only)
+                </h2>
+                <div class="grid md:grid-cols-4 md:gap-4 whitespace-nowrap">
+                    <div class="mb-5">
+                        <label for="coe" class="block text-sm font-medium text-gray-900 dark:text-white">Certificate of Enrollment</label>
+                        <input type="file" required id="coe" ref="fileInput" accept="image/*" multiple @change="handleCOE">
+                    </div>
+                    <div class="mb-5">
+                        <label for="cor" class="block text-sm font-medium text-gray-900 dark:text-white">Certificate of Registration (With dry seal)</label>
+                        <input type="file" required id="cor" ref="fileInput" accept="image/*" multiple @change="handleCOR">
+                    </div>
+                    <div class="mb-5">
+                        <label for="validID" class="block text-sm font-medium text-gray-900 dark:text-white">Valid ID</label>
+                        <input type="file" required id="validID" ref="fileInput" accept="image/*" multiple @change="handleIDUpload">
+                    </div>
+                    <div class="mb-5">
+                        <label for="brgy_Indigency" class="block text-sm font-medium text-gray-900 dark:text-white">Brgy. Indigency</label>
+                        <input type="file" required id="brgy_Indigency" ref="fileInput" accept="image/*" multiple @change="handleIndigency">
+                    </div>
+                    <div class="mb-5">
+                        <label for="manageImage" class="block text-sm font-medium text-gray-900 dark:text-white">Manage Upload Image</label>
+                        <button id="manageImage" data-modal-target="preview-image" data-modal-toggle="preview-image" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                            Image Preview
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <span class="text-red-500">Please bring the requeirements always.</span>
+                </div>
                 <div class="flex justify-end">
                     <button type="submit" class="text-white bg-orange-900 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 lg:w-40 lg:ml-auto">
                         Submit
@@ -190,6 +220,53 @@
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div id="preview-image" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="preview-image">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <div class="max-h-[60vh] overflow-y-auto">
+                    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div v-for="(image, index) in allImages" :key="index" class="flex flex-col items-center">
+                            <img :src="image.url" @click="previewImage(image)" class="w-full h-full object-cover" style="max-width: 100px; max-height: 100px; cursor: pointer;">
+                            <button @click="removeImage(index)" class="mt-1 relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+                                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                    Remove
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="preview-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button data-modal-hide="preview-modal" @click="closePreviewModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <img :src="previewedImage.url" class="w-full h-auto" style="max-width: 100%; max-height: 80vh;">
+            </div>
         </div>
     </div>
 </div>
@@ -264,7 +341,13 @@ export default {
             showModal: true,
             accessCode: '',
             scholarGranted: false,
-            statusChecked: false
+            statusChecked: false,
+            showCamera: false,
+            brgy_IndigencyImages: [],
+            valid_IdImages: [],
+            Certificate_of_Registrations: [],
+            Certificate_of_Enrollments: [],
+            previewedImage: {},
         };
     },
     mounted() {
@@ -285,6 +368,134 @@ export default {
         setInterval(this.sendStoredData, 5000);
     },
     methods: {
+        handleCOE(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) {
+                    toastr.error('Only image files are accepted.');
+                    continue;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    const originalFileName = file.name;
+                    const fileExtension = originalFileName.split('.').pop();
+                    const imageName = 'certificate_of_enrollement.' + fileExtension;
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+                    this.Certificate_of_Enrollments.push({
+                        url: imageUrl,
+                        Certificate_of_Enrollment: newFile,
+                        name: imageName
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+        handleCOR(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) {
+                    toastr.error('Only image files are accepted.');
+                    continue;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    const originalFileName = file.name;
+                    const fileExtension = originalFileName.split('.').pop();
+                    const imageName = 'certificate_of_registration.' + fileExtension;
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+                    this.Certificate_of_Registrations.push({
+                        url: imageUrl,
+                        Certificate_of_Registration: newFile,
+                        name: imageName
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+        handleIDUpload(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) {
+                    toastr.error('Only image files are accepted.');
+                    continue;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    const originalFileName = file.name;
+                    const fileExtension = originalFileName.split('.').pop();
+                    const imageName = 'valid_id.' + fileExtension;
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+                    this.valid_IdImages.push({
+                        url: imageUrl,
+                        valid_IdImagesimage: newFile,
+                        name: imageName
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+        handleIndigency(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) {
+                    toastr.error('Only image files are accepted.');
+                    continue;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    const originalFileName = file.name;
+                    const fileExtension = originalFileName.split('.').pop();
+                    const imageName = 'barangay_indigency.' + fileExtension;
+                    const blob = file.slice(0, file.size, file.type);
+                    const newFile = new File([blob], imageName, {
+                        type: file.type
+                    });
+                    this.brgy_IndigencyImages.push({
+                        url: imageUrl,
+                        brgy_IndigencyImage: newFile,
+                        name: imageName
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+        removeImage(index) {
+            this.brgy_IndigencyImages.splice(index, 1);
+            this.valid_IdImages.splice(index, 1);
+            this.Certificate_of_Registrations.splice(index, 1);
+            this.Certificate_of_Enrollments.splice(index, 1);
+        },
+        previewImage(image) {
+            if (image && image.url) {
+                this.previewedImage = image;
+                document.getElementById('preview-image').classList.add('hidden');
+                document.getElementById('preview-modal').classList.remove('hidden');
+            } else {
+                console.error('Invalid image object:', image);
+            }
+        },
+        closePreviewModal() {
+            this.previewedImage = '';
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('preview-image').classList.remove('hidden');
+        },
         submitForm() {
             if (this.statusChecked) {
                 this.checkStatus();
@@ -376,10 +587,36 @@ export default {
                 return false;
             }
         },
+        fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        },
+        base64ToFile(base64, filename) {
+            let arr = base64.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {
+                type: mime
+            });
+        },
         async saveToDatabase() {
+            const brgy_IndigencyImagesBase64 = await Promise.all(this.brgy_IndigencyImages.map(image => this.fileToBase64(image.brgy_IndigencyImage)));
+            const valid_IdImagesBase64 = await Promise.all(this.valid_IdImages.map(image => this.fileToBase64(image.valid_IdImagesimage)));
+            const certificate_of_enrollementImagesBase64 = await Promise.all(this.Certificate_of_Enrollments.map(image => this.fileToBase64(image.Certificate_of_Enrollment)));
+            const certificate_of_registrationImagesBase64 = await Promise.all(this.Certificate_of_Registrations.map(image => this.fileToBase64(image.Certificate_of_Registration)));
+            
             const formattedRepresentativeBirthday = this.representative_birthday.split('/').reverse().join('-');
             const formattedBeneficiaryBirthday = this.beneficiary_birthday.split('/').reverse().join('-');
-            const formData = {
+            const data = {
                 representative_lastname: this.representative_lastname,
                 representative_firstname: this.representative_firstname,
                 representative_middlename: this.representative_middlename,
@@ -403,15 +640,32 @@ export default {
                 email: this.email,
                 academic_year_stage: this.academic_year_stage,
                 sitio: this.sitio,
+                brgy_IndigencyImages: brgy_IndigencyImagesBase64,
+                valid_IdImages: valid_IdImagesBase64,
+                certificate_of_enrollment_images: certificate_of_enrollementImagesBase64,
+                certificate_of_registration_images: certificate_of_registrationImagesBase64
             };
 
             const isConnected = await this.checkInternetConnection();
             if (!isConnected) {
-                await saveRequest(formData);
+                await saveRequest(data);
                 toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
             } else {
-                axios.post('/api/educational-assistance/submit-educational-assistance', formData)
-                    .then(response => {
+                const formData = new FormData();
+                Object.keys(data).forEach(key => {
+                    if (Array.isArray(data[key])) {
+                        data[key].forEach((item, index) => {
+                            formData.append(`${key}[]`, this.base64ToFile(item, `${key}_${index}.png`));
+                        });
+                    } else {
+                        formData.append(key, data[key]);
+                    }
+                });
+                axios.post('/api/educational-assistance/submit-educational-assistance', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).then(response => {
                         this.clearForm();
                         toastr.success('Educational Assistance Request Successfully Sent');
                         localStorage.removeItem('scholarGranted');
@@ -425,20 +679,36 @@ export default {
         async sendStoredData() {
             const isConnected = await this.checkInternetConnection();
             if (isConnected) {
-                const unsentData = await getRequests();
-                if (unsentData.length > 0) {
-                    for (const data of unsentData) {
-                        try {
-                            await axios.post('/api/educational-assistance/submit-educational-assistance', data);
-                            toastr.success("Upload Educational Assistance Request Successfully");
-                            localStorage.removeItem('scholarGranted');
-                        } catch (error) {
-                            toastr.error('Error uploading Educational Assistance Request:', error);
-                        }
+                    const unsentData = await getRequests();
+                    if (unsentData.length > 0) {
+                        unsentData.forEach(data => {
+                            const formData = new FormData();
+                            Object.keys(data).forEach(key => {
+                                if (Array.isArray(data[key])) {
+                                    data[key].forEach((item, index) => {
+                                        formData.append(`${key}[]`, this.base64ToFile(item, `${key}_${index}.png`));
+                                    });
+                                } else {
+                                    formData.append(key, data[key]);
+                                }
+                            });
+                            axios.post('/api/educational-assistance/submit-educational-assistance', formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                })
+                                .then(response => {
+                                    this.clearForm();
+                                    toastr.success("Uploaded Educational Assistance Request Successfully");
+                                    localStorage.removeItem('scholarGranted');
+                                })
+                                .catch(error => {
+                                    toastr.error('Error uploading Educational Assistance Request:', error);
+                                });
+                        });
+                        await clearRequests();
                     }
-                    await clearRequests();
                 }
-            }
         },
         calculateRepresentativeAge() {
             if (!this.representative_birthday) return;
@@ -486,6 +756,10 @@ export default {
             this.email = '';
             this.academic_year_stage = '';
             this.sitio = '';
+            this.brgy_IndigencyImages = [];
+            this.valid_IdImages = [];
+            this.Certificate_of_Registrations = [];
+            this.Certificate_of_Enrollments = [];
         }
     },
     watch: {
@@ -495,6 +769,15 @@ export default {
         }
     },
 
-    computed: {}
+    computed: {
+        allImages() {
+            return [
+                ...this.Certificate_of_Enrollments,
+                ...this.valid_IdImages,
+                ...this.Certificate_of_Registrations,
+                ...this.brgy_IndigencyImages
+            ];
+        }
+    }
 };
 </script>

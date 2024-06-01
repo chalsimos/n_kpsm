@@ -13,6 +13,7 @@ use App\Http\Controllers\NewsPortal;
 use App\Http\Controllers\EducationalAssistanceController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\CustomEmails;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +79,13 @@ Route::prefix('utility')->group(function () {
         Route::get('/get-hospital-service-offer/{id}', [HospitalController::class, 'getServiceOffersForHospital']);
         Route::delete('/delete-offer/{id}', [HospitalController::class, 'delete_offer']);
         Route::get('/get-hospital-with-offer', [HospitalController::class, 'hospitalsWithServiceOffers']);
+        //Custom Emails
+        Route::post('/create-emails', [CustomEmails::class, 'storeEmail']);
+        Route::put('/active-emails/{id}', [CustomEmails::class, 'activeEmail']);
+        Route::put('/deactive-emails/{id}', [CustomEmails::class, 'deactivateEmail']);
+        Route::delete('/delete-emails/{id}', [CustomEmails::class, 'deleteEmail']);
+        Route::get('/get-emails', [CustomEmails::class, 'Emailindex']);
+        Route::post('/send-emails/{id}', [CustomEmails::class, 'send_email']);
 
     });
 
@@ -90,6 +98,7 @@ Route::prefix('educational-assistance')->group(function () {
     Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
     //admin
     Route::middleware(['admin'])->group(function () {
+        Route::get('/requirements-path/{id}', [EducationalAssistanceController::class, 'requirementsPath']);
         Route::get('/get-all-approved_shcolarship-request', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request']);
         Route::get('/get-all-decline_shcolarship-request', [EducationalAssistanceController::class, 'get_all_decline_scholarship_request']);
         Route::get('/get-all-pending_shcolarship-request', [EducationalAssistanceController::class, 'get_all_pending_scholarship_request']);

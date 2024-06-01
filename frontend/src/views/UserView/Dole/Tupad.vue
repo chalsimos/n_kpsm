@@ -183,9 +183,9 @@ import {
 import axios from '../../../main.js'
 
 import {
-    saveRequest,
-    getRequests,
-    clearRequests
+    saveTupadRequest,
+    getTupadRequests,
+    clearTupadRequests
 } from '@/utils/tupadDB.js';
 export default {
     components: {
@@ -389,7 +389,7 @@ export default {
             };
             const isConnected = await this.checkInternetConnection();
             if (!isConnected) {
-                await saveRequest(formData);
+                await saveTupadRequest(formData);
                 toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
             } else {
                 axios.post('/api/dole/add-tupad', formData)
@@ -409,7 +409,7 @@ export default {
         async sendStoredData() {
             const isConnected = await this.checkInternetConnection();
             if (isConnected) {
-                const unsentData = await getRequests();
+                const unsentData = await getTupadRequests();
                 if (unsentData.length > 0) {
                     for (const data of unsentData) {
                         try {
@@ -423,7 +423,7 @@ export default {
                             toastr.error('Error uploading Tupad Request:', error);
                         }
                     }
-                    await clearRequests();
+                    await clearTupadRequests();
                 }
             }
         },

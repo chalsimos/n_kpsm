@@ -159,7 +159,7 @@ class DoleController extends Controller
     {
         try {
             $tupads = Tupad::leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
-                ->select('tupads.*', 'users.name as captain_name')
+                ->select('tupads.*', 'users.username as captain_name')
                 ->get();
 
                 return response()->json([
@@ -360,7 +360,7 @@ class DoleController extends Controller
     public function captain_list(Request $request)
     {
         try {
-            $captains = User::select('id','name', 'email')->where('type', 'captain')->get();
+            $captains = User::where('type', 'captain')->get();
             return response()->json($captains, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
