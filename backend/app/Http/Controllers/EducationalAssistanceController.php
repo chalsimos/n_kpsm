@@ -285,6 +285,10 @@ class EducationalAssistanceController extends Controller
             'year_level' => 'nullable|string|max:255',
             'academic_year_stage' => 'nullable|string|max:255',
             'email' => 'required|string|email|unique:users,email',
+            'brgy_IndigencyImages.*' => 'image',
+            'valid_IdImages.*' => 'image',
+            'certificate_of_enrollment_images.*' => 'image',
+            'certificate_of_registration_images.*' => 'image',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -321,6 +325,57 @@ class EducationalAssistanceController extends Controller
             $data->status = 'pending';
             $data->educational_assistance_type = 'tulong_dunong';
             $data->save();
+            $basePath = 'Request/Tulong Dunong/' . now()->year . '/' . now()->format('F') . '/';
+            $directoryPath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('school') . '/' . $request->input('year_level') . '/' . $data->beneficiary_lastname . ' ' . $data->beneficiary_middlename . ' ' . $data->beneficiary_firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/';
+            if (!Storage::exists('public/' . $directoryPath)) {
+                Storage::makeDirectory('public/' . $directoryPath);
+            }
+            $brgyIndigencyImagePaths = [];
+            $validIdImagePaths = [];
+            $registrationimagepath = [];
+            $enrollmentimagepath = [];
+            if ($request->hasFile('brgy_IndigencyImages')) {
+                foreach ($request->file('brgy_IndigencyImages') as $image) {
+                    $imageName = 'brgy_Indigency_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $brgyIndigencyImagePaths[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('valid_IdImages')) {
+                foreach ($request->file('valid_IdImages') as $image) {
+                    $imageName = 'valid_id_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $validIdImagePaths[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('certificate_of_registration_images')) {
+                foreach ($request->file('certificate_of_registration_images') as $image) {
+                    $imageName = 'certificate_of_registration' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $registrationimagepath[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('certificate_of_enrollment_images')) {
+                foreach ($request->file('certificate_of_enrollment_images') as $image) {
+                    $imageName = 'certificate_of_enrollment' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $enrollmentimagepath[] = $imagePath;
+                }
+            }
+            $data->update([
+                'barangay_indigency_imagepath' => implode(',', $brgyIndigencyImagePaths),
+                'valid_id_imagepath' => implode(',', $validIdImagePaths),
+                'certificate_of_enrollment_imagepath' => implode(',', $enrollmentimagepath),
+                'certificate_of_registration_imagepath' => implode(',', $registrationimagepath),
+            ]);
             $url = url('http://localhost:9000/educational-assistance');
             $info = [
                 'firstname' => $request->input('beneficiary_firstname'),
@@ -362,6 +417,10 @@ class EducationalAssistanceController extends Controller
             'year_level' => 'nullable|string|max:255',
             'academic_year_stage' => 'nullable|string|max:255',
             'email' => 'required|string|email|unique:users,email',
+            'brgy_IndigencyImages.*' => 'image',
+            'valid_IdImages.*' => 'image',
+            'certificate_of_enrollment_images.*' => 'image',
+            'certificate_of_registration_images.*' => 'image',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -398,6 +457,57 @@ class EducationalAssistanceController extends Controller
             $data->status = 'pending';
             $data->educational_assistance_type = 'smart_grant';
             $data->save();
+            $basePath = 'Request/Smart Grant/' . now()->year . '/' . now()->format('F') . '/';
+            $directoryPath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('school') . '/' . $request->input('year_level') . '/' . $data->beneficiary_lastname . ' ' . $data->beneficiary_middlename . ' ' . $data->beneficiary_firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/';
+            if (!Storage::exists('public/' . $directoryPath)) {
+                Storage::makeDirectory('public/' . $directoryPath);
+            }
+            $brgyIndigencyImagePaths = [];
+            $validIdImagePaths = [];
+            $registrationimagepath = [];
+            $enrollmentimagepath = [];
+            if ($request->hasFile('brgy_IndigencyImages')) {
+                foreach ($request->file('brgy_IndigencyImages') as $image) {
+                    $imageName = 'brgy_Indigency_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $brgyIndigencyImagePaths[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('valid_IdImages')) {
+                foreach ($request->file('valid_IdImages') as $image) {
+                    $imageName = 'valid_id_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $validIdImagePaths[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('certificate_of_registration_images')) {
+                foreach ($request->file('certificate_of_registration_images') as $image) {
+                    $imageName = 'certificate_of_registration' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $registrationimagepath[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('certificate_of_enrollment_images')) {
+                foreach ($request->file('certificate_of_enrollment_images') as $image) {
+                    $imageName = 'certificate_of_enrollment' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $enrollmentimagepath[] = $imagePath;
+                }
+            }
+            $data->update([
+                'barangay_indigency_imagepath' => implode(',', $brgyIndigencyImagePaths),
+                'valid_id_imagepath' => implode(',', $validIdImagePaths),
+                'certificate_of_enrollment_imagepath' => implode(',', $enrollmentimagepath),
+                'certificate_of_registration_imagepath' => implode(',', $registrationimagepath),
+            ]);
             $url = url('http://localhost:9000/educational-assistance');
             $info = [
                 'firstname' => $request->input('beneficiary_firstname'),
@@ -413,6 +523,30 @@ class EducationalAssistanceController extends Controller
         }
     }
 
+    public function requirementsPath(Request $request, $id)
+    {
+        try {
+            $educationalrequest = EducationalAssistance::findOrFail($id);
+            $requestData = $educationalrequest->toArray();
+            $imageUrls = [
+                'barangay_indigency_imagepath' => [],
+                'valid_id_imagepath' => [],
+                'certificate_of_enrollment_imagepath' => [],
+                'certificate_of_registration_imagepath' => [],
+            ];
+            foreach ($imageUrls as $key => $imagePaths) {
+                $imagePaths = explode(',', $requestData[$key]);
+                foreach ($imagePaths as $imagePath) {
+                    $imageUrl = Storage::url($imagePath);
+                    $imageUrls[$key][] = $imageUrl;
+                }
+            }
+            $responseData = array_merge($requestData, $imageUrls);
+            return response()->json($responseData);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     public function apply_educational_assistance(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -439,6 +573,10 @@ class EducationalAssistanceController extends Controller
             'year_level' => 'nullable|string|max:255',
             'academic_year_stage' => 'nullable|string|max:255',
             'email' => 'required|string|email|unique:users,email',
+            'brgy_IndigencyImages.*' => 'image',
+            'valid_IdImages.*' => 'image',
+            'certificate_of_enrollment_images.*' => 'image',
+            'certificate_of_registration_images.*' => 'image',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -475,6 +613,57 @@ class EducationalAssistanceController extends Controller
             $data->status = 'pending';
             $data->educational_assistance_type = 'educational_assistance';
             $data->save();
+            $basePath = 'Request/Educational Request/' . now()->year . '/' . now()->format('F') . '/';
+            $directoryPath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('school') . '/' . $request->input('year_level') . '/' . $data->beneficiary_lastname . ' ' . $data->beneficiary_middlename . ' ' . $data->beneficiary_firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/';
+            if (!Storage::exists('public/' . $directoryPath)) {
+                Storage::makeDirectory('public/' . $directoryPath);
+            }
+            $brgyIndigencyImagePaths = [];
+            $validIdImagePaths = [];
+            $registrationimagepath = [];
+            $enrollmentimagepath = [];
+            if ($request->hasFile('brgy_IndigencyImages')) {
+                foreach ($request->file('brgy_IndigencyImages') as $image) {
+                    $imageName = 'brgy_Indigency_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $brgyIndigencyImagePaths[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('valid_IdImages')) {
+                foreach ($request->file('valid_IdImages') as $image) {
+                    $imageName = 'valid_id_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $validIdImagePaths[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('certificate_of_registration_images')) {
+                foreach ($request->file('certificate_of_registration_images') as $image) {
+                    $imageName = 'certificate_of_registration' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $registrationimagepath[] = $imagePath;
+                }
+            }
+            if ($request->hasFile('certificate_of_enrollment_images')) {
+                foreach ($request->file('certificate_of_enrollment_images') as $image) {
+                    $imageName = 'certificate_of_enrollment' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $directoryPath . $imageName;
+                    Log::info('Moving file: ' . $imagePath);
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $enrollmentimagepath[] = $imagePath;
+                }
+            }
+            $data->update([
+                'barangay_indigency_imagepath' => implode(',', $brgyIndigencyImagePaths),
+                'valid_id_imagepath' => implode(',', $validIdImagePaths),
+                'certificate_of_enrollment_imagepath' => implode(',', $enrollmentimagepath),
+                'certificate_of_registration_imagepath' => implode(',', $registrationimagepath),
+            ]);
             $url = url('http://localhost:9000/educational-assistance');
             $info = [
                 'firstname' => $request->input('beneficiary_firstname'),
@@ -482,7 +671,6 @@ class EducationalAssistanceController extends Controller
                 'url' => $url,
             ];
             Mail::to($request->input('email'))->send(new EducationalAssistanceMail($info['firstname'], $info['codeGenerated'], $info['url']));
-
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();

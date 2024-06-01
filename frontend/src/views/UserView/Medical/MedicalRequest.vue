@@ -127,7 +127,7 @@
                 </h2>
                 <div class="grid md:grid-cols-4 md:gap-4 whitespace-nowrap">
                     <div class="mb-5">
-                        <label for="brgyClearance" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Brgy. Clearance</label>
+                        <label for="brgyClearance" class="block text-sm font-medium text-gray-900 dark:text-white">Upload Brgy. Indigency</label>
                         <input type="file" required id="brgyClearance" ref="fileInput" accept="image/*" multiple @change="handleClearanceUpload">
                     </div>
                     <div class="mb-5">
@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <div class="mb-5">
-                    <span class="text-red-500">Requirements needed to be brought and submitted to the office.</span>
+                    <span class="text-red-500">Please bring the requeirements always.</span>
                 </div>
                 <div class="flex justify-end">
                     <button type="submit" class="text-white bg-orange-900 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 lg:w-40 lg:ml-auto">

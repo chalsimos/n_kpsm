@@ -71,11 +71,8 @@ export default {
             email: this.email,
             password: this.password
         });
-
         const { user, token } = response.data;
         localStorage.setItem('token', token);
-        console.log('Login successful:', user);
-
         if (user.type === 'admin') {
             this.$router.push('/admin');
         } else {

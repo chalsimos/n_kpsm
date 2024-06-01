@@ -231,8 +231,8 @@
                     </div> -->
                 </ul>
             </li>
-            <li data-tooltip-target="General Request" data-tooltip-placement="right">
-                <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <li data-tooltip-target="Emails" data-tooltip-placement="right">
+                <router-link to="/manage-emails" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
                         <path fill="#96A9B2" d="M465.624 390.73c2.375-4.033-140.634-133.403-140.634-133.403c-17.984-15.829-29.211-16.078-53.943 0c0 0-199.388 129.266-198.819 133.244l-.041.029c.01.035.034.058.05.09c.589 3.992 1.91 7.668 3.859 10.884c.832 1.373 1.944 2.523 2.995 3.719l-.075.049c.084.093.214.136.298.229c4.476 4.962 10.787 8.176 18.379 9.093c.119.015.203.078.322.093h.47c1.16.113 2.224.398 3.438.398h323.456c15.927 0 31.615-10.016 40.049-24.057c.087-.105.202-.18.284-.287z" />
                         <path fill="#B9C5C6" d="M301.505 242.48L73.339 389.467l45.592-208.232c4.444-20.296 24.496-36.747 44.792-36.747h318.472c20.296 0 33.145 16.45 28.701 36.747l-45.592 208.232z" />
@@ -240,12 +240,12 @@
                         <path fill="#DCE2E2" d="M123.9 168.734c-2.339 3.971 138.467 131.347 138.467 131.347c17.707 15.585 28.761 15.831 53.112 0c0 0 196.315-127.274 195.755-131.19l.041-.029c-.01-.034-.033-.057-.049-.089c-.58-3.931-1.88-7.549-3.799-10.717c-.819-1.352-1.914-2.484-2.949-3.662l.074-.049c-.083-.091-.211-.134-.294-.226c-4.407-4.885-10.621-8.05-18.095-8.953c-.117-.014-.2-.077-.317-.091h-.463c-1.142-.111-2.19-.392-3.385-.392H163.525c-15.682 0-31.128 9.862-39.431 23.686c-.085.103-.199.177-.279.283z" />
                         <path fill="#59CAFC" d="M94.447 208.62H14.44c-6.627 0-12-5.373-12-12s5.373-12 12-12h80.007c6.627 0 12 5.373 12 12s-5.372 12-12 12m-13.108 70.236c0-6.627-5.373-12-12-12H14.44c-6.627 0-12 5.373-12 12s5.373 12 12 12h54.899c6.628 0 12-5.373 12-12m-18.215 82.237c0-6.627-5.373-12-12-12H14.44c-6.627 0-12 5.373-12 12s5.373 12 12 12h36.684c6.627 0 12-5.373 12-12" />
                     </svg>
-                    <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">General Request</span>
+                    <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Emails</span>
                     <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
                 </router-link>
             </li>
-            <div id="General Request" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                General Request
+            <div id="Emails" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Emails
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
             <li>

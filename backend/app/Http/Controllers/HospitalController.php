@@ -21,7 +21,7 @@ class HospitalController extends Controller
     public function index()
     {
         try {
-            $hospital = Hospital::orderBy('status', 'asc')->get();
+            $hospital = Hospital::get();
             return response()->json($hospital, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
