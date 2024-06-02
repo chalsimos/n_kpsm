@@ -44,9 +44,9 @@ Route::prefix('dashboard')->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-hospital-count', [AdminDashboardController::class, 'getAllHospital']);
         Route::get('/get-hospital-service-offer-count', [AdminDashboardController::class, 'getAllHospitalsWithServiceOffers']);
-
     });
-
+    Route::get('/municipality-barangay', [AdminDashboardController::class, 'getMunicipalityBarangayData']);
+    Route::get('/gender-medical-requests', [AdminDashboardController::class, 'getGenderMedicalRequest']);
 });
 
 
