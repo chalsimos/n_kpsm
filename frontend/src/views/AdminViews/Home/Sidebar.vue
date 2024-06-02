@@ -363,11 +363,11 @@
                                 <circle cx="27" cy="8" r="8" fill="#e8e8e8" />
                                 <path fill="#f15744" d="M32 6h-3V3c0-.5-.5-1-1-1h-2c-.5 0-1 .5-1 1v3h-3c-.5 0-1 .4-1 1v2c0 .6.5 1 1 1h3v3c0 .6.5 1 1 1h2c.5 0 1-.4 1-1v-3h3c.5 0 1-.4 1-1V7c0-.6-.5-1-1-1" />
                             </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Hospital Request</span>
+                            <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Hospital Offers</span>
                         </router-link>
                     </li>
                     <div id="Amount" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Manage Hospital Available Request
+                        Manage Hospital Available Offers
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </ul>

@@ -19,6 +19,57 @@ use Illuminate\Validation\ValidationException;
 
 class AdminDashboardController extends Controller
 {
+    public function getGenderMedicalRequest()
+    {
+        $genderMunicipalityCounts = MedicalRequest::selectRaw('gender, municipality, COUNT(*) as count')
+            ->groupBy('gender', 'municipality')
+            ->get();
+        $result = [];
+        foreach ($genderMunicipalityCounts as $record) {
+            if (!isset($result[$record->gender])) {
+                $result[$record->gender] = [
+                    'count' => 0,
+                    'municipality' => []
+                ];
+            }
+            $result[$record->gender]['count'] += $record->count;
+            $result[$record->gender]['municipality'][$record->municipality] = $record->count;
+        }
+        return response()->json($result);
+    }
+
+    public function getMunicipalityBarangayData()
+    {
+        $hospitalRequests = MedicalRequest::all();
+        $organizedData = [];
+        foreach ($hospitalRequests as $request) {
+            $municipality = $request->municipality;
+            $barangay = $request->barangay;
+            if (!isset($organizedData[$municipality])) {
+                $organizedData[$municipality] = [];
+            }
+            if (!isset($organizedData[$municipality][$barangay])) {
+                $organizedData[$municipality][$barangay] = 1;
+            } else {
+                $organizedData[$municipality][$barangay]++;
+            }
+        }
+        $formattedData = [];
+        foreach ($organizedData as $municipality => $barangays) {
+            $barangayData = [];
+            foreach ($barangays as $barangay => $count) {
+                $barangayData[] = [
+                    'barangay' => $barangay,
+                    'count' => $count
+                ];
+            }
+            $formattedData[] = [
+                'municipality' => $municipality,
+                'barangays' => $barangayData
+            ];
+        }
+        return response()->json($formattedData);
+    }
 
     public function getAllHospitalsWithServiceOffers()
     {
