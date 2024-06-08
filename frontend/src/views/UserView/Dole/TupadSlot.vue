@@ -316,8 +316,7 @@ export default {
                 }
                 return data;
             } catch (error) {
-                console.error('Error extracting Excel data:', error);
-                throw new Error('Failed to extract Excel data');
+                return Promise.reject(error);
             }
         },
         // async sendTupadStoredData() {
@@ -423,18 +422,19 @@ export default {
                     this.$message.error('Failed to fetch slot_get value. Please try again.');
                 });
         },
-        handleUpload() {
+        async handleUpload() {
             const excelFile = this.fileList.find(file => file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             if (!excelFile) {
                 return;
             }
-            this.extractExcelData(excelFile.originFileObj)
-                .then(extractedData => {
-                    console.log('Extracted data:', extractedData);
-                })
-                .catch(error => {
-                    console.error('Error handling upload and extraction:', error);
-                });
+            try {
+                const extractedData = await this.extractExcelData(excelFile.originFileObj);
+                console.log('Extracted data:', extractedData);
+            } catch (error) {
+                console.error('Error extracting Excel data:', error);
+                this.$message.error('Failed to extract Excel data.');
+                return;
+            }
             const imageFiles = this.fileList.filter(file => file.type.startsWith('image/'));
             const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
             axios.post('/api/dole/get-captain-slot', {

@@ -32,8 +32,9 @@ class HospitalController extends Controller
         $validator = Validator::make($request->all(), [
             'hospital_name' => 'required',
             'hospital_acronym' => 'required',
-            'hospital_address' => 'required',
-            'hospital_district' => 'required',
+            'province' => 'required',
+            'municipality' => 'required',
+            'barangay' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -43,8 +44,9 @@ class HospitalController extends Controller
             $data = new Hospital();
             $data->hospital_name = $request->input('hospital_name');
             $data->hospital_acronym = $request->input('hospital_acronym');
-            $data->hospital_address = $request->input('hospital_address');
-            $data->hospital_district = $request->input('hospital_district');
+            $data->province = $request->input('province');
+            $data->municipality = $request->input('municipality');
+            $data->barangay = $request->input('barangay');
             $data->status = 'active';
             $data->save();
             DB::commit();

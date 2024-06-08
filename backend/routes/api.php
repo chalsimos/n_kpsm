@@ -44,9 +44,15 @@ Route::prefix('dashboard')->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-hospital-count', [AdminDashboardController::class, 'getAllHospital']);
         Route::get('/get-hospital-service-offer-count', [AdminDashboardController::class, 'getAllHospitalsWithServiceOffers']);
+        Route::get('/municipality-barangay', [AdminDashboardController::class, 'getMunicipalityBarangayData']);
+        Route::get('/educational-municipality-barangay', [AdminDashboardController::class, 'getMunicipalityBarangayEducationalData']);
+        Route::get('/gender-medical-requests', [AdminDashboardController::class, 'getGenderMedicalRequest']);
+        Route::get('/gender-educational-requests', [AdminDashboardController::class, 'getGenderEducationalRequest']);
     });
-    Route::get('/municipality-barangay', [AdminDashboardController::class, 'getMunicipalityBarangayData']);
-    Route::get('/gender-medical-requests', [AdminDashboardController::class, 'getGenderMedicalRequest']);
+        Route::get('/getData', [AdminDashboardController::class, 'getData']);
+        Route::get('/medical-requests-data', [AdminDashboardController::class, 'getMedicalRequestsData']);
+        Route::get('/educational-requests-data', [AdminDashboardController::class, 'getEducationalRequestsData']);
+
 });
 
 
@@ -121,12 +127,12 @@ Route::prefix('medical-requests')->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
         Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
-        Route::get('/get-all', [MedicalRequestController::class, 'index']);
         Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
         Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
         Route::get('/get-hospital-and-offer', [MedicalRequestController::class, 'hospitalsWithServiceOffers']);
 
     });
+    Route::get('/get-all', [MedicalRequestController::class, 'index']);
 
 });
 Route::post('/post-news', [NewsPortal::class, 'addNews']);

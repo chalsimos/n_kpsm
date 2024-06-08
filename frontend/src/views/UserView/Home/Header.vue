@@ -89,12 +89,12 @@
                                     </router-link>
                                 </li>
                                 <li>
-                                    <router-link to="/educational-assistance-smart-grant" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                    <router-link to="/smart-grant" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
                                         Smart Grant Scholarship Assistance
                                     </router-link>
                                 </li>
                                 <li>
-                                    <router-link to="/educational-assistance-tulong-dunong" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                    <router-link to="/tulong-dunong" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
                                         Tulong Dunong Scholarship Assistance
                                     </router-link>
                                 </li>

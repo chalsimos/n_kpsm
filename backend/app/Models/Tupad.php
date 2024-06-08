@@ -11,5 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Tupad extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-
+    public function code()
+    {
+        return $this->belongsTo(TupadCode::class, 'used_code_id');
+    }
 }

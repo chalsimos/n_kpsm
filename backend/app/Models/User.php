@@ -19,13 +19,25 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
+        'email_verified_at',
         'password',
         'user_token',
         'photo',
         'remember_token',
-        'type'
+        'firstname',
+        'middlename',
+        'lastname',
+        'age',
+        'sex',
+        'contactnumber',
+        'birthday',
+        'province',
+        'municipality',
+        'barangay',
+        'type',
+        'district'
     ];
     public function isAdmin()
     {

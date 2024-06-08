@@ -17,7 +17,9 @@
                         <th class="text-center">Hospital Name</th>
                         <th class="text-center">Acronym</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Address</th>
+                        <th class="text-center">Province</th>
+                        <th class="text-center">Municipality</th>
+                        <th class="text-center">Barangay</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </template>
@@ -28,7 +30,9 @@
                         <td class="whitespace-nowrap uppercase">
                             <v-chip :color="item.status === 'active' ? 'green' : 'red'" :text="item.status === 'active' ? 'Active' : 'Inactive'" class="text-uppercase" size="small" label></v-chip>
                         </td>
-                        <td class="whitespace-nowrap uppercase">{{ item.hospital_address }}</td>
+                        <td class="whitespace-nowrap uppercase">{{ item.province }}</td>
+                        <td class="whitespace-nowrap uppercase">{{ item.municipality }}</td>
+                        <td class="whitespace-nowrap uppercase">{{ item.barangay }}</td>
                         <td class="whitespace-nowrap uppercase">
                             <div class="mb-1 mt-1">
                                 <Button type="primary" class="px-5" danger @click="deleteHospital(item.id)" v-show="item.status === 'inactive'">
@@ -75,14 +79,6 @@
                     <label for="hospital_acronym" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acronym</label>
                     <input v-model="hospital_acronym" type="text" id="hospital_acronym" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" placeholder="Acronym" required />
                 </div>
-                <div class="mb-5">
-                        <label for="hospital_district" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">hospital_district</label>
-                        <select v-model="hospital_district " id="hospital_district" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 w-full font-small rounded-lg text-sm py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
-                            <option value="" disabled selected>Hospital District</option>
-                            <option value="1st District">1st District</option>
-                            <option value="2nd District">2nd District</option>
-                        </select>
-                    </div>
                 <div class="mb-5">
                     <label for="Province" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
                     <select @change="handleCity" id="Province" v-model="provinceto" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500" required>
@@ -154,8 +150,8 @@ export default {
             province: "Oriental Mindoro",
             hospital_name: '',
             hospital_acronym: '',
-            hospital_address: '',
-            hospital_district: '',
+            municipality: '',
+            barangay: '',
         };
     },
     components: {
@@ -178,9 +174,9 @@ export default {
             const formData = new FormData();
             formData.append('hospital_name', this.hospital_name);
             formData.append('hospital_acronym', this.hospital_acronym);
-            const fullAddress = `${this.province}, ${this.selectedMunicipality}, ${this.selectedBarangay}`;
-            formData.append('hospital_address', fullAddress);
-            formData.append('hospital_district', this.hospital_district);
+            formData.append('province', this.province);
+            formData.append('municipality', this.selectedMunicipality);
+            formData.append('barangay', this.selectedBarangay);
             axios.post('/api/utility/save-hospital', formData, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -189,9 +185,8 @@ export default {
                 .then(response => {
                     this.hospital_name = '';
                     this.hospital_acronym = '';
-                    this.hospital_address = '';
-                    this.hospital_district = '';
-                    this.province = '';
+                    this.barangay = '';
+                    this.municipality = '';
                     this.selectedMunicipality = '';
                     this.selectedBarangay = '';
                     toastr.success('Medical Request Successfully Sent');
