@@ -19,38 +19,58 @@ class MedicalRequestController extends Controller
      * Display a listing of the resource.
      */
 
-     public function hospitalsWithServiceOffers()
-     {
-         try {
-             $hospitals = Hospital::with('hospitalRequests')
-                 ->where('status', 'active')
-                 ->whereNull('deleted_at')
-                 ->orderBy('status', 'asc')
-                 ->get();
-             $formattedHospitals = $hospitals->map(function ($hospital) {
-                 return [
-                     'id' => $hospital->id,
-                     'hospital_name' => $hospital->hospital_name,
-                     'hospital_acronym' => $hospital->hospital_acronym,
-                     'service_offers' => $hospital->hospitalRequests->where('status','active')->pluck('service_offer')
-                 ];
-             });
-             return response()->json($formattedHospitals, 200);
-         } catch (\Exception $e) {
-             return response()->json(['error' => $e->getMessage()], 500);
-         }
-     }
-
-
-    public function index()
+    public function hospitalsWithServiceOffers()
     {
         try {
-            $medicalRequests = MedicalRequest::get();
+            $hospitals = Hospital::with('hospitalRequests')
+                ->where('status', 'active')
+                ->whereNull('deleted_at')
+                ->orderBy('status', 'asc')
+                ->get();
+            $formattedHospitals = $hospitals->map(function ($hospital) {
+                return [
+                    'id' => $hospital->id,
+                    'hospital_name' => $hospital->hospital_name,
+                    'hospital_acronym' => $hospital->hospital_acronym,
+                    'service_offers' => $hospital->hospitalRequests->where('status', 'active')->pluck('service_offer')
+                ];
+            });
+            return response()->json($formattedHospitals, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function index(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            $districts = ($user->type == 'superadmin') ?
+                null : (($user->district == '1st') ?
+                    ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria'] :
+                    ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
+            $medicalRequests = ($districts === null) ?
+                MedicalRequest::get() :
+                MedicalRequest::whereIn('municipality', $districts)->get();
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    private function validateAdminAndSuperAdmin(Request $request)
+    {
+        $token = $request->bearerToken();
+        if (!$token) {
+            throw new \Exception('Unauthorized', 401);
+        }
+        $decryptedId = Crypt::decrypt($token);
+        $user = User::find($decryptedId);
+        if (!$user || $user->type !== 'admin' && $user->type !== 'superadmin') {
+            throw new \Exception('User is not an admin', 400);
+        }
+        return $user;
+    }
+
     public function requirementsPath(Request $request, $id)
     {
         try {
@@ -121,6 +141,11 @@ class MedicalRequestController extends Controller
             $data->hospital = $request->input('hospital');
             $data->request = $request->input('request');
             $data->status = 'pending';
+            $latestRecord = MedicalRequest::where('hospital', $request->input('hospital'))
+                ->orderBy('id', 'desc')
+                ->first();
+            $count = ($latestRecord) ? intval(explode('-', $latestRecord->Hor_code)[3]) + 1 : 1;
+
             $data->save();
             $basePath = 'Request/Medical Request/' . now()->year . '/' . now()->format('F') . '/';
             $directoryPath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/';
@@ -159,7 +184,7 @@ class MedicalRequestController extends Controller
                 'valid_id_imagepath' => implode(',', $validIdImagePaths),
                 'hospital_document_imagepath' => implode(',', $hospitalDocumentImagePaths),
             ]);
-            $horCode = 'AVU-' . now()->year . '-' . str_replace(' ', '-', $request->input('hospital')) . '-' . $data->id;
+            $horCode = 'AVU-' . now()->year . '-' . str_replace(' ', '-', $request->input('hospital')) . '-' . $count;
             $data->update(['Hor_code' => $horCode]);
             DB::commit();
             return response()->json(['message' => 'Medical Request saved successfully'], 201);

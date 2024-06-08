@@ -20,6 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['http://localhost:8080'],
+    // 'allowed_origins' => ['https://kpsm.online'],
 
     'allowed_origins_patterns' => [],
 
