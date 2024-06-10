@@ -3,7 +3,7 @@
 <nav class="fixed top-0 z-50 w-full bg-white border-b-2 border-orange-200 dark:bg-gray-800 dark:border-gray-700 ">
     <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
         <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse mr-1">
-            <img :src="logoUrl" class="h-8" alt="Flowbite Logo" />
+            <img :src="logoUrl" class="h-8" alt="KPSM" />
             <span class="self-center text-2xl font-semibold whitespace-nowrap hover:text-orange-400 dark:text-white">KPSM</span>
         </router-link>
         <div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse md:mt-3 ">
