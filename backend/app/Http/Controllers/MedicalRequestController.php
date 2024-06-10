@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BudgetAllocation;
 use App\Models\Hospital;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -212,22 +213,37 @@ class MedicalRequestController extends Controller
     public function approve_amount(Request $request, $id)
     {
         try {
-            $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
                 'amount' => 'required|numeric',
             ]);
-            $medicalRequest->amount = $validatedData['amount'];
-            if ($medicalRequest->save()) {
-                $medicalRequest->status = 'approve';
-                $medicalRequest->save();
-                return response()->json(['data' => $medicalRequest], 200);
-            } else {
-                return response()->json(['error' => 'Failed to update amount'], 500);
+            $medicalRequest = MedicalRequest::findOrFail($id);
+            $amount = $validatedData['amount'];
+            $hospital = $medicalRequest->hospital;
+            $currentYear = date('Y');
+            $budgetAllocation = BudgetAllocation::where('budget_to_hospital', $hospital)
+                ->where('year', $currentYear)
+                ->first();
+            if (!$budgetAllocation) {
+                return response()->json(['error' => 'No budget allocation found for the specified hospital'], 404);
             }
+            if ($budgetAllocation->budget_left < $amount) {
+                return response()->json(['error' => 'Budget is not enough'], 400);
+            }
+            DB::beginTransaction();
+            $budgetAllocation->budget_left -= $amount;
+            $budgetAllocation->total_expenses += $amount;
+            $budgetAllocation->save();
+            $medicalRequest->amount = $amount;
+            $medicalRequest->status = 'approve';
+            $medicalRequest->save();
+            DB::commit();
+            return response()->json(['data' => $medicalRequest], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
     public function decline(Request $request, $id)
     {
         try {
