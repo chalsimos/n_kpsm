@@ -13,6 +13,7 @@ use App\Http\Controllers\NewsPortal;
 use App\Http\Controllers\EducationalAssistanceController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\BudgetAllocation;
 use App\Http\Controllers\CustomEmails;
 
 /*
@@ -39,6 +40,16 @@ Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
 Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
 Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
 
+Route::prefix('budget')->group(function () {
+ //admin
+    Route::middleware(['admin'])->group(function () {
+
+    });
+    Route::post('/budget-allocations', [BudgetAllocation::class, 'save_budget_allocation']);
+    Route::get('/budget-allocations', [BudgetAllocation::class, 'get_all_budget_allocations']);
+    Route::get('/budget-allocations-hospital', [BudgetAllocation::class, 'get_unique_hospitals']);
+});
+
 Route::prefix('dashboard')->group(function () {
  //admin
     Route::middleware(['admin'])->group(function () {
@@ -48,10 +59,10 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/educational-municipality-barangay', [AdminDashboardController::class, 'getMunicipalityBarangayEducationalData']);
         Route::get('/gender-medical-requests', [AdminDashboardController::class, 'getGenderMedicalRequest']);
         Route::get('/gender-educational-requests', [AdminDashboardController::class, 'getGenderEducationalRequest']);
-    });
         Route::get('/getData', [AdminDashboardController::class, 'getData']);
         Route::get('/medical-requests-data', [AdminDashboardController::class, 'getMedicalRequestsData']);
         Route::get('/educational-requests-data', [AdminDashboardController::class, 'getEducationalRequestsData']);
+    });
 
 });
 
@@ -127,11 +138,12 @@ Route::prefix('medical-requests')->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
         Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
-        Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
         Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
         Route::get('/get-hospital-and-offer', [MedicalRequestController::class, 'hospitalsWithServiceOffers']);
 
     });
+    Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
+
     Route::get('/get-all', [MedicalRequestController::class, 'index']);
 
 });
