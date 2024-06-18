@@ -3,18 +3,9 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-500 border-purple-600 dark:border-purple-500" data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300" role="tablist">
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="Captain-List-styled-tab" data-tabs-target="#styled-Captain-List" type="button" role="tab" aria-controls="Captain-List" aria-selected="false">Captain List</button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Tupad-Member-styled-tab" data-tabs-target="#styled-Tupad-Member" type="button" role="tab" aria-controls="Tupad-Member" aria-selected="false">Tupad Member</button>
-                    </li>
-                </ul>
-            </div>
-            <div id="default-styled-tab-content">
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Captain-List" role="tabpanel" aria-labelledby="Captain-List-tab">
+            <a-button class="text-white" type="primary" @click="generateExcelFiles">Generate Tupad Excel</a-button>
+            <a-tabs default-active-key="1" @change="handleTabChange">
+                <a-tab-pane key="1" tab="Captain List">
                     <v-card flat>
                         <!-- Main table -->
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
@@ -28,7 +19,7 @@
                                 <tr class="text-center whitespace-nowrap">
                                     <th> <input @change="checkAllForApproved" :checked="isCheckedAllForApproved" id="check-all-for-approved" type="checkbox" value="" class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></th>
                                     <th>Name</th>
-                                    <th>Email</th>
+                                    <th>Address</th>
                                     <th>Action</th>
                                 </tr>
                             </template>
@@ -37,8 +28,8 @@
                                     <td class="whitespace-nowrap uppercase">
                                         <input @change="toggleCheckedForApproved(item.id)" :checked="checkedIdsForApproved.includes(item.id)" id="single-check" type="checkbox" value="" class="single-check w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.username }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.email }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.firstname + ' ' + item.middlename + ' ' + item.lastname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.municipality + ' ' + item.barangay }}</td>
                                     <td class="whitespace-nowrap uppercase">
                                         <div class="flex space-x-4">
                                             <button @click.stop="giveSlot(checkedIdsForApproved.length > 0 ? checkedIdsForApproved : item.id)" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
@@ -53,8 +44,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Tupad-Member" role="tabpanel" aria-labelledby="Tupad-Member-tab">
+                </a-tab-pane>
+                <a-tab-pane key="2" tab="Tupad Beneficiaries">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Tupad Member
@@ -65,34 +56,26 @@
                         <v-data-table v-model:search="tupad_memberSearch" :items="tupad_member" :items-per-page="5">
                             <template #headers="{ headers }">
                                 <tr class="text-center whitespace-nowrap">
-                                    <th class="text-center whitespace-nowrap">Fullname</th>
-                                    <th class="text-center whitespace-nowrap">Age & Birthday</th>
-                                    <th class="text-center whitespace-nowrap">Gender</th>
-                                    <th class="text-center whitespace-nowrap">Address</th>
-                                    <th class="text-center whitespace-nowrap">Civil Status</th>
-                                    <th class="text-center whitespace-nowrap">Contact Number</th>
-                                    <th class="text-center whitespace-nowrap">Benificiary Name</th>
-                                    <th class="text-center whitespace-nowrap">Id & Id Number</th>
+                                    <th v-for="header in dynamicHeaders" :key="header.key" class="text-center whitespace-nowrap">
+                                        {{ header.header }}
+                                    </th>
                                     <th class="text-center whitespace-nowrap">Invited by</th>
+                                    <th class="text-center whitespace-nowrap">Captain Address</th>
                                 </tr>
                             </template>
                             <template v-slot:item="{ item }">
                                 <tr class="h-[2vh]">
-                                    <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
-                                    <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
-                                    <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
+                                    <td v-for="header in dynamicHeaders" :key="header.key" class="whitespace-nowrap text-center">
+                                        {{ item[header.key] }}
+                                    </td>
                                     <td class="whitespace-nowrap text-center">{{ item.captain_name }}</td>
+                                    <td class="whitespace-nowrap text-center">{{ item.captain_address }}</td>
                                 </tr>
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-            </div>
+                </a-tab-pane>
+            </a-tabs>
         </div>
     </div>
 </div>
@@ -122,7 +105,8 @@
                         </svg>
                     </div>
                     <a-space direction="vertical">
-                        <a-date-picker v-model="month_year_available" format="MM/YYYY" picker="month" @change="handleMonthChange" />
+                        <a-date-picker v-model="month_year_available" format="MM/YYYY" picker="month" @change="handleMonthChange" :disabledDate="disabledPastDates" />
+
                     </a-space>
                 </div>
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
@@ -148,7 +132,7 @@
             </div>
             <v-card flat>
                 <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                    <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Tupad Member
+                    <img src="../../../assets/tupad.jpg" class="h-8 me-3" alt="KPSM Logo" />&nbsp; Tupad Captain
                     <v-spacer></v-spacer>
                     <v-text-field v-model="captain_slotSearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
                 </v-card-title>
@@ -157,23 +141,120 @@
                     <template #headers="{ headers }">
                         <tr class="text-center whitespace-nowrap">
                             <th class="text-center whitespace-nowrap">Captain Name</th>
+                            <th class="text-center whitespace-nowrap">Captain Address</th>
                             <th class="text-center whitespace-nowrap">Slot Get</th>
                             <th class="text-center whitespace-nowrap">Slot Left</th>
+                            <th class="text-center whitespace-nowrap">Excel File</th>
+                            <th class="text-center whitespace-nowrap">Check IDs</th>
                             <th class="text-center whitespace-nowrap">Slot Available At</th>
                             <th class="text-center whitespace-nowrap">Slot Obtained</th>
                         </tr>
                     </template>
                     <template v-slot:item="{ item }">
-                        <tr class="h-[2vh]">
-                            <td class="whitespace-nowrap text-center">{{ item.name }}</td>
+                        <tr class="h-[2vh] w-[5vw]">
+                            <td class="whitespace-nowrap text-center">{{ item.firstname + ' ' + item.middlename + ' ' + item.lastname }}</td>
+                            <td class="whitespace-nowrap text-center">{{ item.municipality + ' ' + item.barangay }}</td>
                             <td class="whitespace-nowrap text-center">{{ item.slot_get }}</td>
                             <td class="whitespace-nowrap text-center">{{ item.slot_left }}</td>
+                            <td class="whitespace-nowrap text-center">
+                                <template v-if="item.slot_left === 0">
+                                    <button @click="viewExcel(item.tupad_excel_form_id)" class="block text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">View Excel</button>
+                                </template>
+                                <template v-else>
+                                    <span class="whitespace-normal text-red-900 w-[5vw]">Captain still not passing the form.</span>
+                                </template>
+                            </td>
+                            <td class="whitespace-nowrap text-center">
+                                <template v-if="item.slot_left === 0">
+                                    <button @click="checkIDS(item.tupad_excel_form_id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                        Check Ids
+                                    </button>
+                                </template>
+                                <template v-else>
+                                    <span class="whitespace-normal text-red-900 w-[5vw]">Captain still not passing the id.</span>
+                                </template>
+                            </td>
                             <td class="whitespace-nowrap text-center">{{ formatMonthYearToWords(item.month_year_available) }}</td>
                             <td class="whitespace-nowrap text-center">{{ formatDateToWords(item.date_obtained) }}</td>
                         </tr>
                     </template>
                 </v-data-table>
+
             </v-card>
+        </div>
+    </div>
+</div>
+<div id="checkIDS" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="checkIDS">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4">
+                <div v-if="tupadRequest.image_urls && tupadRequest.image_urls.length">
+                    <h4 class="text-lg font-semibold mb-2">Valid ID Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in tupadRequest.image_urls" :key="'valid_id_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Valid ID Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="preview-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button data-modal-hide="preview-modal" @click="closePreviewModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <img :src="previewedImage.url" class="w-full h-auto" style="max-width: 100%; max-height: 80vh;">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="excel-modal" tabindex="-1" aria-hidden="true" :class="{ 'hidden': !isModalOpen }" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Excel Data</h3>
+                <button @click="closeExcelModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 overflow-x-auto">
+                <table class="table-auto w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th v-for="(header, index) in excelHeaders" :key="index" class="p-2 bg-gray-100 border border-gray-300 text-left text-gray-800 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700">
+                                {{ header }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(row, rowIndex) in excelRows" :key="rowIndex" class="border border-gray-300">
+                            <td v-for="(cell, cellIndex) in row" :key="cellIndex" class="p-2 border border-gray-300 text-left text-gray-800 dark:text-gray-100 dark:border-gray-700">
+                                {{ cell }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -181,11 +262,18 @@
 
 <script>
 import {
+    Tag,
+    Carousel,
+    ConfigProvider,
+    Popover,
+    Tabs
+} from "ant-design-vue";
+import {
     Modal,
     Tooltip,
     initTWE
 } from "tw-elements";
-
+import ExcelJS from 'exceljs';
 import {
     initFlowbite
 } from 'flowbite'
@@ -199,7 +287,6 @@ import moment from 'moment';
 import {
     computed
 } from "vue";
-
 export default {
     data() {
         return {
@@ -208,16 +295,30 @@ export default {
             tupad_memberSearch: '',
             month_year_available: '',
             slot_get: '',
+            tupadRequest: [],
             tupad_member: [],
+            dynamicHeaders: [],
             checkedIdsForApproved: [],
             items: [],
             captain_slot: [],
+            previewedImage: {
+                url: ''
+            },
+            excelHeaders: [],
+            excelRows: [],
+            excelUrl: '',
+            isModalOpen: false,
         };
     },
     components: {
-        Side
+        Side,
+        Tag,
+        Carousel,
+        ConfigProvider,
+        Popover,
+        Tabs
     },
-    mounted() {
+    async mounted() {
         initTWE({
             Modal,
             Tooltip
@@ -225,8 +326,377 @@ export default {
         initFlowbite();
         this.fetchCaptainList();
         this.fetchTupadMember();
+        try {
+            this.dynamicHeaders = await this.fetchActiveHeaders();
+        } catch (error) {
+            console.error('Error fetching headers:', error);
+        }
     },
     methods: {
+        viewExcel(itemId) {
+            axios.get(`/api/dole/get-excel-path/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    responseType: 'arraybuffer',
+                })
+                .then(response => {
+                    this.parseExcelData(response.data);
+                    this.openExcelModal();
+                })
+                .catch(error => {
+                    console.error('Error fetching Excel URL:', error);
+                });
+        },
+        openExcelModal() {
+            this.isModalOpen = true;
+        },
+        closeExcelModal() {
+            this.isModalOpen = false;
+            this.excelHeaders = [];
+            this.excelRows = [];
+        },
+        async parseExcelData(excelData) {
+            try {
+                const workbook = new ExcelJS.Workbook();
+                await workbook.xlsx.load(excelData);
+                const worksheet = workbook.getWorksheet(1);
+                this.excelHeaders = worksheet.getRow(2).values.map(header => header.toString());
+                this.excelRows = [];
+                worksheet.eachRow((row, rowIndex) => {
+                    if (rowIndex > 2) {
+                        const rowData = row.values.map(cell => {
+                            if (cell instanceof Date) {
+                                return this.formatDate(cell);
+                            }
+                            return cell;
+                        });
+                        this.excelRows.push(rowData);
+                    }
+                });
+                worksheet.columns.forEach(column => {
+                    column.width = 25;
+                });
+            } catch (error) {
+                console.error('Error parsing Excel data:', error);
+            }
+        },
+        formatDate(date) {
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            return new Intl.DateTimeFormat('en-US', options).format(date);
+        },
+        async generateExcelFiles() {
+            try {
+                const response = await axios.get('/api/dole/get-invites-per-captain');
+                const data = response.data.data;
+                const workbook = new ExcelJS.Workbook();
+                for (const municipality in data) {
+                    if (data.hasOwnProperty(municipality)) {
+                        const municipalitiesData = data[municipality];
+                        const worksheet = workbook.addWorksheet(municipality);
+                        let rowIndex = 1;
+                        for (const barangay in municipalitiesData) {
+                            if (municipalitiesData.hasOwnProperty(barangay)) {
+                                const captainsData = municipalitiesData[barangay];
+                                worksheet.getCell(`A${rowIndex}`).value = 'BARANGAY';
+                                worksheet.getCell(`A${rowIndex}`).fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFF00'
+                                    }
+                                };
+                                worksheet.getCell(`A${rowIndex}`).font = {
+                                    bold: true
+                                };
+                                worksheet.getCell(`A${rowIndex}`).border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                                worksheet.getCell(`B${rowIndex}`).value = barangay.toUpperCase();
+                                worksheet.getCell(`B${rowIndex}`).border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                                worksheet.getCell(`B${rowIndex}`).fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFF00'
+                                    }
+                                };
+                                worksheet.getCell(`B${rowIndex}`).font = {
+                                    bold: true
+                                };
+                                worksheet.getCell(`B${rowIndex}`).border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                                rowIndex++;
+                                worksheet.addRow([]);
+                                rowIndex++;
+                                for (const captainId in captainsData) {
+                                    if (captainsData.hasOwnProperty(captainId)) {
+                                        const captainDetails = captainsData[captainId].captain_details;
+                                        const tupads = captainsData[captainId].tupads;
+                                        worksheet.getCell(`A${rowIndex}`).value = 'CAPTAIN NAME';
+                                        worksheet.getCell(`A${rowIndex}`).fill = {
+                                            type: 'pattern',
+                                            pattern: 'solid',
+                                            fgColor: {
+                                                argb: 'FFFF00'
+                                            }
+                                        };
+                                        worksheet.getCell(`A${rowIndex}`).font = {
+                                            bold: true
+                                        };
+                                        worksheet.getCell(`A${rowIndex}`).border = {
+                                            top: {
+                                                style: 'thin'
+                                            },
+                                            left: {
+                                                style: 'thin'
+                                            },
+                                            bottom: {
+                                                style: 'thin'
+                                            },
+                                            right: {
+                                                style: 'thin'
+                                            }
+                                        };
+                                        worksheet.getCell(`B${rowIndex}`).value = captainDetails.captain_name.toUpperCase();
+                                        worksheet.getCell(`B${rowIndex}`).border = {
+                                            top: {
+                                                style: 'thin'
+                                            },
+                                            left: {
+                                                style: 'thin'
+                                            },
+                                            bottom: {
+                                                style: 'thin'
+                                            },
+                                            right: {
+                                                style: 'thin'
+                                            }
+                                        };
+                                        worksheet.getCell(`B${rowIndex}`).fill = {
+                                            type: 'pattern',
+                                            pattern: 'solid',
+                                            fgColor: {
+                                                argb: 'FFFF00'
+                                            }
+                                        };
+                                        worksheet.getCell(`B${rowIndex}`).font = {
+                                            bold: true
+                                        };
+                                        worksheet.getCell(`B${rowIndex}`).border = {
+                                            top: {
+                                                style: 'thin'
+                                            },
+                                            left: {
+                                                style: 'thin'
+                                            },
+                                            bottom: {
+                                                style: 'thin'
+                                            },
+                                            right: {
+                                                style: 'thin'
+                                            }
+                                        };
+                                        rowIndex++;
+                                        const headers = Object.keys(tupads[0]);
+                                        headers.forEach((header, columnIndex) => {
+                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).value = header.replace(/_/g, ' ').toUpperCase();
+                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).border = {
+                                                top: {
+                                                    style: 'thin'
+                                                },
+                                                left: {
+                                                    style: 'thin'
+                                                },
+                                                bottom: {
+                                                    style: 'thin'
+                                                },
+                                                right: {
+                                                    style: 'thin'
+                                                }
+                                            };
+                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).fill = {
+                                                type: 'pattern',
+                                                pattern: 'solid',
+                                                fgColor: {
+                                                    argb: 'FFFF00'
+                                                }
+                                            };
+                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).font = {
+                                                bold: true
+                                            };
+                                            worksheet.getColumn(columnIndex + 1).width = (header === 'barangay' || header === 'captain_name') ? 20 : 25; // Set different column width
+                                        });
+                                        rowIndex++;
+                                        tupads.forEach((tupad, dataIndex) => {
+                                            headers.forEach((header, columnIndex) => {
+                                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).value = tupad[header].toUpperCase();
+                                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).border = {
+                                                    top: {
+                                                        style: 'thin'
+                                                    },
+                                                    left: {
+                                                        style: 'thin'
+                                                    },
+                                                    bottom: {
+                                                        style: 'thin'
+                                                    },
+                                                    right: {
+                                                        style: 'thin'
+                                                    }
+                                                };
+                                            });
+                                            rowIndex++;
+                                        });
+                                        rowIndex++;
+                                    }
+                                }
+                            }
+                        }
+                        worksheet.views = [{
+                            state: 'frozen',
+                            xSplit: 0,
+                            ySplit: 1,
+                            activeCell: 'A1'
+                        }];
+                    }
+                }
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const fileName = 'tupad_data.xlsx';
+                if (window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(blob, fileName);
+                } else {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                }
+            } catch (error) {
+                console.error('Error generating Excel:', error);
+            }
+        },
+        getColumnLetter(index) {
+            let dividend = index;
+            let columnName = '';
+            let modulo;
+            while (dividend > 0) {
+                modulo = (dividend - 1) % 26;
+                columnName = String.fromCharCode(65 + modulo) + columnName;
+                dividend = parseInt((dividend - modulo) / 26, 10);
+            }
+            return columnName;
+        },
+        async fetchActiveHeaders() {
+            try {
+                const response = await axios.get('/api/dole/get-active-header');
+                if (response.status === 200) {
+                    return response.data.headers;
+                } else {
+                    throw new Error('Failed to fetch active headers');
+                }
+            } catch (error) {
+                console.error('Error fetching active headers:', error);
+                toastr.error('Failed to fetch active headers');
+                return [];
+            }
+        },
+        fetchSlotlist(itemId) {
+            axios.get(`/api/dole/all-captain-slot/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.captain_slot = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching captain slot details:', error);
+                });
+        },
+        checkIDS(itemId) {
+            axios.get(`/api/dole/get-file-path/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.tupadRequest = response.data;
+                    const modal = document.getElementById('checkIDS');
+                    modal.classList.remove('hidden');
+                    modal.setAttribute('aria-hidden', 'false');
+                    // Add event listener to close modal on close button click
+                    modal.addEventListener('click', function (e) {
+                        if (e.target && e.target.closest('[data-modal-hide="checkIDS"]')) {
+                            modal.classList.add('hidden');
+                            modal.setAttribute('aria-hidden', 'true');
+                        }
+                    });
+                    this.tupadRequest.image_urls = this.tupadRequest.image_urls.map(imagePath => axios.defaults.baseURL + imagePath);
+                })
+                .catch(error => {
+                    console.error('Error fetching medical request data:', error);
+                });
+        },
+        previewImage(imagePath) {
+            this.previewedImage.url = imagePath;
+            document.getElementById('checkIDS').classList.add('hidden');
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('preview-modal').focus();
+        },
+        closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('checkIDS').classList.remove('hidden');
+            this.previewedImage.url = '';
+        },
+        handleTabChange(key) {},
         fetchTupadMember() {
             axios.get('/api/dole/getAll-captains-tupad-invites', {
                     headers: {
@@ -245,7 +715,25 @@ export default {
             console.log(date, formattedDate);
             this.month_year_available = formattedDate;
         },
-        
+        disabledPastDates(current) {
+            // Disable all dates before today
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            if (!current) {
+                return false;
+            }
+            const dateYear = current.year();
+            const dateMonth = current.month();
+            if (dateYear < currentYear) {
+                return true;
+            }
+            if (dateYear === currentYear && dateMonth < currentMonth) {
+                return true;
+            }
+
+            return false;
+        },
         giveSlot(itemId) {
             this.itemId = itemId;
             const modal = document.getElementById('giveSlot');
@@ -285,7 +773,7 @@ export default {
                 })
                 .then(response => {
                     this.slot_get = '',
-                    this.month_year_available = ''
+                        this.month_year_available = ''
                     toastr.success("Slot Approved");
                     document.getElementById('giveSlot').classList.add('hidden');
                     this.fetchCaptainList();
@@ -323,19 +811,6 @@ export default {
                 }
             });
             this.fetchSlotlist(itemId);
-        },
-        fetchSlotlist(itemId) {
-            axios.get(`/api/dole/all-captain-slot/${itemId}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.captain_slot = response.data;
-                })
-                .catch(error => {
-                    console.error('Error fetching captain slot details:', error);
-                });
         },
         formatDateToWords(dateString) {
             const date = new Date(dateString);
@@ -378,3 +853,34 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+/* Add scoped styles for modal */
+#excel-modal {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+}
+
+/* Center modal content */
+#excel-modal>.max-w-2xl {
+    width: 100%;
+    /* Full width on small screens */
+    max-width: 100%;
+    /* Full width on large screens */
+}
+
+/* Style table cells */
+#excel-modal td,
+#excel-modal th {
+    min-width: 100px;
+    /* Minimum width for cells */
+}
+
+/* Responsive styles for modal */
+@media (max-width: 768px) {
+    #excel-modal>.max-w-2xl {
+        max-width: 95%;
+        /* Reduce width on smaller screens */
+    }
+}
+</style>

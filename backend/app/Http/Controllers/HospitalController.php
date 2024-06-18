@@ -35,6 +35,7 @@ class HospitalController extends Controller
             'province' => 'required',
             'municipality' => 'required',
             'barangay' => 'required',
+            'assist_by_staff_from' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
@@ -47,6 +48,7 @@ class HospitalController extends Controller
             $data->province = $request->input('province');
             $data->municipality = $request->input('municipality');
             $data->barangay = $request->input('barangay');
+            $data->assist_by_staff_from = $request->input('assist_by_staff_from');
             $data->status = 'active';
             $data->save();
             DB::commit();

@@ -43,6 +43,7 @@ const router = createRouter({
         { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {   }},
         { path: '/manage-logo', name: 'Manage Logo', component: () => import('../views/AdminViews/Utility/Logo.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/manage-emails', name: 'Emails', component: () => import('../views/AdminViews/Utility/Email.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-tupad-headers', name: 'Tupad Header', component: () => import('../views/AdminViews/Utility/TupadHeader.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/manage-budget', name: 'Budget Allocation', component: () => import('../views/AdminViews/Utility/Budget.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/manage-educational-amount', name: 'Manage Educational Amount', component: () => import('../views/AdminViews/Utility/EducationalAmount.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/manage-hospital', name: 'Manage Hospital', component: () => import('../views/AdminViews/Utility/ManageHospital.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},

@@ -3,21 +3,9 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-500 border-purple-600 dark:border-purple-500" data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300" role="tablist">
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="Pending-List-styled-tab" data-tabs-target="#styled-Pending-List" type="button" role="tab" aria-controls="Pending-List" aria-selected="false">Pending List</button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Approve-List-styled-tab" data-tabs-target="#styled-Approve-List" type="button" role="tab" aria-controls="Approve-List" aria-selected="false">Approve List</button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Decline-List-styled-tab" data-tabs-target="#styled-Decline-List" type="button" role="tab" aria-controls="Decline-List" aria-selected="false">Decline List</button>
-                    </li>
-                </ul>
-            </div>
-            <div id="default-styled-tab-content">
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Pending-List" role="tabpanel" aria-labelledby="Pending-List-tab">
+            <a-button class="text-white" type="primary" @click="generateExcel">Generate Approve Excel</a-button>
+            <a-tabs default-active-key="1" @change="handleTabChange">
+                <a-tab-pane key="1" tab="Pending List">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Pending Educational Assistance Requests
@@ -95,8 +83,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Approve-List" role="tabpanel" aria-labelledby="Approve-List-tab">
+                </a-tab-pane>
+                <a-tab-pane key="2" tab="Approve List">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Approve Educational Assistance Requests
@@ -155,13 +143,13 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.school_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.year_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
                                     <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
                                         <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
                                             Requiements
                                         </button>
                                     </td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
                                         <button @click="emailModal(checkedIdsForApproved.length > 0 ? checkedIdsForApproved : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
@@ -171,8 +159,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Decline-List" role="tabpanel" aria-labelledby="Decline-List-tab">
+                </a-tab-pane>
+                <a-tab-pane key="3" tab="Decline List">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Decline Educational Assistance Requests
@@ -231,13 +219,13 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.school_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.year_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
                                     <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
                                         <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
                                             Requiements
                                         </button>
                                     </td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
                                         <button @click="declineEmailModal(checkedIdsForDecline.length > 0 ? checkedIdsForDecline : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
@@ -247,8 +235,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-            </div>
+                </a-tab-pane>
+            </a-tabs>
         </div>
     </div>
 </div>
@@ -407,7 +395,8 @@
 import {
     Carousel,
     ConfigProvider,
-    Popover
+    Popover,
+    Tabs
 } from "ant-design-vue";
 import {
     Modal,
@@ -423,6 +412,7 @@ import axios from '../../../main.js'
 import {
     useToast
 } from 'vue-toastification'
+import ExcelJS from 'exceljs';
 const toastr = useToast()
 export default {
     data() {
@@ -455,7 +445,8 @@ export default {
         Side,
         Carousel,
         ConfigProvider,
-        Popover
+        Popover,
+        Tabs
     },
     mounted() {
         initTWE({
@@ -469,6 +460,233 @@ export default {
         this.fetchApprovedEducationalAssistance();
     },
     methods: {
+        async generateExcel() {
+            try {
+                const response = await axios.get('/api/educational-assistance/get-all-approved_shcolarship-request', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                const data = response.data;
+                const workbook = new ExcelJS.Workbook();
+                const groupedData = {};
+                data.forEach(item => {
+                    const municipality = item.municipality;
+                    if (!groupedData[municipality]) {
+                        groupedData[municipality] = [];
+                    }
+                    groupedData[municipality].push(item);
+                });
+                Object.keys(groupedData).forEach(municipality => {
+                    const worksheet = workbook.addWorksheet(municipality);
+                    worksheet.addRow(['', 'Representative Data', '', '', '', '', 'Beneficiary Data Data', '', '', '', '', '']).font = {
+                        bold: true
+                    };
+                    worksheet.addRow(['No.', 'Last Name', 'Middle Name', 'First Name', 'Birthday', 'Age', 'Last Name', 'Middle Name', 'First Name', 'Birthday', 'Age', 'Relationship to Beneficiaries', 'Province', 'Municipality', 'Barangay', 'Sitio', 'College', 'Remarks', 'School', 'Contact Number']).font = {
+                        bold: true
+                    };
+                    worksheet.mergeCells('B1:F1');
+                    worksheet.mergeCells('G1:K1');
+                    worksheet.getRow(2).height = 30;
+                    for (let col = 1; col <= 11; col++) {
+                        for (let row = 1; row <= 2; row++) {
+                            worksheet.getCell(row, col).alignment = {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            };
+                        }
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        for (let row = 1; row <= 2; row++) {
+                            worksheet.getCell(row, col).alignment = {
+                                vertical: 'top',
+                                horizontal: 'center'
+                            };
+                        }
+                    }
+                    for (let col = 1; col <= 20; col++) {
+                        const headerCell = worksheet.getCell(1, col);
+                        headerCell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFADD8E6'
+                            }
+                        };
+                        headerCell.font = {
+                            bold: true
+                        }
+                    }
+                    for (let col = 7; col <= 11; col++) {
+                        const headerCell = worksheet.getCell(1, col);
+                        headerCell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFFFF00'
+                            }
+                        };
+                        headerCell.font = {
+                            bold: true
+                        }
+                    }
+                    for (let col = 1; col <= 6; col++) {
+                        worksheet.getCell(2, col).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFADD8E6'
+                            }
+                        };
+                    }
+                    for (let col = 7; col <= 11; col++) {
+                        worksheet.getCell(2, col).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFFFF00'
+                            }
+                        };
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        const headerCell1 = worksheet.getCell(1, col);
+                        const headerCell2 = worksheet.getCell(2, col);
+                        switch (col) {
+                            case 12:
+                            case 13:
+                            case 14:
+                            case 15:
+                            case 16:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FF808080'
+                                    }
+                                };
+                                break;
+                            case 17:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFFA500'
+                                    }
+                                };
+                                break;
+                            case 18:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFFFF00'
+                                    }
+                                };
+                                break;
+                            case 19:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FF8A2BE2'
+                                    }
+                                };
+                                break;
+                            case 20:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFFC0CB'
+                                    }
+                                };
+                                break;
+                            default:
+                                break;
+                        }
+                        headerCell1.font = headerCell2.font = {
+                            bold: true
+                        };
+                    }
+                    for (let col = 1; col <= 20; col++) {
+                        worksheet.getCell(2, col).border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        worksheet.getCell(1, col).border = {
+                            bottom: null
+                        };
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        worksheet.getCell(2, col).border = {
+                            top: null
+                        };
+                    }
+                    groupedData[municipality].forEach(item => {
+                        worksheet.addRow([
+                            item.id,
+                            item.representative_lastname,
+                            item.representative_middlename,
+                            item.representative_firstname,
+                            item.representative_birthday,
+                            item.representative_age,
+                            item.beneficiary_lastname,
+                            item.beneficiary_middlename,
+                            item.beneficiary_firstname,
+                            item.beneficiary_birthday,
+                            item.beneficiary_age,
+                            item.relationship_to_beneficiary,
+                            item.province,
+                            item.municipality,
+                            item.barangay,
+                            item.sitio,
+                            item.school_level,
+                            item.remarks,
+                            item.school,
+                            item.contact_number
+                        ]);
+                    });
+                    worksheet.columns.forEach(column => {
+                        column.width = 28;
+                    });
+                    worksheet.eachRow({
+                        includeEmpty: true
+                    }, (row) => {
+                        row.alignment = {
+                            vertical: 'middle',
+                            horizontal: 'center'
+                        };
+                    });
+                });
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'scholarship_assistance.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error generating Excel:', error);
+            }
+        },
+        handleTabChange(key) {},
         RequirementsModal(itemId) {
             axios.get(`/api/educational-assistance/requirements-path/${itemId}`, {
                     headers: {
@@ -480,7 +698,6 @@ export default {
                     const modal = document.getElementById('RequirementsModal');
                     modal.classList.remove('hidden');
                     modal.setAttribute('aria-hidden', 'false');
-                    // Add event listener to close modal on close button click
                     modal.addEventListener('click', function (e) {
                         if (e.target && e.target.closest('[data-modal-hide="RequirementsModal"]')) {
                             modal.classList.add('hidden');

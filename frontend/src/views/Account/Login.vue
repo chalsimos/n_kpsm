@@ -107,6 +107,8 @@ export default {
                 localStorage.setItem('token', token);
                 if (user.type === 'admin') {
                     this.$router.push('/admin');
+                } else if (user.type === 'superadmin') {
+                    this.$router.push('/admin');
                 } else {
                     this.$router.push('/');
                 }
