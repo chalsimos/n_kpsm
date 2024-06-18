@@ -1,7 +1,7 @@
 <template>
-<div class="container mx-auto px-4">
+<div>
     <div class="flex justify-center">
-        <div class="w-full py-10 bg-gray-50 dark:bg-gray-800 rounded">
+        <div class="w-full py-10 bg-gray-50 dark:bg-gray-800 rounded px-4">
             <div class="collapse-wrapper">
                 <a-collapse accordion>
                     <a-collapse-panel show-arrow="false" v-for="year in yearsData" :key="year.year" :header="`Year: ${year.year} - Total: ${year.total_per_year}`">

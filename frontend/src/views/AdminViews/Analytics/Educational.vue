@@ -2,54 +2,54 @@
     <div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                     <apexchart type="pie" :options="genderEducationalOptions" :series="genderEducationalSeries"></apexchart>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                     <apexchart type="bar" :options="Educationalbarangay_per_municipality" :series="Educationalmunicipality_count"></apexchart>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
@@ -59,22 +59,22 @@
         </div>
         <div class="grid grid-cols-2 gap-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
@@ -155,7 +155,7 @@ export default {
                 plotOptions: {
                     pie: {
                         customScale: 1,
-                        offsetY: 20,
+                        offsetY: 10,
                         dataLabels: {
                             offset: -20,
                         }

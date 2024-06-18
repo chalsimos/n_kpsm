@@ -46,18 +46,118 @@ class MedicalRequestController extends Controller
     {
         try {
             $user = $this->validateAdminAndSuperAdmin($request);
-            $districts = ($user->type == 'superadmin') ?
-                null : (($user->district == '1st') ?
-                    ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria'] :
-                    ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
-            $medicalRequests = ($districts === null) ?
-                MedicalRequest::get() :
-                MedicalRequest::whereIn('municipality', $districts)->get();
+            if ($user->type == 'superadmin') {
+                $medicalRequests = MedicalRequest::where('status', 'pending')->get();
+            } else {
+                $district = $user->district;
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'pending')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*')
+                    ->get();
+            }
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function Approveindex(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            if ($user->type == 'superadmin') {
+                $medicalRequests = MedicalRequest::where('status', 'approve')->get();
+            } else {
+                $district = $user->district;
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*')
+                    ->get();
+            }
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function GenerateApprove(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            if ($user->type == 'superadmin') {
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
+                    ->get()
+                    ->groupBy('hospital_acronym');
+            } else {
+                $district = $user->district;
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
+                    ->get()
+                    ->groupBy('hospital_acronym');
+            }
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function Declineindex(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            if ($user->type == 'superadmin') {
+                $medicalRequests = MedicalRequest::where('status', 'decline')->get();
+            } else {
+                $district = $user->district;
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'decline')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*')
+                    ->get();
+            }
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+
     private function validateAdminAndSuperAdmin(Request $request)
     {
         $token = $request->bearerToken();

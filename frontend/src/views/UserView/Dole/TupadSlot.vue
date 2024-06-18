@@ -75,30 +75,16 @@
                             <v-data-table v-model:search="searchTupadInvites" :items="tupad_invites" :items-per-page="5">
                                 <template #headers="{ headers }">
                                     <tr class="text-center whitespace-nowrap">
-                                        <th class="text-center whitespace-nowrap">Fullname</th>
-                                        <th class="text-center whitespace-nowrap">Age & Birthday</th>
-                                        <th class="text-center whitespace-nowrap">Gender</th>
-                                        <th class="text-center whitespace-nowrap">Address</th>
-                                        <th class="text-center whitespace-nowrap">Civil Status</th>
-                                        <th class="text-center whitespace-nowrap">Contact Number</th>
-                                        <th class="text-center whitespace-nowrap">Benificiary Name</th>
-                                        <th class="text-center whitespace-nowrap">Id & Id Number</th>
-                                        <th class="text-center whitespace-nowrap">Used Code</th>
-                                        <th class="text-center whitespace-nowrap">Status</th>
+                                        <th v-for="header in dynamicHeaders" :key="header.key" class="text-center whitespace-nowrap">
+                                            {{ header.header }}
+                                        </th>
                                     </tr>
                                 </template>
                                 <template v-slot:item="{ item }">
                                     <tr class="h-[2vh]">
-                                        <td class="whitespace-nowrap text-center">{{ item.firstname }} {{ item.middlename }} {{ item.lastname }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.age }}years old, {{ item.birthday }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.gender }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.province }},{{ item.municipality }},{{ item.barangay }},{{ item.sitio }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.civil_status }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.contact_number }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.benificiary_name }}</td>
-                                        <td class="whitespace-nowrap text-center">({{ item.id_type }}) {{ item.id_number }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.code_generated }}</td>
-                                        <td class="whitespace-nowrap text-center">{{ item.status }}</td>
+                                        <td v-for="header in dynamicHeaders" :key="header.key" class="whitespace-nowrap text-center">
+                                            {{ item[header.key] }}
+                                        </td>
                                     </tr>
                                 </template>
                             </v-data-table>
@@ -173,13 +159,14 @@ export default {
             totalAccepted: '',
             items: [],
             slots: [],
+            dynamicHeaders: [],
             tupad_invites: [],
             slotIds: null,
             fileList: [],
             slotGet: 0,
         };
     },
-    mounted() {
+    async mounted() {
         initFlowbite();
         this.loadSlotIds();
         this.getSlotInfo();
@@ -189,6 +176,11 @@ export default {
         const slotIds = JSON.parse(localStorage.getItem('slot_ids'));
         if (slotIds !== null) {
             this.slotIds = slotIds;
+        }
+        try {
+            this.dynamicHeaders = await this.fetchActiveHeaders();
+        } catch (error) {
+            console.error('Error fetching headers:', error);
         }
         // setInterval(this.sendStoredData, 5000);
         // setInterval(this.sendTupadStoredData, 5000);
@@ -213,6 +205,112 @@ export default {
                 this.slotIds = slotIds;
             }
         },
+        // async extractExcelData(file) {
+        //     try {
+        //         const buffer = await file.arrayBuffer();
+        //         const workbook = await read(buffer, {
+        //             type: 'array'
+        //         });
+        //         const sheetName = 'Captain Slots';
+        //         if (!workbook.SheetNames.includes(sheetName)) {
+        //             toastr.error(`Sheet named "${sheetName}" not found`);
+        //             throw new Error(`Sheet named "${sheetName}" not found`);
+        //         }
+        //         const worksheet = workbook.Sheets[sheetName];
+        //         const rawData = utils.sheet_to_json(worksheet, {
+        //             header: 1,
+        //             dateNF: 'mm/dd/yyyy'
+        //         });
+        //         const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
+        //         let formData = new FormData();
+        //         formData.append('tupad_slot_id', tupadSlotId);
+        //         const response = await axios.post('/api/dole/get-captain-slot', formData, {
+        //             headers: {
+        //                 Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //             },
+        //         });
+        //         const slot_get = response.data.slot_get;
+        //         console.log('Slot count:', slot_get);
+        //         const headerRow = rawData[0];
+        //         const requiredHeaders = ['SLOT', 'FIRST NAME', 'MIDDLE NAME', 'LAST NAME', 'CONTANCT NUMBER', 'BIRTH DATE', 'ADDRESS', 'SITIO', 'TYPE OF I.D', 'I.D NUMBER', 'SEX', 'CIVIL STATUS', 'AGE', 'NAME OF BENEFICIARY'];
+        //         const missingHeaders = requiredHeaders.filter(header => !headerRow.includes(header));
+        //         if (missingHeaders.length > 0) {
+        //             toastr.error(`Required headers are missing: ${missingHeaders.join(', ')}`);
+        //             throw new Error(`Required headers are missing: ${missingHeaders.join(', ')}`);
+        //         }
+        //         let dataRows = rawData.slice(1);
+        //         console.log('Data rows length:', dataRows.length);
+        //         console.log('Data rows:', dataRows);
+        //         if (dataRows.some(row => requiredHeaders.some((header, index) => !row[index]))) {
+        //             toastr.error(`Some data rows are incomplete. Please provide all required data.`);
+        //             return;
+        //         } else if (dataRows.length > slot_get) {
+        //             toastr.error(`Your slot is only ${slot_get} and you passed ${dataRows.length} data. The only accepted data is the first ${slot_get} because that is your slot.`);
+        //             dataRows = dataRows.slice(0, slot_get);
+        //         }
+        //         const data = dataRows.map(row => {
+        //             const rowData = {};
+        //             Object.keys(headerRow).forEach((key, index) => {
+        //                 const value = row[index];
+        //                 if (headerRow[key] === 'BIRTH DATE' && !isNaN(value) && value >= 25569) {
+        //                     const date = this.excelSerialToJSDate(value);
+        //                     rowData[key] = date.toLocaleDateString('en-US');
+        //                 } else {
+        //                     rowData[key] = value || '';
+        //                 }
+        //             });
+        //             return rowData;
+        //         });
+        //         console.log('Extracted data:', data);
+        //         for (const item of data) {
+        //             const slotData = {
+        //                 slot_id: tupadSlotId,
+        //                 firstname: item[1],
+        //                 middlename: item[2],
+        //                 lastname: item[3],
+        //                 age: item[12],
+        //                 birthday: item[5],
+        //                 gender: item[10],
+        //                 civilstatus: item[11],
+        //                 contactnumber: item[4],
+        //                 benificiaryfullname: item[13],
+        //                 idType: item[8],
+        //                 idNum: item[9],
+        //                 sitio: item[7],
+        //                 address: item[6],
+        //             };
+        //             // const isConnected = await this.checkInternetConnection();
+        //             // if (!isConnected) {
+        //             //     await saveTupadRequest(slotData);
+        //             //     toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
+        //             // } else {
+        //             axios.post('/api/dole/save-captain-tupad-member', slotData, {
+        //                     headers: {
+        //                         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //                     },
+        //                 })
+        //                 .then(response => {
+        //                     toastr.success('Slot saved successfully');
+        //                     this.fileList = [];
+        //                     localStorage.removeItem('slot_ids');
+        //                     this.loadSlotIds();
+        //                     this.getSlotInfo();
+        //                     this.fetchTupadCode();
+        //                     this.fetchTupadSlot();
+        //                     this.fetchTupadInvites();
+        //                     this.slotIds = null;
+        //                 })
+        //                 .catch(error => {
+        //                     console.error('Error saving slot:', error.response.data.error);
+        //                     toastr.error('Failed to save slot:', error.response.data.error);
+        //                 });
+        //             // }
+        //         }
+        //         return data;
+        //     } catch (error) {
+        //         return Promise.reject(error);
+        //     }
+        // },
         async extractExcelData(file) {
             try {
                 const buffer = await file.arrayBuffer();
@@ -229,6 +327,18 @@ export default {
                     header: 1,
                     dateNF: 'mm/dd/yyyy'
                 });
+                const activeHeaders = await this.fetchActiveHeaders();
+                const headers = activeHeaders.map(header => header.header);
+                const headerMap = activeHeaders.reduce((acc, header) => {
+                    acc[header.header.toUpperCase().replace(/\s+/g, '')] = header.key;
+                    return acc;
+                }, {});
+                const headerRow = rawData[1].map(header => header.toUpperCase().replace(/\s+/g, ''));
+                const missingHeaders = headers.filter(header => !headerRow.includes(header.toUpperCase().replace(/\s+/g, '')));
+                if (missingHeaders.length > 0) {
+                    toastr.error(`Required headers are missing: ${missingHeaders.join(', ')}`);
+                    throw new Error(`Required headers are missing: ${missingHeaders.join(', ')}`);
+                }
                 const tupadSlotId = JSON.parse(localStorage.getItem('slot_ids'));
                 let formData = new FormData();
                 formData.append('tupad_slot_id', tupadSlotId);
@@ -239,32 +349,34 @@ export default {
                 });
                 const slot_get = response.data.slot_get;
                 console.log('Slot count:', slot_get);
-                const headerRow = rawData[0];
-                const requiredHeaders = ['SLOT', 'FIRST NAME', 'MIDDLE NAME', 'LAST NAME', 'CONTANCT NUMBER', 'BIRTH DATE', 'ADDRESS', 'SITIO', 'TYPE OF I.D', 'I.D NUMBER', 'SEX', 'CIVIL STATUS', 'AGE', 'NAME OF BENEFICIARY'];
-                const missingHeaders = requiredHeaders.filter(header => !headerRow.includes(header));
-                if (missingHeaders.length > 0) {
-                    toastr.error(`Required headers are missing: ${missingHeaders.join(', ')}`);
-                    throw new Error(`Required headers are missing: ${missingHeaders.join(', ')}`);
-                }
-                let dataRows = rawData.slice(1);
+                let dataRows = rawData.slice(2);
                 console.log('Data rows length:', dataRows.length);
                 console.log('Data rows:', dataRows);
-                if (dataRows.some(row => requiredHeaders.some((header, index) => !row[index]))) {
+                if (dataRows.some(row =>
+                        headers.some((header, index) => {
+                            const headerKey = header.toUpperCase().replace(/\s+/g, '');
+                            const requiredIndex = headerRow.indexOf(headerKey);
+                            return requiredIndex !== -1 && !row[requiredIndex];
+                        })
+                    )) {
                     toastr.error(`Some data rows are incomplete. Please provide all required data.`);
-                    return;
+                    throw new Error('Incomplete data rows found');
                 } else if (dataRows.length > slot_get) {
                     toastr.error(`Your slot is only ${slot_get} and you passed ${dataRows.length} data. The only accepted data is the first ${slot_get} because that is your slot.`);
                     dataRows = dataRows.slice(0, slot_get);
                 }
                 const data = dataRows.map(row => {
                     const rowData = {};
-                    Object.keys(headerRow).forEach((key, index) => {
-                        const value = row[index];
-                        if (headerRow[key] === 'BIRTH DATE' && !isNaN(value) && value >= 25569) {
-                            const date = this.excelSerialToJSDate(value);
-                            rowData[key] = date.toLocaleDateString('en-US');
-                        } else {
-                            rowData[key] = value || '';
+                    headerRow.forEach((header, index) => {
+                        const key = headerMap[header];
+                        if (key) {
+                            const value = row[index];
+                            if (header === 'BIRTHDAY' && !isNaN(value) && value >= 25569) {
+                                const date = this.excelSerialToJSDate(value);
+                                rowData[key] = date.toLocaleDateString('en-US');
+                            } else {
+                                rowData[key] = value || '';
+                            }
                         }
                     });
                     return rowData;
@@ -272,26 +384,12 @@ export default {
                 console.log('Extracted data:', data);
                 for (const item of data) {
                     const slotData = {
-                        slot_id: tupadSlotId,
-                        firstname: item[1],
-                        middlename: item[2],
-                        lastname: item[3],
-                        age: item[12],
-                        birthday: item[5],
-                        gender: item[10],
-                        civilstatus: item[11],
-                        contactnumber: item[4],
-                        benificiaryfullname: item[13],
-                        idType: item[8],
-                        idNum: item[9],
-                        sitio: item[7],
-                        address: item[6],
+                        slot_id: tupadSlotId
                     };
-                    // const isConnected = await this.checkInternetConnection();
-                    // if (!isConnected) {
-                    //     await saveTupadRequest(slotData);
-                    //     toastr.warning("No internet connection. Data saved locally and will be sent once connected.");
-                    // } else {
+                    activeHeaders.forEach(header => {
+                        const key = header.key;
+                        slotData[key] = item[key];
+                    });
                     axios.post('/api/dole/save-captain-tupad-member', slotData, {
                             headers: {
                                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -312,10 +410,10 @@ export default {
                             console.error('Error saving slot:', error.response.data.error);
                             toastr.error('Failed to save slot:', error.response.data.error);
                         });
-                    // }
                 }
                 return data;
             } catch (error) {
+                console.error('Error extracting Excel data:', error);
                 return Promise.reject(error);
             }
         },
@@ -605,76 +703,6 @@ export default {
         toggleTab(tabName) {
             this.activeTab = tabName;
         },
-        AcceptRequest(itemId) {
-            if (Array.isArray(itemId)) {
-                itemId.forEach(id => {
-                    this.acceptApplication(id);
-                });
-            } else {
-                this.acceptApplication(itemId);
-            }
-        },
-        acceptApplication(id) {
-            axios.put(`/api/dole/accept-tupad-request/${id}`, null, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    toastr.success("Request Accepted");
-                    this.fetchTupadInvites();
-                    this.checkedIds = [];
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                });
-        },
-        DeclineModal(itemId) {
-            this.itemId = itemId;
-            const modal = document.getElementById('declineModal');
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden', 'false');
-            // Add event listener to close modal on close button click
-            modal.addEventListener('click', function (e) {
-                if (e.target && e.target.closest('[data-modal-hide="declineModal"]')) {
-                    modal.classList.add('hidden');
-                    modal.setAttribute('aria-hidden', 'true');
-                }
-            });
-        },
-        DeclineRequest() {
-            const itemId = this.itemId;
-            if (itemId instanceof Event) {
-                console.error("Invalid itemId:", itemId);
-                return;
-            }
-            if (Array.isArray(itemId)) {
-                itemId.forEach(id => {
-                    this.sendDeclineRequest(id);
-                });
-            } else {
-                this.sendDeclineRequest(itemId);
-            }
-        },
-        sendDeclineRequest() {
-            const itemId = this.itemId;
-            const decline_reason = document.getElementById('Reason').value;
-            axios.put(`/api/dole/decline-tupad-request/${itemId}`, {
-                    decline_reason
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    toastr.success("Request Decline")
-                    this.fetchTupadInvites();
-                    this.checkedIds = [];
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                });
-        },
         fetchTupadInvites() {
             axios.get('/api/dole/captain-tupad-invited', {
                     headers: {
@@ -752,6 +780,167 @@ export default {
                     console.error('Error generating codes:', error);
                 });
         },
+        // async generateExcel() {
+        //     try {
+        //         const slotCount = await this.fetchTupadSlot();
+        //         if (slotCount === 0) {
+        //             toastr.error('No available slots to generate Excel');
+        //             return;
+        //         }
+        //         const workbook = new ExcelJS.Workbook();
+        //         const worksheet = workbook.addWorksheet('Captain Slots');
+        //         worksheet.columns = [{
+        //                 header: 'SLOT',
+        //                 key: 'slot_available',
+        //                 width: 6
+        //             },
+        //             {
+        //                 header: 'FIRST NAME',
+        //                 key: 'firstname',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'MIDDLE NAME',
+        //                 key: 'middlename',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'LAST NAME',
+        //                 key: 'lastname',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'CONTANCT NUMBER',
+        //                 key: 'number',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'BIRTH DATE',
+        //                 key: 'birthday',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'ADDRESS',
+        //                 key: 'address',
+        //                 width: 30
+        //             },
+        //             {
+        //                 header: 'SITIO',
+        //                 key: 'sitio',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'TYPE OF I.D',
+        //                 key: 'type_of_id',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'I.D NUMBER',
+        //                 key: 'id_number',
+        //                 width: 20
+        //             },
+        //             {
+        //                 header: 'SEX',
+        //                 key: 'sex',
+        //                 width: 10
+        //             },
+        //             {
+        //                 header: 'CIVIL STATUS',
+        //                 key: 'civil_status',
+        //                 width: 15
+        //             },
+        //             {
+        //                 header: 'AGE',
+        //                 key: 'age',
+        //                 width: 10
+        //             },
+        //             {
+        //                 header: 'NAME OF BENEFICIARY',
+        //                 key: 'beneficiary',
+        //                 width: 30
+        //             },
+        //         ];
+        //         let slotsAdded = 0;
+        //         for (let i = 0; i < this.slots.length && slotsAdded < slotCount; i++) {
+        //             const slot = this.slots[i];
+        //             if (slot.status === 'No Code') {
+        //                 for (let j = 0; j < slot.slot_get && slotsAdded < slotCount; j++) {
+        //                     const birthday = slot.birthday ? new Date(slot.birthday) : null;
+        //                     const formattedBirthday = birthday ? birthday.toLocaleDateString('en-US') : '';
+        //                     worksheet.addRow({
+        //                         slot_available: slotsAdded + 1,
+        //                         firstname: slot.firstname || '',
+        //                         middlename: slot.middlename || '',
+        //                         lastname: slot.lastname || '',
+        //                         number: slot.number || '',
+        //                         birthday: formattedBirthday,
+        //                         address: slot.address || '',
+        //                         sitio: slot.sitio || '',
+        //                         type_of_id: slot.type_of_id || '',
+        //                         id_number: slot.id_number || '',
+        //                         sex: slot.sex || '',
+        //                         civil_status: slot.civil_status || '',
+        //                         age: slot.age || '',
+        //                         beneficiary: slot.beneficiary || '',
+        //                     });
+        //                     slotsAdded++;
+        //                 }
+        //             }
+        //         }
+        //         worksheet.eachRow((row, rowNumber) => {
+        //             row.eachCell((cell, colNumber) => {
+        //                 cell.protection = {
+        //                     locked: false
+        //                 };
+        //             });
+        //         });
+        //         worksheet.getRow(1).eachCell(cell => {
+        //             cell.protection = {
+        //                 locked: true
+        //             };
+        //         });
+        //         worksheet.eachRow((row, rowNumber) => {
+        //             if (rowNumber > 1) {
+        //                 row.getCell('A').protection = {
+        //                     locked: true
+        //                 };
+        //                 row.eachCell((cell, colNumber) => {
+        //                     if (colNumber !== 1) {
+        //                         cell.protection = {
+        //                             locked: false
+        //                         };
+        //                     }
+        //                 });
+        //             }
+        //         });
+        //         worksheet.protect('your_password_here', {
+        //             selectLockedCells: true,
+        //             selectUnlockedCells: true,
+        //             formatCells: false,
+        //             formatColumns: false,
+        //             formatRows: false,
+        //             insertColumns: false,
+        //             insertRows: false,
+        //             insertHyperlinks: false,
+        //             deleteColumns: false,
+        //             deleteRows: false
+        //         });
+        //         const buffer = await workbook.xlsx.writeBuffer();
+        //         const blob = new Blob([buffer], {
+        //             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        //         });
+        //         this.excelGenerate();
+        //         const link = document.createElement('a');
+        //         link.href = URL.createObjectURL(blob);
+        //         link.download = 'tupad_form.xlsx';
+        //         document.body.appendChild(link);
+        //         link.click();
+        //         document.body.removeChild(link);
+        //     } catch (error) {
+        //         console.error('Error generating Excel:', error);
+        //         toastr.error('Failed to generate Excel');
+        //     }
+        // },
         fetchTupadSlot() {
             return new Promise((resolve, reject) => {
                 axios.get('/api/dole/captain-slot-list', {
@@ -763,7 +952,9 @@ export default {
                         const slots = response.data.data;
                         this.slots = slots;
                         this.totalNoCodeSlots = this.calculateTotalNoCodeSlots(slots);
+                        this.userInfo = this.getusersinfo(slots);
                         resolve(this.totalNoCodeSlots);
+                        resolve(this.userInfo);
                     })
                     .catch(error => {
                         console.error('Error fetching tupad slot:', error);
@@ -780,6 +971,42 @@ export default {
             });
             return total;
         },
+        getusersinfo(slots) {
+            let filteredSlots = slots.filter(slot => slot.status === 'No Code');
+            filteredSlots.forEach(slot => {
+                if (slot.users_info) {
+                    slot.users_info = {
+                        firstname: slot.users_info.firstname,
+                        middlename: slot.users_info.middlename,
+                        lastname: slot.users_info.lastname,
+                        age: slot.users_info.age,
+                        sex: slot.users_info.sex,
+                        birthday: slot.users_info.birthday,
+                        contactnumber: slot.users_info.contactnumber,
+                        province: slot.users_info.province,
+                        municipality: slot.users_info.municipality,
+                        barangay: slot.users_info.barangay,
+                        district: slot.users_info.district
+                    };
+                }
+            });
+            console.log(filteredSlots);
+            return filteredSlots;
+        },
+        async fetchActiveHeaders() {
+            try {
+                const response = await axios.get('/api/dole/get-active-header');
+                if (response.status === 200) {
+                    return response.data.headers;
+                } else {
+                    throw new Error('Failed to fetch active headers');
+                }
+            } catch (error) {
+                console.error('Error fetching active headers:', error);
+                toastr.error('Failed to fetch active headers');
+                return [];
+            }
+        },
         async generateExcel() {
             try {
                 const slotCount = await this.fetchTupadSlot();
@@ -787,131 +1014,147 @@ export default {
                     toastr.error('No available slots to generate Excel');
                     return;
                 }
+                const activeHeaders = await this.fetchActiveHeaders();
+                const worksheetColumns = activeHeaders.map(header => ({
+                    header: header.header,
+                    key: header.key,
+                    width: 20
+                }));
+                worksheetColumns.unshift({
+                    header: 'SLOT',
+                    key: 'slot_available',
+                    width: 6
+                });
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet('Captain Slots');
-                worksheet.columns = [{
-                        header: 'SLOT',
-                        key: 'slot_available',
-                        width: 6
-                    },
-                    {
-                        header: 'FIRST NAME',
-                        key: 'firstname',
-                        width: 20
-                    },
-                    {
-                        header: 'MIDDLE NAME',
-                        key: 'middlename',
-                        width: 20
-                    },
-                    {
-                        header: 'LAST NAME',
-                        key: 'lastname',
-                        width: 20
-                    },
-                    {
-                        header: 'CONTANCT NUMBER',
-                        key: 'number',
-                        width: 20
-                    },
-                    {
-                        header: 'BIRTH DATE',
-                        key: 'birthday',
-                        width: 20
-                    },
-                    {
-                        header: 'ADDRESS',
-                        key: 'address',
-                        width: 30
-                    },
-                    {
-                        header: 'SITIO',
-                        key: 'sitio',
-                        width: 20
-                    },
-                    {
-                        header: 'TYPE OF I.D',
-                        key: 'type_of_id',
-                        width: 20
-                    },
-                    {
-                        header: 'I.D NUMBER',
-                        key: 'id_number',
-                        width: 20
-                    },
-                    {
-                        header: 'SEX',
-                        key: 'sex',
-                        width: 10
-                    },
-                    {
-                        header: 'CIVIL STATUS',
-                        key: 'civil_status',
-                        width: 15
-                    },
-                    {
-                        header: 'AGE',
-                        key: 'age',
-                        width: 10
-                    },
-                    {
-                        header: 'NAME OF BENEFICIARY',
-                        key: 'beneficiary',
-                        width: 30
-                    },
-                ];
+                worksheet.columns = worksheetColumns;
+                const firstSlotWithNoCode = this.slots.find(slot => slot.status === 'No Code');
+                if (!firstSlotWithNoCode) {
+                    toastr.error('No slots with status "No Code" found');
+                    return;
+                }
+                const userInfo = firstSlotWithNoCode.users_info;
+                const numDynamicHeaders = worksheetColumns.length;
+                const parentHeaderRange = `A1:${String.fromCharCode(64 + numDynamicHeaders)}1`;
+                const parentHeaderRow = worksheet.getRow(1);
+                parentHeaderRow.getCell('A').value = `CAPTAIN: ${userInfo.lastname}, ${userInfo.firstname} ${userInfo.middlename} 
+                CONTACT NUMBER: ${userInfo.contactnumber} 
+                ADDRESS: ${userInfo.province} ${userInfo.municipality} ${userInfo.barangay} ${userInfo.district} district `;
+                worksheet.mergeCells(parentHeaderRange);
+                parentHeaderRow.eachCell((cell) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFF00'
+                        }
+                    };
+                    cell.font = {
+                        bold: true
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin'
+                        },
+                        left: {
+                            style: 'thin'
+                        },
+                        bottom: {
+                            style: 'thin'
+                        },
+                        right: {
+                            style: 'thin'
+                        }
+                    };
+                });
+                const headerRow = worksheet.getRow(2);
+                headerRow.values = worksheetColumns.map(col => col.header);
+                headerRow.eachCell((cell) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFF00'
+                        }
+                    };
+                    cell.font = {
+                        bold: true
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin'
+                        },
+                        left: {
+                            style: 'thin'
+                        },
+                        bottom: {
+                            style: 'thin'
+                        },
+                        right: {
+                            style: 'thin'
+                        }
+                    };
+                });
                 let slotsAdded = 0;
                 for (let i = 0; i < this.slots.length && slotsAdded < slotCount; i++) {
                     const slot = this.slots[i];
                     if (slot.status === 'No Code') {
                         for (let j = 0; j < slot.slot_get && slotsAdded < slotCount; j++) {
-                            const birthday = slot.birthday ? new Date(slot.birthday) : null;
-                            const formattedBirthday = birthday ? birthday.toLocaleDateString('en-US') : '';
-                            worksheet.addRow({
-                                slot_available: slotsAdded + 1,
-                                firstname: slot.firstname || '',
-                                middlename: slot.middlename || '',
-                                lastname: slot.lastname || '',
-                                number: slot.number || '',
-                                birthday: formattedBirthday,
-                                address: slot.address || '',
-                                sitio: slot.sitio || '',
-                                type_of_id: slot.type_of_id || '',
-                                id_number: slot.id_number || '',
-                                sex: slot.sex || '',
-                                civil_status: slot.civil_status || '',
-                                age: slot.age || '',
-                                beneficiary: slot.beneficiary || '',
+                            const rowData = {};
+                            worksheetColumns.forEach(column => {
+                                const {
+                                    key
+                                } = column;
+                                if (key === 'slot_available') {
+                                    rowData[key] = slotsAdded + 1;
+                                } else if (key === 'birthday') {
+                                    const birthday = slot.birthday ? new Date(slot.birthday) : null;
+                                    rowData[key] = birthday ? birthday.toLocaleDateString('en-US') : '';
+                                } else {
+                                    rowData[key] = slot[key] || '';
+                                }
+                            });
+                            const row = worksheet.addRow(rowData);
+                            row.eachCell((cell) => {
+                                cell.border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                                cell.alignment = {
+                                    vertical: 'middle',
+                                    horizontal: 'center'
+                                };
                             });
                             slotsAdded++;
                         }
                     }
                 }
-                worksheet.eachRow((row, rowNumber) => {
-                    row.eachCell((cell, colNumber) => {
+                worksheet.eachRow((row, rowIndex) => {
+                    row.eachCell((cell, colIndex) => {
+                        const isHeaderRow = rowIndex <= 2;
+                        const isSlotColumn = colIndex === 1;
                         cell.protection = {
-                            locked: false
+                            locked: isHeaderRow || isSlotColumn
                         };
                     });
-                });
-                worksheet.getRow(1).eachCell(cell => {
-                    cell.protection = {
-                        locked: true
-                    };
-                });
-                worksheet.eachRow((row, rowNumber) => {
-                    if (rowNumber > 1) {
-                        row.getCell('A').protection = {
-                            locked: true
-                        };
-                        row.eachCell((cell, colNumber) => {
-                            if (colNumber !== 1) {
-                                cell.protection = {
-                                    locked: false
-                                };
-                            }
-                        });
-                    }
                 });
                 worksheet.protect('your_password_here', {
                     selectLockedCells: true,

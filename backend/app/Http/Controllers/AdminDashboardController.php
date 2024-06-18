@@ -12,6 +12,7 @@ use App\Models\Tupad;
 use App\Models\TupadCode;
 use App\Models\TupadSlot;
 use App\Models\MedicalRequest;
+use App\Models\TupadExcelHeader;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -282,7 +283,6 @@ class AdminDashboardController extends Controller
         });
         return response()->json($data);
     }
-
     public function getData()
     {
         $data = DB::transaction(function () {
@@ -292,50 +292,51 @@ class AdminDashboardController extends Controller
                 ->map(function ($yearData) {
                     $year = $yearData->year;
                     $totalPerYear = $yearData->total_per_year;
-                    $datesData = Tupad::whereYear('created_at', $year)
+                    $monthsData = Tupad::whereYear('created_at', $year)
                         ->get()
                         ->groupBy(function ($item) {
-                            return $item->code->slot->month_year_available;
+                            return Carbon::parse($item->month_year_available)->format('F');
                         })
-                        ->map(function ($items, $date) {
-                            $totalPerDate = $items->count();
-                            $addressesData = $items->groupBy('address')
-                                ->map(function ($addressItems, $address) {
-                                    return [
-                                        'address' => $address,
-                                        'total_per_address' => $addressItems->count(),
-                                        'details' => $addressItems->map(function ($item) {
+                        ->map(function ($items, $month) {
+                            $totalPerMonth = $items->count();
+                            $municipalitiesData = $items->groupBy('municipality')
+                                ->map(function ($municipalityItems, $municipality) {
+                                    $totalPerMunicipality = $municipalityItems->count();
+                                    $barangaysData = $municipalityItems->groupBy('barangay')
+                                        ->map(function ($barangayItems, $barangay) {
                                             return [
-                                                'firstname' => $item->firstname,
-                                                'middlename' => $item->middlename,
-                                                'lastname' => $item->lastname,
-                                                'age' => $item->age,
-                                                'birthday' => $item->birthday,
-                                                'gender' => $item->gender,
-                                                'civil_status' => $item->civil_status,
-                                                'contact_number' => $item->contact_number,
-                                                'benificiary_name' => $item->benificiary_name,
-                                                'id_type' => $item->id_type,
-                                                'id_number' => $item->id_number,
-                                                'sitio' => $item->sitio,
-                                                'address' => $item->address,
-                                                'given_by_captain' => User::find($item->given_by_captainID)->username
+                                                'barangay' => $barangay,
+                                                'total_per_barangay' => $barangayItems->count(),
+                                                'details' => $barangayItems->map(function ($item) {
+                                                    $fillableKeys = TupadExcelHeader::where('status', 'active')->pluck('key')->toArray();
+                                                    $details = [];
+                                                    foreach ($fillableKeys as $key) {
+                                                        $details[$key] = $item->{$key};
+                                                    }
+                                                    $details['given_by_captain'] = User::find($item->given_by_captainID)->username;
+                                                    return $details;
+                                                })
                                             ];
                                         })
+                                        ->values();
+                                    return [
+                                        'municipality' => $municipality,
+                                        'total_per_municipality' => $totalPerMunicipality,
+                                        'barangays' => $barangaysData,
                                     ];
                                 })
                                 ->values();
                             return [
-                                'date' => $date,
-                                'total_per_date' => $totalPerDate,
-                                'addresses' => $addressesData,
+                                'month' => $month,
+                                'total_per_month' => $totalPerMonth,
+                                'municipalities' => $municipalitiesData,
                             ];
                         })
                         ->values();
                     return [
                         'year' => $year,
                         'total_per_year' => $totalPerYear,
-                        'dates' => $datesData,
+                        'months' => $monthsData,
                     ];
                 })
                 ->values();
@@ -343,61 +344,6 @@ class AdminDashboardController extends Controller
         });
         return response()->json($data);
     }
-
-
-    // gamit nito e muicipality and barangay pero sa form ni tupad e address gamit abang lang ito
-    //     public function getData()
-    // {
-    //     $data = DB::transaction(function () {
-    //         $yearsData = Tupad::select(DB::raw('YEAR(created_at) as year'), DB::raw('COUNT(*) as total_per_year'))
-    //             ->groupBy('year')
-    //             ->get()
-    //             ->map(function ($yearData) {
-    //                 $year = $yearData->year;
-    //                 $totalPerYear = $yearData->total_per_year;
-    //                 $datesData = Tupad::whereYear('created_at', $year)
-    //                     ->get()
-    //                     ->groupBy(function ($item) {
-    //                         return $item->code->slot->month_year_available;
-    //                     })
-    //                     ->map(function ($items, $date) {
-    //                         $totalPerDate = $items->count();
-    //                         $municipalitiesData = $items->groupBy('municipality')
-    //                             ->map(function ($municipalityItems, $municipality) {
-    //                                 $totalPerMunicipality = $municipalityItems->count();
-    //                                 $barangaysData = $municipalityItems->groupBy('barangay')
-    //                                     ->map(function ($barangayItems, $barangay) {
-    //                                         return [
-    //                                             'barangay' => $barangay,
-    //                                             'total_per_barangay' => $barangayItems->count(),
-    //                                         ];
-    //                                     })
-    //                                     ->values();
-    //                                 return [
-    //                                     'municipality' => $municipality,
-    //                                     'total_per_municipality' => $totalPerMunicipality,
-    //                                     'barangays' => $barangaysData,
-    //                                 ];
-    //                             })
-    //                             ->values();
-    //                         return [
-    //                             'date' => $date,
-    //                             'total_per_date' => $totalPerDate,
-    //                             'municipalities' => $municipalitiesData,
-    //                         ];
-    //                     })
-    //                     ->values();
-    //                 return [
-    //                     'year' => $year,
-    //                     'total_per_year' => $totalPerYear,
-    //                     'dates' => $datesData,
-    //                 ];
-    //             })
-    //             ->values();
-    //         return $yearsData;
-    //     });
-    //     return response()->json($data);
-    // }
 
     public function getMunicipalityBarangayEducationalData(Request $request)
     {
@@ -488,15 +434,27 @@ class AdminDashboardController extends Controller
         return DB::transaction(function () use ($request) {
             try {
                 $user = $this->validateAdminAndSuperAdmin($request);
-                $districts = ($user->type == 'superadmin')
-                    ? null
-                    : (($user->district == '1st')
-                        ? ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria']
-                        : ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
-                $query = MedicalRequest::selectRaw('gender, municipality, COUNT(*) as count')
-                    ->groupBy('gender', 'municipality');
-                if ($districts !== null) {
-                    $query->whereIn('municipality', $districts);
+                if ($user->type === 'superadmin') {
+                    $query = MedicalRequest::selectRaw('gender, medical_requests.municipality, COUNT(*) as count')
+                        ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                        ->whereIn('hospitals.assist_by_staff_from', ['1st', '2nd'])
+                        ->groupBy('gender', 'medical_requests.municipality');
+                } else {
+                    $hospitals = Hospital::join('medical_requests', 'hospitals.hospital_acronym', '=', 'medical_requests.hospital')
+                        ->where('hospitals.deleted_at', null)
+                        ->pluck('assist_by_staff_from');
+                    $districts = [];
+                    foreach ($hospitals as $hospital) {
+                        if ($hospital === '1st' && $user->district === '1st') {
+                            $districts[] = $hospital;
+                        } elseif ($hospital === '2nd' && $user->district === '2nd') {
+                            $districts[] = $hospital;
+                        }
+                    }
+                    $query = MedicalRequest::selectRaw('gender, medical_requests.municipality, COUNT(*) as count')
+                        ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                        ->whereIn('hospitals.assist_by_staff_from', $districts)
+                        ->groupBy('gender', 'medical_requests.municipality');
                 }
                 $genderMunicipalityCounts = $query->get();
                 $result = [];
@@ -518,21 +476,20 @@ class AdminDashboardController extends Controller
     }
 
 
+
     public function getMunicipalityBarangayData(Request $request)
     {
         return DB::transaction(function () use ($request) {
             try {
                 $user = $this->validateAdminAndSuperAdmin($request);
-                $districts = ($user->type == 'superadmin')
-                    ? null
-                    : (($user->district == '1st')
-                        ? ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria']
-                        : ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
-                $hospitalRequests = MedicalRequest::all();
-                if ($districts !== null) {
-                    $hospitalRequests = $hospitalRequests->filter(function ($request) use ($districts) {
-                        return in_array($request->municipality, $districts);
-                    });
+                if ($user->type === 'superadmin') {
+                    $hospitalRequests = MedicalRequest::all();
+                } else {
+                    $districts = ($user->district == '1st')
+                        ? ['1st']
+                        : ['2nd'];
+                    $hospitals = Hospital::where('assist_by_staff_from', $districts)->pluck('hospital_acronym');
+                    $hospitalRequests = MedicalRequest::whereIn('hospital', $hospitals)->get();
                 }
                 $organizedData = [];
                 foreach ($hospitalRequests as $request) {
@@ -568,19 +525,16 @@ class AdminDashboardController extends Controller
         });
     }
 
+
     public function getAllHospitalsWithServiceOffers(Request $request)
     {
         return DB::transaction(function () use ($request) {
             try {
                 $user = $this->validateAdminAndSuperAdmin($request);
-                $districts = ($user->type == 'superadmin')
-                    ? null
-                    : (($user->district == '1st')
-                        ? ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria']
-                        : ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
                 $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
+                if ($user->type != 'superadmin') {
+                    $districtFilter = $user->district == '1st' ? '1st' : '2nd';
+                    $hospitalQuery->where('assist_by_staff_from', $districtFilter);
                 }
                 $hospitals = $hospitalQuery->get();
                 $hospitalDetails = [];
@@ -624,41 +578,17 @@ class AdminDashboardController extends Controller
         return DB::transaction(function () use ($request) {
             try {
                 $user = $this->validateAdminAndSuperAdmin($request);
-                $districts = ($user->type == 'superadmin')
-                    ? null
-                    : (($user->district == '1st')
-                        ? ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria']
-                        : ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
                 $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
+                if ($user->type != 'superadmin') {
+                    $districtFilter = $user->district == '1st' ? '1st' : '2nd';
+                    $hospitalQuery->where('assist_by_staff_from', $districtFilter);
                 }
-                $totalHospitals = $hospitalQuery->count();
-                $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
-                }
-                $activeHospitals = $hospitalQuery->where('status', 'active')->count();
-                $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
-                }
-                $inactiveHospitals = $hospitalQuery->where('status', 'inactive')->count();
-                $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
-                }
-                $totalHospitalNames = $hospitalQuery->pluck('hospital_name');
-                $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
-                }
-                $activeHospitalNames = $hospitalQuery->where('status', 'active')->pluck('hospital_name');
-                $hospitalQuery = DB::table('hospitals')->whereNull('deleted_at');
-                if ($districts !== null) {
-                    $hospitalQuery->whereIn('municipality', $districts);
-                }
-                $inactiveHospitalNames = $hospitalQuery->where('status', 'inactive')->pluck('hospital_name');
+                $totalHospitals = (clone $hospitalQuery)->count();
+                $activeHospitals = (clone $hospitalQuery)->where('status', 'active')->count();
+                $inactiveHospitals = (clone $hospitalQuery)->where('status', 'inactive')->count();
+                $totalHospitalNames = (clone $hospitalQuery)->pluck('hospital_name');
+                $activeHospitalNames = (clone $hospitalQuery)->where('status', 'active')->pluck('hospital_name');
+                $inactiveHospitalNames = (clone $hospitalQuery)->where('status', 'inactive')->pluck('hospital_name');
                 return response()->json([
                     'total' => [
                         'count' => $totalHospitals,
@@ -678,6 +608,7 @@ class AdminDashboardController extends Controller
             }
         });
     }
+
 
     private function validateAdminAndSuperAdmin(Request $request)
     {

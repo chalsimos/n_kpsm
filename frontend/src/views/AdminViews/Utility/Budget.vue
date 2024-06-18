@@ -25,7 +25,8 @@
                             <a-col :span="24" :sm="12" :md="8">
                                 <a-badge-ribbon :text="hospital.current_year.year">
                                     <a-card bordered={false}>
-                                        <a-statistic title="Budget Left" :value="hospital.current_year.budget_left" :valueStyle="{ color: hospital.current_year.budget_left >= hospital.current_year.total_budget ? '#3f8600' : '#cf1322' }" :prefix="hospital.current_year.budget_left >= hospital.current_year.total_budget ? '↑' : '↓'" />
+                                        <a-statistic title="Budget Left" :value="hospital.current_year.budget_left" :valueStyle="{ color: isBudgetLeftHigher(hospital.current_year.budget_left, hospital.current_year.total_budget) ? '#3f8600' : '#cf1322' }" :prefix="isBudgetLeftHigher(hospital.current_year.budget_left, hospital.current_year.total_budget) ? '↑' : '↓'" />
+
                                     </a-card>
                                 </a-badge-ribbon>
                             </a-col>
@@ -50,7 +51,7 @@
                             <a-col :span="24" :sm="12" :md="8">
                                 <a-badge-ribbon :text="hospital.next_year.year">
                                     <a-card class="bg-gray-400" bordered={false}>
-                                        <a-statistic title="Budget Left" :value="hospital.next_year.budget_left" :valueStyle="{ color: hospital.next_year.budget_left > 0 ? '#3f8600' : '#cf1322' }" :prefix="hospital.next_year.budget_left > 0 ? '↑' : '↓'" />
+                                        <a-statistic title="Budget Left" :value="hospital.next_year.budget_left" :valueStyle="{ color: hospital.next_year.budget_left >= hospital.current_year.total_budget ? '#3f8600' : '#cf1322' }" :prefix="hospital.next_year.budget_left >= hospital.current_year.total_budget ? '↑' : '↓'" />
                                     </a-card>
                                 </a-badge-ribbon>
                             </a-col>
@@ -143,50 +144,49 @@ export default {
             yearFormat: 'YYYY',
             total_budget: '',
             budget_to_hospital: '',
-            columns: [
-        {
-          title: 'Firstname',
-          dataIndex: 'firstname',
-          key: 'firstname',
-          sorter: (a, b) => a.firstname.localeCompare(b.firstname),
-          sortDirections: ['descend', 'ascend']
-        },
-        {
-          title: 'Middlename',
-          dataIndex: 'middlename',
-          key: 'middlename',
-          sorter: (a, b) => a.middlename.localeCompare(b.middlename),
-          sortDirections: ['descend', 'ascend']
-        },
-        {
-          title: 'Lastname',
-          dataIndex: 'lastname',
-          key: 'lastname',
-          sorter: (a, b) => a.lastname.localeCompare(b.lastname),
-          sortDirections: ['descend', 'ascend']
-        },
-        {
-          title: 'Diagnosis',
-          dataIndex: 'diagnosis',
-          key: 'diagnosis',
-          sorter: (a, b) => a.diagnosis.localeCompare(b.diagnosis),
-          sortDirections: ['descend', 'ascend']
-        },
-        {
-          title: 'Amount',
-          dataIndex: 'amount',
-          key: 'amount',
-          sorter: (a, b) => a.amount - b.amount,
-          sortDirections: ['descend', 'ascend']
-        },
-        {
-          title: 'Request',
-          dataIndex: 'request',
-          key: 'request',
-          sorter: (a, b) => a.request.localeCompare(b.request),
-          sortDirections: ['descend', 'ascend']
-        }
-      ],
+            columns: [{
+                    title: 'Firstname',
+                    dataIndex: 'firstname',
+                    key: 'firstname',
+                    sorter: (a, b) => a.firstname.localeCompare(b.firstname),
+                    sortDirections: ['descend', 'ascend']
+                },
+                {
+                    title: 'Middlename',
+                    dataIndex: 'middlename',
+                    key: 'middlename',
+                    sorter: (a, b) => a.middlename.localeCompare(b.middlename),
+                    sortDirections: ['descend', 'ascend']
+                },
+                {
+                    title: 'Lastname',
+                    dataIndex: 'lastname',
+                    key: 'lastname',
+                    sorter: (a, b) => a.lastname.localeCompare(b.lastname),
+                    sortDirections: ['descend', 'ascend']
+                },
+                {
+                    title: 'Diagnosis',
+                    dataIndex: 'diagnosis',
+                    key: 'diagnosis',
+                    sorter: (a, b) => a.diagnosis.localeCompare(b.diagnosis),
+                    sortDirections: ['descend', 'ascend']
+                },
+                {
+                    title: 'Amount',
+                    dataIndex: 'amount',
+                    key: 'amount',
+                    sorter: (a, b) => a.amount - b.amount,
+                    sortDirections: ['descend', 'ascend']
+                },
+                {
+                    title: 'Request',
+                    dataIndex: 'request',
+                    key: 'request',
+                    sorter: (a, b) => a.request.localeCompare(b.request),
+                    sortDirections: ['descend', 'ascend']
+                }
+            ],
             pagination: {
                 defaultPageSize: 5,
                 pageSizeOptions: ['5', '10', '15'],
@@ -294,6 +294,15 @@ export default {
         },
         onChange(key) {
             this.activeKey = key;
+        },
+        isBudgetLeftHigher(budgetLeft, totalBudget) {
+            const budgetLeftNum = parseFloat(budgetLeft);
+            const totalBudgetNum = parseFloat(totalBudget);
+
+            console.log(`Budget Left: ${budgetLeftNum}, Total Budget: ${totalBudgetNum}`);
+            console.log(`Comparison Result: ${budgetLeftNum >= totalBudgetNum}`);
+
+            return budgetLeftNum >= totalBudgetNum;
         }
     }
 };

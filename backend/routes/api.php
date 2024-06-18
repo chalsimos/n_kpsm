@@ -15,6 +15,8 @@ use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\BudgetAllocation;
 use App\Http\Controllers\CustomEmails;
+use App\Http\Controllers\TupadHeader;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,17 +43,16 @@ Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
 Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
 
 Route::prefix('budget')->group(function () {
- //admin
+    //admin
     Route::middleware(['admin'])->group(function () {
-
+        Route::post('/budget-allocations', [BudgetAllocation::class, 'save_budget_allocation']);
+        Route::get('/budget-allocations', [BudgetAllocation::class, 'get_all_budget_allocations']);
+        Route::get('/budget-allocations-hospital', [BudgetAllocation::class, 'get_unique_hospitals']);
     });
-    Route::post('/budget-allocations', [BudgetAllocation::class, 'save_budget_allocation']);
-    Route::get('/budget-allocations', [BudgetAllocation::class, 'get_all_budget_allocations']);
-    Route::get('/budget-allocations-hospital', [BudgetAllocation::class, 'get_unique_hospitals']);
 });
 
 Route::prefix('dashboard')->group(function () {
- //admin
+    //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-hospital-count', [AdminDashboardController::class, 'getAllHospital']);
         Route::get('/get-hospital-service-offer-count', [AdminDashboardController::class, 'getAllHospitalsWithServiceOffers']);
@@ -59,10 +60,10 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/educational-municipality-barangay', [AdminDashboardController::class, 'getMunicipalityBarangayEducationalData']);
         Route::get('/gender-medical-requests', [AdminDashboardController::class, 'getGenderMedicalRequest']);
         Route::get('/gender-educational-requests', [AdminDashboardController::class, 'getGenderEducationalRequest']);
-        Route::get('/getData', [AdminDashboardController::class, 'getData']);
         Route::get('/medical-requests-data', [AdminDashboardController::class, 'getMedicalRequestsData']);
         Route::get('/educational-requests-data', [AdminDashboardController::class, 'getEducationalRequestsData']);
     });
+    Route::get('/getData', [AdminDashboardController::class, 'getData']);
 
 });
 
@@ -103,9 +104,12 @@ Route::prefix('utility')->group(function () {
         Route::delete('/delete-emails/{id}', [CustomEmails::class, 'deleteEmail']);
         Route::get('/get-emails', [CustomEmails::class, 'Emailindex']);
         Route::post('/send-emails/{id}', [CustomEmails::class, 'send_email']);
-
+        //Tupad Header
+        Route::post('/save-tupad-header', [TupadHeader::class, 'saveTupadExcelHeader']);
+        Route::delete('/delete-tupad-header/{id}', [TupadHeader::class, 'deleteTupadExcelHeader']);
+        Route::put('/update-tupad-header-status/{id}', [TupadHeader::class, 'toggleHeaderStatus']);
+        Route::get('/get-tupad-header', [TupadHeader::class, 'getAllHeaders']);
     });
-
 });
 Route::prefix('educational-assistance')->group(function () {
     //no need authentication
@@ -140,12 +144,12 @@ Route::prefix('medical-requests')->group(function () {
         Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
         Route::put('/decline/{id}', [MedicalRequestController::class, 'decline']);
         Route::get('/get-hospital-and-offer', [MedicalRequestController::class, 'hospitalsWithServiceOffers']);
-
+        Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
+        Route::get('/get-all', [MedicalRequestController::class, 'index']);
+        Route::get('/get-all-decline', [MedicalRequestController::class, 'Declineindex']);
+        Route::get('/get-all-approve', [MedicalRequestController::class, 'Approveindex']);
+        Route::get('/generate-all-approve', [MedicalRequestController::class, 'GenerateApprove']);
     });
-    Route::put('/approve-amount/{id}', [MedicalRequestController::class, 'approve_amount']);
-
-    Route::get('/get-all', [MedicalRequestController::class, 'index']);
-
 });
 Route::post('/post-news', [NewsPortal::class, 'addNews']);
 Route::prefix('dole')->group(function () {
@@ -154,13 +158,16 @@ Route::prefix('dole')->group(function () {
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
     //admin
-
     Route::middleware(['admin'])->group(function () {
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
         Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
-        Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
         Route::get('/getAll-captains-tupad-invites', [DoleController::class, 'getAll_captains_tupad_invites']);
+        Route::get('/get-invites-per-captain', [DoleController::class, 'getTupadsPerCaptain']);
+        Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
+        Route::get('/get-file-path/{id}', [DoleController::class, 'getImagePaths']);
+        Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
+        Route::get('/get-excel-path/{id}', [DoleController::class, 'getExcelData']);
     });
     //captain
     Route::middleware(['captain'])->group(function () {
@@ -171,9 +178,11 @@ Route::prefix('dole')->group(function () {
         Route::get('/captain-tupad-invited', [DoleController::class, 'captain_tupad_invite']);
         Route::put('/decline-tupad-request/{id}', [DoleController::class, 'decline_tupad_invites']);
         Route::put('/accept-tupad-request/{id}', [DoleController::class, 'accept_tupad_invites']);
-    });
         Route::post('/captain-upload-file', [DoleController::class, 'excel_upload_by_captain']);
         Route::post('/get-captain-slot', [DoleController::class, 'get_tupad_slot_count']);
         Route::get('/get-nocode-slot', [DoleController::class, 'getSlotsWithNoCode']);
         Route::post('/save-captain-tupad-member', [DoleController::class, 'save_tupad_by_captain']);
+    });
+    Route::get('/get-active-header', [TupadHeader::class, 'fetchActiveHeaders']);
+
 });

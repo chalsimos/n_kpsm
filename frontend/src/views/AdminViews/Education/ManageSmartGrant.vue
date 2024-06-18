@@ -3,21 +3,9 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-styled-tab" data-tabs-toggle="#default-styled-tab-content" data-tabs-active-classes="text-purple-600 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-500 border-purple-600 dark:border-purple-500" data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300" role="tablist">
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="Pending-List-styled-tab" data-tabs-target="#styled-Pending-List" type="button" role="tab" aria-controls="Pending-List" aria-selected="false">Pending List</button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Approve-List-styled-tab" data-tabs-target="#styled-Approve-List" type="button" role="tab" aria-controls="Approve-List" aria-selected="false">Approve List</button>
-                    </li>
-                    <li class="me-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="Decline-List-styled-tab" data-tabs-target="#styled-Decline-List" type="button" role="tab" aria-controls="Decline-List" aria-selected="false">Decline List</button>
-                    </li>
-                </ul>
-            </div>
-            <div id="default-styled-tab-content">
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Pending-List" role="tabpanel" aria-labelledby="Pending-List-tab">
+            <a-button class="text-white" type="primary" @click="generateExcel">Generate Approve Excel</a-button>
+            <a-tabs default-active-key="1" @change="handleTabChange">
+                <a-tab-pane key="1" tab="Pending List">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Pending Smart Grant Requests
@@ -48,6 +36,7 @@
                                     <th class="text-center">Year Level</th>
                                     <th class="text-center">Academic Year</th>
                                     <th class="text-center">Amount Budget</th>
+                                    <th class="text-center">Check Requirements</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center action-column">Action</th>
                                 </tr>
@@ -76,6 +65,11 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.year_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
                                     <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
                                         <button @click="acceptApplication(checkedIds.length > 0 ? checkedIds : item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
@@ -89,8 +83,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Approve-List" role="tabpanel" aria-labelledby="Approve-List-tab">
+                </a-tab-pane>
+                <a-tab-pane key="2" tab="Approve List">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Approve Smart Grant Requests
@@ -121,6 +115,7 @@
                                     <th class="text-center">Year Level</th>
                                     <th class="text-center">Academic Year</th>
                                     <th class="text-center">Amount Budget</th>
+                                    <th class="text-center">Check Requirements</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center action-column">Action</th>
                                 </tr>
@@ -148,8 +143,13 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.school_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.year_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
                                         <button @click="emailModal(checkedIdsForApproved.length > 0 ? checkedIdsForApproved : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
@@ -159,8 +159,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-                <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-Decline-List" role="tabpanel" aria-labelledby="Decline-List-tab">
+                </a-tab-pane>
+                <a-tab-pane key="3" tab="Decline List">
                     <v-card flat>
                         <v-card-title class="d-flex align-center pe-2 bg-orange-200">
                             <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Decline Smart Grant Requests
@@ -191,6 +191,7 @@
                                     <th class="text-center">Year Level</th>
                                     <th class="text-center">Academic Year</th>
                                     <th class="text-center">Amount Budget</th>
+                                    <th class="text-center">Check Requirements</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center action-column">Action</th>
                                 </tr>
@@ -218,10 +219,15 @@
                                     <td class="whitespace-nowrap uppercase">{{ item.school_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.year_level }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.academic_year_stage }}</td>
-                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱ ' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
                                     <td class="whitespace-nowrap uppercase action-column">
-                                        <button @click="emailModal(checkedIdsForDecline.length > 0 ? checkedIdsForDecline : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
+                                        <button @click="declineEmailModal(checkedIdsForDecline.length > 0 ? checkedIdsForDecline : item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
                                             Send Email
                                         </button>
                                     </td>
@@ -229,8 +235,8 @@
                             </template>
                         </v-data-table>
                     </v-card>
-                </div>
-            </div>
+                </a-tab-pane>
+            </a-tabs>
         </div>
     </div>
 </div>
@@ -286,13 +292,83 @@
         </div>
     </div>
 </div>
+<div id="RequirementsModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{ educationalRequest.beneficiary_firstname }} {{ educationalRequest.beneficiary_middlename }} {{ educationalRequest.beneficiary_lastname }} Requirements
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="RequirementsModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4">
+                <div v-if="educationalRequest.valid_id_imagepath && educationalRequest.valid_id_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Valid ID Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.valid_id_imagepath" :key="'valid_id_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Valid ID Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+                <div v-if="educationalRequest.barangay_indigency_imagepath && educationalRequest.barangay_indigency_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Hospital Documents Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.barangay_indigency_imagepath" :key="'hospital_document_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Barangay Indigency Image ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+                <div v-if="educationalRequest.certificate_of_enrollment_imagepath && educationalRequest.certificate_of_enrollment_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Barangay Clearance Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.certificate_of_enrollment_imagepath" :key="'barangay_clearance_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Coe ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+                <div v-if="educationalRequest.certificate_of_registration_imagepath && educationalRequest.certificate_of_registration_imagepath.length">
+                    <h4 class="text-lg font-semibold mb-2">Barangay Clearance Image</h4>
+                    <carousel :arrows="true">
+                        <div v-for="(imagePath, index) in educationalRequest.certificate_of_registration_imagepath" :key="'barangay_clearance_' + index">
+                            <img v-bind:style="contentStyle" :src="imagePath" :alt="'Cor ' + (index + 1)" class="w-full cursor-pointer mb-2" @click="previewImage(imagePath)">
+                        </div>
+                    </carousel>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="preview-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <button data-modal-hide="preview-modal" @click="closePreviewModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <img :src="previewedImage.url" class="w-full h-auto" style="max-width: 100%; max-height: 80vh;">
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
 import {
     Carousel,
     ConfigProvider,
-    Popover
+    Popover,
+    Tabs
 } from "ant-design-vue";
 import {
     Modal,
@@ -309,6 +385,7 @@ import {
     useToast
 } from 'vue-toastification'
 const toastr = useToast()
+import ExcelJS from 'exceljs';
 export default {
     data() {
         return {
@@ -321,6 +398,7 @@ export default {
             checkedIds: [],
             checkedIdsForApproved: [],
             checkedIdsForDecline: [],
+            educationalRequest: [],
             emailList: '',
             contentStyle: {
                 margin: 0,
@@ -330,13 +408,17 @@ export default {
                 textAlign: 'center',
                 background: '#364d79',
             },
+            previewedImage: {
+                url: ''
+            }
         };
     },
     components: {
         Side,
         Carousel,
         ConfigProvider,
-        Popover
+        Popover,
+        Tabs
     },
     mounted() {
         initTWE({
@@ -350,6 +432,274 @@ export default {
         this.fetchApprovedEducationalAssistance();
     },
     methods: {
+        async generateExcel() {
+            try {
+                const response = await axios.get('/api/educational-assistance/get-all-approved_shcolarship-request-smart-grant', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                const data = response.data;
+                const workbook = new ExcelJS.Workbook();
+                const groupedData = {};
+                data.forEach(item => {
+                    const municipality = item.municipality;
+                    if (!groupedData[municipality]) {
+                        groupedData[municipality] = [];
+                    }
+                    groupedData[municipality].push(item);
+                });
+                Object.keys(groupedData).forEach(municipality => {
+                    const worksheet = workbook.addWorksheet(municipality);
+                    worksheet.addRow(['', 'Representative Data', '', '', '', '', 'Beneficiary Data Data', '', '', '', '', '']).font = {
+                        bold: true
+                    };
+                    worksheet.addRow(['No.', 'Last Name', 'Middle Name', 'First Name', 'Birthday', 'Age', 'Last Name', 'Middle Name', 'First Name', 'Birthday', 'Age', 'Relationship to Beneficiaries', 'Province', 'Municipality', 'Barangay', 'Sitio', 'College', 'Remarks', 'School', 'Contact Number']).font = {
+                        bold: true
+                    };
+                    worksheet.mergeCells('B1:F1');
+                    worksheet.mergeCells('G1:K1');
+                    worksheet.getRow(2).height = 30;
+                    for (let col = 1; col <= 11; col++) {
+                        for (let row = 1; row <= 2; row++) {
+                            worksheet.getCell(row, col).alignment = {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            };
+                        }
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        for (let row = 1; row <= 2; row++) {
+                            worksheet.getCell(row, col).alignment = {
+                                vertical: 'top',
+                                horizontal: 'center'
+                            };
+                        }
+                    }
+                    for (let col = 1; col <= 20; col++) {
+                        const headerCell = worksheet.getCell(1, col);
+                        headerCell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFADD8E6'
+                            }
+                        };
+                        headerCell.font = {
+                            bold: true
+                        }
+                    }
+                    for (let col = 7; col <= 11; col++) {
+                        const headerCell = worksheet.getCell(1, col);
+                        headerCell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFFFF00'
+                            }
+                        };
+                        headerCell.font = {
+                            bold: true
+                        }
+                    }
+                    for (let col = 1; col <= 6; col++) {
+                        worksheet.getCell(2, col).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFADD8E6'
+                            }
+                        };
+                    }
+                    for (let col = 7; col <= 11; col++) {
+                        worksheet.getCell(2, col).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFFFF00'
+                            }
+                        };
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        const headerCell1 = worksheet.getCell(1, col);
+                        const headerCell2 = worksheet.getCell(2, col);
+                        switch (col) {
+                            case 12:
+                            case 13:
+                            case 14:
+                            case 15:
+                            case 16:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FF808080'
+                                    }
+                                };
+                                break;
+                            case 17:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFFA500'
+                                    }
+                                };
+                                break;
+                            case 18:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFFFF00'
+                                    }
+                                };
+                                break;
+                            case 19:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FF8A2BE2'
+                                    }
+                                };
+                                break;
+                            case 20:
+                                headerCell1.fill = headerCell2.fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFFC0CB'
+                                    }
+                                };
+                                break;
+                            default:
+                                break;
+                        }
+                        headerCell1.font = headerCell2.font = {
+                            bold: true
+                        };
+                    }
+                    for (let col = 1; col <= 20; col++) {
+                        worksheet.getCell(2, col).border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        worksheet.getCell(1, col).border = {
+                            bottom: null
+                        };
+                    }
+                    for (let col = 12; col <= 20; col++) {
+                        worksheet.getCell(2, col).border = {
+                            top: null
+                        };
+                    }
+                    groupedData[municipality].forEach(item => {
+                        worksheet.addRow([
+                            item.id,
+                            item.representative_lastname,
+                            item.representative_middlename,
+                            item.representative_firstname,
+                            item.representative_birthday,
+                            item.representative_age,
+                            item.beneficiary_lastname,
+                            item.beneficiary_middlename,
+                            item.beneficiary_firstname,
+                            item.beneficiary_birthday,
+                            item.beneficiary_age,
+                            item.relationship_to_beneficiary,
+                            item.province,
+                            item.municipality,
+                            item.barangay,
+                            item.sitio,
+                            item.school_level,
+                            item.remarks,
+                            item.school,
+                            item.contact_number
+                        ]);
+                    });
+                    worksheet.columns.forEach(column => {
+                        column.width = 28;
+                    });
+                    worksheet.eachRow({
+                        includeEmpty: true
+                    }, (row) => {
+                        row.alignment = {
+                            vertical: 'middle',
+                            horizontal: 'center'
+                        };
+                    });
+                });
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'smart_grant.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error generating Excel:', error);
+            }
+        },
+        RequirementsModal(itemId) {
+            axios.get(`/api/educational-assistance/requirements-path/${itemId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.educationalRequest = response.data;
+                    const modal = document.getElementById('RequirementsModal');
+                    modal.classList.remove('hidden');
+                    modal.setAttribute('aria-hidden', 'false');
+                    // Add event listener to close modal on close button click
+                    modal.addEventListener('click', function (e) {
+                        if (e.target && e.target.closest('[data-modal-hide="RequirementsModal"]')) {
+                            modal.classList.add('hidden');
+                            modal.setAttribute('aria-hidden', 'true');
+                        }
+                    });
+                    this.educationalRequest.valid_id_imagepath = this.educationalRequest.valid_id_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.educationalRequest.barangay_indigency_imagepath = this.educationalRequest.barangay_indigency_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.educationalRequest.certificate_of_enrollment_imagepath = this.educationalRequest.certificate_of_enrollment_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                    this.educationalRequest.certificate_of_registration_imagepath = this.educationalRequest.certificate_of_registration_imagepath.map(imagePath => axios.defaults.baseURL + imagePath);
+                })
+                .catch(error => {
+                    console.error('Error fetching medical request data:', error);
+                });
+        },
+        previewImage(imagePath) {
+            this.previewedImage.url = imagePath;
+            document.getElementById('RequirementsModal').classList.add('hidden');
+            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElementById('preview-modal').focus();
+
+        },
+        closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('RequirementsModal').classList.remove('hidden');
+            this.previewedImage.url = '';
+        },
+        handleTabChange(key) {
+
+        },
         formatDateToWords(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {

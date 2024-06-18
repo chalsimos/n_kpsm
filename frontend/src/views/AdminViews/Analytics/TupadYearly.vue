@@ -1,23 +1,23 @@
 <template>
-<div class="container mx-auto px-4">
+<div>
     <div class="flex justify-center">
-        <div class="w-full py-10 bg-gray-50 dark:bg-gray-800 rounded">
+        <div class="w-full py-10 bg-gray-50 dark:bg-gray-800 rounded px-4">
             <div class="collapse-wrapper">
                 <a-collapse accordion>
                     <a-collapse-panel v-for="year in yearsData" :key="year.year" :header="`Year: ${year.year} - Total: ${year.total_per_year}`">
-                        <div class="custom-content">
-                            <a-collapse accordion>
-                                <a-collapse-panel v-for="date in year.dates" :key="date.date" :header="`Date: ${date.date} - Total: ${date.total_per_date}`">
-                                    <div class="custom-content">
+                        <a-collapse accordion>
+                            <a-collapse-panel v-for="month in year.months" :key="month.month" :header="`Month: ${month.month} - Total: ${month.total_per_month}`">
+                                <a-collapse accordion>
+                                    <a-collapse-panel v-for="municipality in month.municipalities" :key="municipality.municipality" :header="`Municipality: ${municipality.municipality} - Total: ${municipality.total_per_municipality}`">
                                         <a-collapse accordion>
-                                            <a-collapse-panel v-for="address in date.addresses" :key="address.address" :header="`Address: ${address.address} - Total: ${address.total_per_address}`">
-                                                <a-table :columns="columns" :dataSource="address.details" rowKey="id" :scroll="{ x: 'max-content' }" />
+                                            <a-collapse-panel v-for="barangay in municipality.barangays" :key="barangay.barangay" :header="`Barangay: ${barangay.barangay} - Total: ${barangay.total_per_barangay}`">
+                                                <a-table :columns="columns" :dataSource="barangay.details" rowKey="id" :scroll="{ x: 'max-content' }" />
                                             </a-collapse-panel>
                                         </a-collapse>
-                                    </div>
-                                </a-collapse-panel>
-                            </a-collapse>
-                        </div>
+                                    </a-collapse-panel>
+                                </a-collapse>
+                            </a-collapse-panel>
+                        </a-collapse>
                     </a-collapse-panel>
                 </a-collapse>
             </div>
@@ -59,95 +59,19 @@ export default defineComponent({
             yearsData: [],
             searchText: '',
             searchedColumn: '',
-            columns: [{
-                    title: 'First Name',
-                    dataIndex: 'firstname',
-                    key: 'firstname',
-                    ...this.getColumnSearchProps('firstname')
-                },
-                {
-                    title: 'Middle Name',
-                    dataIndex: 'middlename',
-                    key: 'middlename',
-                    ...this.getColumnSearchProps('middlename')
-                },
-                {
-                    title: 'Last Name',
-                    dataIndex: 'lastname',
-                    key: 'lastname',
-                    ...this.getColumnSearchProps('lastname')
-                },
-                {
-                    title: 'Age',
-                    dataIndex: 'age',
-                    key: 'age',
-                    ...this.getColumnSearchProps('age')
-                },
-                {
-                    title: 'Birthday',
-                    dataIndex: 'birthday',
-                    key: 'birthday',
-                    ...this.getColumnSearchProps('birthday')
-                },
-                {
-                    title: 'Gender',
-                    dataIndex: 'gender',
-                    key: 'gender',
-                    ...this.getColumnSearchProps('gender')
-                },
-                {
-                    title: 'Civil Status',
-                    dataIndex: 'civil_status',
-                    key: 'civil_status',
-                    ...this.getColumnSearchProps('civil_status')
-                },
-                {
-                    title: 'Contact Number',
-                    dataIndex: 'contact_number',
-                    key: 'contact_number',
-                    ...this.getColumnSearchProps('contact_number')
-                },
-                {
-                    title: 'Beneficiary Name',
-                    dataIndex: 'benificiary_name',
-                    key: 'benificiary_name',
-                    ...this.getColumnSearchProps('benificiary_name')
-                },
-                {
-                    title: 'ID Type',
-                    dataIndex: 'id_type',
-                    key: 'id_type',
-                    ...this.getColumnSearchProps('id_type')
-                },
-                {
-                    title: 'ID Number',
-                    dataIndex: 'id_number',
-                    key: 'id_number',
-                    ...this.getColumnSearchProps('id_number')
-                },
-                {
-                    title: 'Sitio',
-                    dataIndex: 'sitio',
-                    key: 'sitio',
-                    ...this.getColumnSearchProps('sitio')
-                },
-                {
-                    title: 'Address',
-                    dataIndex: 'address',
-                    key: 'address',
-                    ...this.getColumnSearchProps('address')
-                },
-                {
-                    title: 'Given by Captain',
-                    dataIndex: 'given_by_captain',
-                    key: 'given_by_captain',
-                    ...this.getColumnSearchProps('given_by_captain')
-                },
-            ],
+            columns: [],
         };
     },
     mounted() {
         this.fetchData();
+        this.fetchActiveHeaders().then(keys => {
+            this.columns = keys.map(key => ({
+                title: key.charAt(0).toUpperCase() + key.slice(1),
+                dataIndex: key,
+                key: key,
+                ...this.getColumnSearchProps(key)
+            }));
+        });
     },
     methods: {
         async fetchData() {
@@ -160,6 +84,20 @@ export default defineComponent({
                 this.yearsData = response.data;
             } catch (error) {
                 console.error("Error fetching data:", error);
+            }
+        },
+        async fetchActiveHeaders() {
+            try {
+                const response = await axios.get('/api/dole/get-active-header');
+                if (response.status === 200) {
+                    return response.data.headers.map(item => item.key);
+                } else {
+                    throw new Error('Failed to fetch active headers');
+                }
+            } catch (error) {
+                console.error('Error fetching active headers:', error);
+                toastr.error('Failed to fetch active headers');
+                return [];
             }
         },
         handleSearch(selectedKeys, confirm, dataIndex) {
@@ -187,8 +125,7 @@ export default defineComponent({
             } else {
                 return h(
                     'span',
-                    this.searchedColumn === dataIndex && this.searchText ?
-                    [
+                    this.searchedColumn === dataIndex && this.searchText ? [
                         h('span', {
                             style: {
                                 backgroundColor: '#ffc069',
@@ -288,7 +225,6 @@ export default defineComponent({
     width: 100%;
 }
 
-/* Hide the arrow icon */
 .ant-collapse-arrow {
     display: none;
 }

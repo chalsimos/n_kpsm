@@ -2,17 +2,17 @@
     <div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                     <apexchart type="bar" :options="hospital_options" :series="hospital_count"></apexchart>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                     <apexchart type="bar" :options="hospital_offer" :series="offer_count"></apexchart>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                     <apexchart type="bar" :options="barangay_per_municipality" :series="municipality_count"></apexchart>
                 </div>
             </div>
@@ -20,38 +20,38 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                     <apexchart type="pie" :options="genderOptions" :series="genderSeries"></apexchart>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
@@ -61,22 +61,22 @@
         </div>
         <div class="grid grid-cols-2 gap-4">
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-20 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
 
                 </div>
             </div>
@@ -317,7 +317,7 @@ export default {
                         customScale: 1,
                         offsetY: 10,
                         dataLabels: {
-                            offset: -20,
+                            offset: -10,
                         }
                     }
                 },
@@ -354,133 +354,6 @@ export default {
                 },
             },
             genderSeries: [],
-            EducationaldetailedMunicipalityData: {},
-            genderEducationalOptions: {
-                chart: {
-                    type: 'pie',
-                    height: '100%',
-                    width: '100%',
-                    toolbar: {
-                        show: true
-                    },
-                    id: 'genderEducationalOptions'
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: (val, opts) => {
-                        const seriesIndex = opts.seriesIndex;
-                        const EducationaldetailedMunicipalityData = this.EducationaldetailedMunicipalityData;
-                        const seriesLabel = opts.w.config.labels && opts.w.config.labels[seriesIndex];
-                        if (seriesLabel && EducationaldetailedMunicipalityData && EducationaldetailedMunicipalityData[seriesLabel]) {
-                            const count = EducationaldetailedMunicipalityData[seriesLabel].count;
-                            const totalCount = Object.values(EducationaldetailedMunicipalityData).reduce((acc, data) => acc + data.count, 0);
-                            const percentage = (count / totalCount) * 100;
-                            return seriesLabel + ": " + percentage.toFixed(2) + "%";
-                        } else {
-                            return "";
-                        }
-                    },
-                    textAnchor: 'middle',
-                    offsetX: 0,
-                    offsetY: 0,
-                    style: {
-                        fontSize: '15px',
-                        fontFamily: 'Helvetica, Arial, sans-serif',
-                        colors: ["#ffffff"]
-                    },
-                },
-                plotOptions: {
-                    pie: {
-                        customScale: 1,
-                        offsetY: 20,
-                        dataLabels: {
-                            offset: -20,
-                        }
-                    }
-                },
-                labels: [],
-                title: {
-                    text: 'Educational Assistance Gender per Municipality',
-                    align: 'left',
-                },
-                tooltip: {
-                    custom: ({
-                        series,
-                        seriesIndex,
-                        dataPointIndex,
-                        w
-                    }) => {
-                        const EducationaldetailedMunicipalityData = this.EducationaldetailedMunicipalityData;
-                        if (!EducationaldetailedMunicipalityData) {
-                            return '';
-                        }
-                        const gender = w.config.labels[seriesIndex];
-                        const genderData = EducationaldetailedMunicipalityData[gender];
-                        let tooltipContent = `<div class="p-4 bg-orange-300">`;
-                        tooltipContent += `<div class="font-bold text-lg mb-2">${gender}</div>`;
-                        if (genderData && genderData.municipality) {
-                            Object.entries(genderData.municipality).forEach(([municipality, count]) => {
-                                tooltipContent += `<div>${municipality}: ${count}</div>`;
-                            });
-                        } else {
-                            tooltipContent += `<div>Municipality data unavailable</div>`;
-                        }
-                        tooltipContent += `</div>`;
-                        return tooltipContent;
-                    }
-                },
-            },
-            genderEducationalSeries: [],
-            Educationalbarangay_per_municipality: {
-                chart: {
-                    type: 'bar',
-                    height: '100%',
-                    width: '100%',
-                    toolbar: {
-                        show: true
-                    },
-                    id: 'Educationalbarangay_per_municipality'
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: true,
-                    },
-                },
-                dataLabels: {
-                    enabled: false,
-                },
-                xaxis: {
-                    categories: [],
-                },
-                title: {
-                    text: 'Educational Assistance per Municipality and Barangay',
-                    align: 'left',
-                },
-                tooltip: {
-                    custom: ({
-                        series,
-                        seriesIndex,
-                        dataPointIndex,
-                        w
-                    }) => {
-                        const municipalityData = this.Educationalmunicipality_count[dataPointIndex];
-                        if (!municipalityData || !municipalityData.barangays || municipalityData.barangays.length === 0) {
-                            return '';
-                        }
-                        const municipality = municipalityData.municipality;
-                        const barangays = municipalityData.barangays;
-                        let tooltipContent = `<div class="font-bold text-lg mb-2">Barangay in ${municipality}</div>`;
-                        barangays.forEach(({
-                            barangay,
-                            count
-                        }) => {
-                            tooltipContent += `<div>${barangay}: ${count}</div>`;
-                        });
-                        return `<div class="p-4 bg-orange-300">${tooltipContent}</div>`;
-                    },
-                },
-            },
-            Educationalmunicipality_count: [],
         };
     },
     mounted() {

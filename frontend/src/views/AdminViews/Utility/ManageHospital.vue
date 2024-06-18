@@ -101,6 +101,14 @@
                         <option v-for="barangay in barangays" :value="barangay.brgy_code" :key="barangay.brgy_code">{{ barangay.brgy_name }}</option>
                     </select>
                 </div>
+                <div class="mb-5">
+                        <label for="assist_by_staff_from" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Assist by Staff From</label>
+                        <select v-model="assist_by_staff_from " id="assist_by_staff_from" class="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 w-full font-small rounded-lg text-sm py-2.5 text-center inline-flex items-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                            <option value="" disabled selected>Assist by Staff From</option>
+                            <option value="1st">1st District</option>
+                            <option value="2nd">2nd District</option>
+                        </select>
+                    </div>
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button data-modal-hide="AddHospital" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Logo</button>
                 </div>
@@ -152,6 +160,7 @@ export default {
             hospital_acronym: '',
             municipality: '',
             barangay: '',
+            assist_by_staff_from: '',
         };
     },
     components: {
@@ -177,6 +186,7 @@ export default {
             formData.append('province', this.province);
             formData.append('municipality', this.selectedMunicipality);
             formData.append('barangay', this.selectedBarangay);
+            formData.append('assist_by_staff_from', this.assist_by_staff_from);
             axios.post('/api/utility/save-hospital', formData, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -189,6 +199,7 @@ export default {
                     this.municipality = '';
                     this.selectedMunicipality = '';
                     this.selectedBarangay = '';
+                    this.assist_by_staff_from = '';
                     toastr.success('Medical Request Successfully Sent');
                     this.fetchData();
                 })
