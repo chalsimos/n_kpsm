@@ -40,4 +40,9 @@ class MedicalRequest extends Model
     {
         return $this->belongsTo(BudgetAllocation::class, 'hospital', 'budget_to_hospital');
     }
+    public function hospital()
+    {
+        return $this->belongsTo(Hospital::class, 'hospital', 'hospital_acronym');
+    }
+
 }

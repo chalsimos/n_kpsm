@@ -62,8 +62,8 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/gender-educational-requests', [AdminDashboardController::class, 'getGenderEducationalRequest']);
         Route::get('/medical-requests-data', [AdminDashboardController::class, 'getMedicalRequestsData']);
         Route::get('/educational-requests-data', [AdminDashboardController::class, 'getEducationalRequestsData']);
+        Route::get('/getData', [AdminDashboardController::class, 'getData']);
     });
-    Route::get('/getData', [AdminDashboardController::class, 'getData']);
 
 });
 
