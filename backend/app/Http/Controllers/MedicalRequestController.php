@@ -147,15 +147,21 @@ class MedicalRequestController extends Controller
         }
     }
 
-
     public function GenerateApprove(Request $request)
     {
         try {
             $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if (!$startDate || !$endDate) {
+                $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+                $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+            }
             if ($user->type == 'superadmin') {
                 $medicalRequests = DB::table('medical_requests')
                     ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
                     ->where('medical_requests.status', 'approve')
+                    ->whereBetween('medical_requests.created_at', [$startDate, $endDate])
                     ->select('medical_requests.*', 'hospitals.hospital_acronym')
                     ->get()
                     ->groupBy('hospital_acronym');
@@ -164,6 +170,7 @@ class MedicalRequestController extends Controller
                 $medicalRequests = DB::table('medical_requests')
                     ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
                     ->where('medical_requests.status', 'approve')
+                    ->whereBetween('medical_requests.created_at', [$startDate, $endDate])
                     ->where(function ($query) use ($district) {
                         if ($district == '1st') {
                             $query->where('hospitals.assist_by_staff_from', '1st');
@@ -180,6 +187,8 @@ class MedicalRequestController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+
 
     private function validateAdminAndSuperAdmin(Request $request)
     {
