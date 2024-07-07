@@ -477,7 +477,6 @@ export default {
                         }
                     })
                     .then(response => {
-                        console.log('ApproveForGenerate', response.data)
                         this.ApproveForGenerate = response.data;
                         resolve();
                     })
@@ -500,7 +499,6 @@ export default {
             this.fetchApprovedEducationalAssistance(startDate, endDate);
         },
         async generateExcelFiles() {
-            console.log('Generating Excel with data:', this.ApproveForGenerate);
             if (!Array.isArray(this.ApproveForGenerate) || this.ApproveForGenerate.length === 0) {
                 toastr.error('No data available to generate Excel file.');
                 return;
@@ -755,11 +753,11 @@ export default {
                     const latestYear = latestDate.getFullYear();
                     let filename;
                     if (earliestMonth === latestMonth && earliestYear === latestYear) {
-                        filename = `MAIP month of ${earliestMonth} ${earliestYear}.xlsx`;
+                        filename = `Educational Assistance month of ${earliestMonth} ${earliestYear}.xlsx`;
                     } else if (earliestYear === latestYear) {
-                        filename = `MAIP month of ${earliestMonth}-${latestMonth} ${earliestYear}.xlsx`;
+                        filename = `Educational Assistance month of ${earliestMonth}-${latestMonth} ${earliestYear}.xlsx`;
                     } else {
-                        filename = `MAIP month of ${earliestMonth} ${earliestYear} - ${latestMonth} ${latestYear}.xlsx`;
+                        filename = `Educational Assistance month of ${earliestMonth} ${earliestYear} - ${latestMonth} ${latestYear}.xlsx`;
                     }
                     const a = document.createElement('a');
                     a.href = url;
