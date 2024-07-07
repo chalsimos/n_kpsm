@@ -24,7 +24,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_approved_scholarship_request(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'approved')->where('educational_assistance_type', 'educational_assistance')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'approved')
+                ->where('educational_assistance_type', 'educational_assistance');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -36,11 +46,22 @@ class EducationalAssistanceController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     public function get_all_decline_scholarship_request(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'decline')->where('educational_assistance_type', 'educational_assistance')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'decline')
+                ->where('educational_assistance_type', 'educational_assistance');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -52,11 +73,20 @@ class EducationalAssistanceController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
     public function get_all_pending_scholarship_request(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'pending')->where('educational_assistance_type', 'educational_assistance')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'pending')
+                ->where('educational_assistance_type', 'educational_assistance');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -72,7 +102,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_approved_scholarship_request_tulong_dunong(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'approved')->where('educational_assistance_type', 'tulong_dunong')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'approved')
+                ->where('educational_assistance_type', 'tulong_dunong');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -88,7 +128,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_decline_scholarship_request_tulong_dunong(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'decline')->where('educational_assistance_type', 'tulong_dunong')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'decline')
+                ->where('educational_assistance_type', 'tulong_dunong');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -104,7 +154,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_pending_scholarship_request_tulong_dunong(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'pending')->where('educational_assistance_type', 'tulong_dunong')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'pending')
+                ->where('educational_assistance_type', 'tulong_dunong');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -120,7 +180,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_approved_scholarship_request_smart_grant(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'approved')->where('educational_assistance_type', 'smart_grant')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'approved')
+                ->where('educational_assistance_type', 'smart_grant');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -136,7 +206,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_decline_scholarship_request_smart_grant(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'decline')->where('educational_assistance_type', 'smart_grant')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'decline')
+                ->where('educational_assistance_type', 'smart_grant');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -152,7 +232,17 @@ class EducationalAssistanceController extends Controller
     public function get_all_pending_scholarship_request_smart_grant(Request $request)
     {
         try {
-            $educationalAssistances = EducationalAssistance::where('status', 'pending')->where('educational_assistance_type', 'smart_grant')->get();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = EducationalAssistance::where('status', 'pending')
+                ->where('educational_assistance_type', 'smart_grant');
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('created_at', date('Y'))
+                    ->whereMonth('created_at', date('m'));
+            }
+            $educationalAssistances = $query->get();
             $educationalAssistanceAmounts = EducationalAssistanceAmount::where('status', 'active')->first();
             foreach ($educationalAssistances as $assistance) {
                 $preprocessedSchoolLevel = str_replace(' ', '_', strtolower($assistance->school_level)) . '_amount';
@@ -164,7 +254,6 @@ class EducationalAssistanceController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
     public function decline_educational_assistance(Request $request, $id)
     {
@@ -183,7 +272,7 @@ class EducationalAssistanceController extends Controller
                     'decline' => $validatedData['decline_reason'],
                 ];
                 Mail::to($studentEmail)->send(new EducationalAssistanceDecline($info['firstname'], $info['decline']));
-            return response()->json($educationalRequest, 200);
+                return response()->json($educationalRequest, 200);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -762,11 +851,11 @@ class EducationalAssistanceController extends Controller
     }
     public function index(Request $request)
     {
-        try{
+        try {
             $amount = EducationalAssistanceAmount::all();
 
             return response()->json($amount, 200);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

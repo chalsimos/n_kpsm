@@ -392,7 +392,7 @@ export default {
                         }
                     })
                     .then(response => {
-                        this.approveForGenerate = response.data;
+                        this.ApproveForGenerate = response.data;
                         resolve();
                     })
                     .catch(error => {
@@ -402,11 +402,11 @@ export default {
             });
         },
         async generateExcelFiles() {
-            if (!this.approveForGenerate || Object.keys(this.approveForGenerate).length === 0 || !Object.values(this.approveForGenerate).some(arr => arr.length > 0)) {
+            if (!this.ApproveForGenerate || Object.keys(this.ApproveForGenerate).length === 0 || !Object.values(this.ApproveForGenerate).some(arr => arr.length > 0)) {
                 toastr.error('No data available to generate Excel file.');
                 return;
             }
-            const data = this.approveForGenerate;
+            const data = this.ApproveForGenerate;
             const workbook = new ExcelJS.Workbook();
             let earliestDate = new Date();
             let latestDate = new Date(0);
