@@ -1053,6 +1053,9 @@ export default {
             return this.checkedIdsForDecline.length === this.Declineitems.length && this.checkedIdsForDecline.length > 0;
         },
     },
+    created() {
+        this.handleMonthChange();
+    }
 };
 </script>
 
