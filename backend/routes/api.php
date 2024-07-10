@@ -166,7 +166,6 @@ Route::prefix('dole')->group(function () {
         Route::get('/get-invites-per-captain', [DoleController::class, 'getTupadsPerCaptain']);
         Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
         Route::get('/get-file-path/{id}', [DoleController::class, 'getImagePaths']);
-        Route::get('/all-captain-slot/{id}', [DoleController::class, 'allCaptain_tupadSlot']);
         Route::get('/get-excel-path/{id}', [DoleController::class, 'getExcelData']);
     });
     //captain

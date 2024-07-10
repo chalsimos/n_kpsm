@@ -3,7 +3,10 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <a-button class="text-white" type="primary" @click="generateExcelFiles">Generate Tupad Excel</a-button>
+            <div class="flex items-center justify-between mb-4">
+                <a-button class="text-white bg-blue-500 hover:bg-blue-600" type="primary" @click="generateExcelFiles">Generate Tupad Excel</a-button>
+                <a-range-picker class="w-64" v-model="monthYearRange" format="MM/YYYY" picker="month" @change="handleRangeMonthChange" />
+            </div>
             <a-tabs default-active-key="1" @change="handleTabChange">
                 <a-tab-pane key="1" tab="Captain List">
                     <v-card flat>
@@ -290,12 +293,14 @@ import {
 export default {
     data() {
         return {
+            monthYearRange: [],
+            ApproveForGenerate: [],
             captain_search: '',
             captain_slotSearch: '',
             tupad_memberSearch: '',
             month_year_available: '',
             slot_get: '',
-            tupadRequest: [],
+            tupadRequest: [],   
             tupad_member: [],
             dynamicHeaders: [],
             checkedIdsForApproved: [],
@@ -326,6 +331,8 @@ export default {
         initFlowbite();
         this.fetchCaptainList();
         this.fetchTupadMember();
+        this.fetchSlotlist();
+        this.fetchApproveForGenerate();
         try {
             this.dynamicHeaders = await this.fetchActiveHeaders();
         } catch (error) {
@@ -333,6 +340,39 @@ export default {
         }
     },
     methods: {
+        fetchApproveForGenerate(startDate, endDate) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/dole/get-invites-per-captain', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        this.ApproveForGenerate = response.data;
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching approved educational assistance:', error);
+                        reject(error);
+                    });
+            });
+        },
+        handleRangeMonthChange(dates, dateStrings) {
+        if (dates && dates.length === 2) {
+            this.startDate = dates[0].startOf('month').format('YYYY-MM-DD');
+            this.endDate = dates[1].endOf('month').format('YYYY-MM-DD');
+        } else {
+            this.startDate = null;
+            this.endDate = null;
+        }
+        this.fetchApproveForGenerate(this.startDate, this.endDate);
+        this.fetchSlotlist(this.startDate, this.endDate);
+        this.fetchTupadMember(this.startDate, this.endDate);
+    },
         viewExcel(itemId) {
             axios.get(`/api/dole/get-excel-path/${itemId}`, {
                     headers: {
@@ -648,8 +688,27 @@ export default {
                 return [];
             }
         },
-        fetchSlotlist(itemId) {
+        checkSlot(itemId) {
+            this.itemId = itemId; 
+            this.fetchSlotlist(itemId, this.startDate, this.endDate);
+            const modal = document.getElementById('checkSlot');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // Add event listener to close modal on close button click
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="checkSlot"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            }); 
+        
+        },
+        fetchSlotlist(itemId, startDate, endDate) {
             axios.get(`/api/dole/all-captain-slot/${itemId}`, {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -697,8 +756,13 @@ export default {
             this.previewedImage.url = '';
         },
         handleTabChange(key) {},
-        fetchTupadMember() {
+
+        fetchTupadMember(startDate, endDate) {
             axios.get('/api/dole/getAll-captains-tupad-invites', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -797,21 +861,6 @@ export default {
                     console.error('Error fetching medical requests:', error);
                 });
         },
-        checkSlot(itemId) {
-            this.itemId = itemId;
-            this.fetchSlotlist(itemId);
-            const modal = document.getElementById('checkSlot');
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden', 'false');
-            // Add event listener to close modal on close button click
-            modal.addEventListener('click', function (e) {
-                if (e.target && e.target.closest('[data-modal-hide="checkSlot"]')) {
-                    modal.classList.add('hidden');
-                    modal.setAttribute('aria-hidden', 'true');
-                }
-            });
-            this.fetchSlotlist(itemId);
-        },
         formatDateToWords(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
@@ -849,38 +898,28 @@ export default {
             isCheckedAllForApproved() {
                 return this.checkedIdsForApproved.length === this.items.length && this.checkedIdsForApproved.length > 0;
             },
+        },
+        created() {
+            this.handleMonthChange();
         }
     }
 };
 </script>
-
 <style scoped>
-/* Add scoped styles for modal */
 #excel-modal {
     background-color: rgba(0, 0, 0, 0.5);
-    /* Semi-transparent background */
 }
-
-/* Center modal content */
 #excel-modal>.max-w-2xl {
     width: 100%;
-    /* Full width on small screens */
     max-width: 100%;
-    /* Full width on large screens */
 }
-
-/* Style table cells */
 #excel-modal td,
 #excel-modal th {
     min-width: 100px;
-    /* Minimum width for cells */
 }
-
-/* Responsive styles for modal */
 @media (max-width: 768px) {
     #excel-modal>.max-w-2xl {
         max-width: 95%;
-        /* Reduce width on smaller screens */
     }
 }
 </style>

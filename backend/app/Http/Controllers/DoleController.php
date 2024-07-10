@@ -23,7 +23,6 @@ class DoleController extends Controller
     {
         $user = $this->validateCaptain($request);
         $activeHeaders = DB::table('tupad_excel_headers')->select('header', 'key')->where('status', 'active')->get();
-
         $validationRules = [];
         foreach ($activeHeaders as $header) {
             $validationRules[$header->key] = 'required';
@@ -54,7 +53,6 @@ class DoleController extends Controller
             $slot->slot_left = 0;
             $slot->status = "Data Save by Captain";
             $slot->save();
-
             $data->save();
             DB::commit();
             return response()->json(['message' => 'Tupad saved successfully'], 201);
@@ -101,7 +99,6 @@ class DoleController extends Controller
             'images_path' => $imagesPathString,
             'status' => 'active',
         ]);
-
         return response()->json(['success' => true, 'data' => $form], 201);
     }
     public function getImagePaths(Request $request, $id)
@@ -184,13 +181,21 @@ class DoleController extends Controller
     public function getAll_captains_tupad_invites(Request $request)
     {
         try {
-            $tupads = Tupad::leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = Tupad::leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
                 ->select(
                     'tupads.*',
                     DB::raw("CONCAT(users.firstname, ' ', users.middlename, ' ', users.lastname) as captain_name"),
                     DB::raw("CONCAT(users.province, ', ', users.municipality, ', ', users.barangay) as captain_address")
-                )
-                ->get();
+                );
+            if ($startDate && $endDate) {
+                $query->whereBetween('tupads.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('tupads.created_at', date('Y'))
+                    ->whereMonth('tupads.created_at', date('m'));
+            }
+            $tupads = $query->get();
             return response()->json([
                 'data' => $tupads,
                 'message' => 'Get all captain tupads invites successfully'
@@ -199,6 +204,7 @@ class DoleController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     public function getTupadsPerCaptain(Request $request)
     {
@@ -505,10 +511,13 @@ class DoleController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
     public function allCaptain_tupadSlot(Request $request, $id)
     {
         try {
-            $captain_slots = TupadSlot::where('captain_id', $id)
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = TupadSlot::where('captain_id', $id)
                 ->leftJoin('captain_tupad_excel_forms', 'tupad_slots.id', '=', 'captain_tupad_excel_forms.tupad_slot_id')
                 ->leftJoin('users', 'users.id', '=', 'tupad_slots.captain_id')
                 ->select(
@@ -529,12 +538,14 @@ class DoleController extends Controller
                     'captain_tupad_excel_forms.status'
                 )
                 ->distinct()
-                ->orderBy('tupad_slots.id')
-                ->get();
-
-            // Remove any duplicate slot entries
-            $captain_slots = $captain_slots->unique('slot_id')->values();
-
+                ->orderBy('tupad_slots.id');
+            if ($startDate && $endDate) {
+                $query->whereBetween('tupad_slots.date_obtained', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('tupad_slots.date_obtained', date('Y'))
+                    ->whereMonth('tupad_slots.date_obtained', date('m'));
+            }
+            $captain_slots = $query->get()->unique('slot_id')->values();
             return response()->json($captain_slots, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
