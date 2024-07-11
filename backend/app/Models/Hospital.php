@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Hospital extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-      public function hospitalRequests()
+
+    public function hospitalRequests()
     {
         return $this->hasMany(HospitalRequest::class, 'hospital_id', 'id');
     }

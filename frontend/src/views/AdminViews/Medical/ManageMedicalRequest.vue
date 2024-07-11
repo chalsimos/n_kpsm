@@ -3,7 +3,10 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <a-button class="text-white" type="primary" @click="generateExcelFiles">Generate Approve Excel</a-button>
+            <div class="flex items-center justify-between mb-4">
+                <a-button class="text-white bg-blue-500 hover:bg-blue-600" type="primary" @click="generateExcelFiles">Generate Approve Excel</a-button>
+                <a-range-picker class="w-64" v-model="monthYearRange" format="MM/YYYY" picker="month" @change="handleMonthChange" />
+            </div>
             <a-tabs default-active-key="1" @change="handleTabChange">
                 <a-tab-pane key="1" tab="Pending List">
                     <v-card flat>
@@ -331,9 +334,11 @@ import {
     useToast
 } from 'vue-toastification'
 const toastr = useToast()
+import moment from 'moment';
 export default {
     data() {
         return {
+            monthYearRange: [],
             imagePath: '',
             search: '',
             Declinesearch: '',
@@ -342,6 +347,7 @@ export default {
             medicalRequest: [],
             Approveitems: [],
             Declineitems: [],
+            ApproveForGenerate: [],
             contentStyle: {
                 margin: 0,
                 height: '160px',
@@ -371,229 +377,153 @@ export default {
         this.fetchMedicalRequests();
         this.fetchDeclineMedicalRequests();
         this.fetchApproveMedicalRequests();
+        this.fetchApproveForGenerate();
     },
     methods: {
-        fetchDeclineMedicalRequests() {
-            axios.get('/api/medical-requests/get-all-decline', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.Declineitems = Array.isArray(response.data) ? response.data : [];
-                })
-                .catch(error => {
-                    console.error('Error fetching medical requests:', error);
-                });
+        fetchApproveForGenerate(startDate, endDate) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/medical-requests/generate-all-approve', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        this.ApproveForGenerate = response.data;
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching approved medical requests:', error);
+                        reject(error);
+                    });
+            });
         },
-        fetchApproveMedicalRequests() {
-            axios.get('/api/medical-requests/get-all-approve', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.Approveitems = Array.isArray(response.data) ? response.data : [];
-                })
-                .catch(error => {
-                    console.error('Error fetching medical requests:', error);
-                });
-        },
-        generateExcelFiles() {
-            axios.get('/api/medical-requests/generate-all-approve', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    const data = response.data;
-                    const workbook = new ExcelJS.Workbook();
-                    let earliestDate = new Date();
-                    const customSort = (a, b) => {
-                        const aParts = a.Hor_code.split('-');
-                        const bParts = b.Hor_code.split('-');
-                        const aNumeric = parseInt(aParts[3]);
-                        const bNumeric = parseInt(bParts[3]);
-                        return aNumeric - bNumeric;
+        async generateExcelFiles() {
+            if (!this.ApproveForGenerate || Object.keys(this.ApproveForGenerate).length === 0 || !Object.values(this.ApproveForGenerate).some(arr => arr.length > 0)) {
+                toastr.error('No data available to generate Excel file.');
+                return;
+            }
+            const data = this.ApproveForGenerate;
+            const workbook = new ExcelJS.Workbook();
+            let earliestDate = new Date();
+            let latestDate = new Date(0);
+            const customSort = (a, b) => {
+                const aParts = a.Hor_code.split('-');
+                const bParts = b.Hor_code.split('-');
+                const aNumeric = parseInt(aParts[3]);
+                const bNumeric = parseInt(bParts[3]);
+                return aNumeric - bNumeric;
+            };
+            Object.entries(data).forEach(([hospitalName, hospitalData]) => {
+                hospitalData.sort(customSort);
+                const worksheet = workbook.addWorksheet(hospitalName);
+                const medicalAssistanceHeaderRow = worksheet.addRow(['MEDICAL ASSISTANCE']);
+                medicalAssistanceHeaderRow.eachCell(cell => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: '808080'
+                        }
                     };
-                    Object.entries(data).forEach(([hospitalName, hospitalData]) => {
-                        hospitalData.sort(customSort);
-                        const worksheet = workbook.addWorksheet(hospitalName);
-                        const medicalAssistanceHeaderRow = worksheet.addRow(['MEDICAL ASSISTANCE']);
-                        medicalAssistanceHeaderRow.eachCell(cell => {
-                            cell.fill = {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: '808080'
-                                }
-                            };
-                            cell.alignment = {
-                                vertical: 'middle',
-                                horizontal: 'center'
-                            };
-                        });
-                        worksheet.mergeCells('A1:T1');
-                        const addressHeaderRow = worksheet.getRow(2);
-                        addressHeaderRow.getCell('O').value = 'ADDRESS';
-                        addressHeaderRow.eachCell(cell => {
-                            cell.fill = {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: 'FFFF00'
-                                }
-                            };
-                            cell.alignment = {
-                                vertical: 'middle',
-                                horizontal: 'center'
-                            };
-                        });
-                        worksheet.mergeCells('O2:R2');
-                        const columnHeaderRow = worksheet.addRow([
-                            'HOR CODE', 'DATE RECEIVED', 'REQUEST DATE TO DOH', 'GL RELEASE DATE',
-                            'STATUS', 'REPRESENTATIVE', 'CONTACT NO.', 'SURNAME', 'FIRST NAME',
-                            'MIDDLE NAME', 'DIAGNOSIS', 'HOSPITAL', 'BIRTHDATE', 'AGE',
-                            'STREET', 'BRGY.', 'TOWN', 'PROVINCE', 'TYPE OF REQUEST', 'AMOUNT'
-                        ]);
-                        columnHeaderRow.eachCell(cell => {
-                            cell.fill = {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: 'FFFF00'
-                                }
-                            };
-                            cell.alignment = {
-                                vertical: 'middle',
-                                horizontal: 'center',
-                                wrapText: true
-                            };
-                            cell.height = 60;
-                            cell.font = {
-                                bold: true
-                            };
-                        });
-                        worksheet.columns = [{
-                                width: 25
-                            }, {
-                                width: 18
-                            }, {
-                                width: 10
-                            }, {
-                                width: 18
-                            },
-                            {
-                                width: 18
-                            }, {
-                                width: 45
-                            }, {
-                                width: 40
-                            }, {
-                                width: 25
-                            },
-                            {
-                                width: 30
-                            }, {
-                                width: 25
-                            }, {
-                                width: 40
-                            }, {
-                                width: 15
-                            },
-                            {
-                                width: 20
-                            }, {
-                                width: 10
-                            }, {
-                                width: 13
-                            }, {
-                                width: 20
-                            },
-                            {
-                                width: 20
-                            }, {
-                                width: 25
-                            }, {
-                                width: 25
-                            }, {
-                                width: 25
-                            }, {
-                                width: 25
-                            }
-                        ];
-                        worksheet.eachRow(row => {
-                            row.eachCell(cell => {
-                                cell.border = {
-                                    top: {
-                                        style: 'thin'
-                                    },
-                                    left: {
-                                        style: 'thin'
-                                    },
-                                    bottom: {
-                                        style: 'thin'
-                                    },
-                                    right: {
-                                        style: 'thin'
-                                    }
-                                };
-                            });
-                        });
-                        let rowIndex = 4;
-                        let totalAmount = 0;
-                        hospitalData.forEach(item => {
-                            const formattedAmount = parseFloat(item.amount).toLocaleString();
-                            const rowData = [
-                                item.Hor_code, item.created_at.split(' ')[0], '', item.created_at.split(' ')[0], '', item.representativefullname,
-                                item.contactnumber, item.lastname, item.firstname, item.middlename,
-                                item.diagnosis, item.hospital, item.birthday, item.age,
-                                '', item.barangay, item.municipality, item.province,
-                                item.request, formattedAmount
-                            ];
-                            const row = worksheet.getRow(rowIndex++);
-                            row.values = rowData;
-                            row.eachCell(cell => {
-                                cell.border = {
-                                    top: {
-                                        style: 'thin'
-                                    },
-                                    left: {
-                                        style: 'thin'
-                                    },
-                                    bottom: {
-                                        style: 'thin'
-                                    },
-                                    right: {
-                                        style: 'thin'
-                                    }
-                                };
-                                cell.alignment = {
-                                    vertical: 'middle',
-                                    horizontal: 'center'
-                                };
-                            });
-                            row.height = 20;
-                            totalAmount += Number(item.amount);
-                            const earliestItemDate = new Date(hospitalData[0].created_at);
-                            if (earliestItemDate < earliestDate) {
-                                earliestDate = earliestItemDate;
-                            }
-                        });
-                        const formattedTotalAmount = totalAmount.toLocaleString();
-                        const totalAmountRow = worksheet.getRow(rowIndex);
-                        totalAmountRow.getCell('T').value = `Total Amount: ${formattedTotalAmount}`;
-                        totalAmountRow.getCell('T').font = {
-                            bold: true
-                        };
-                        totalAmountRow.getCell('T').fill = {
-                            type: 'pattern',
-                            pattern: 'solid',
-                            fgColor: {
-                                argb: 'FFFF00'
-                            }
-                        };
-                        totalAmountRow.getCell('T').border = {
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                });
+                worksheet.mergeCells('A1:T1');
+                const addressHeaderRow = worksheet.getRow(2);
+                addressHeaderRow.getCell('O').value = 'ADDRESS';
+                addressHeaderRow.eachCell(cell => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFF00'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                });
+                worksheet.mergeCells('O2:R2');
+                const columnHeaderRow = worksheet.addRow([
+                    'HOR CODE', 'DATE RECEIVED', 'REQUEST DATE TO DOH', 'GL RELEASE DATE',
+                    'STATUS', 'REPRESENTATIVE', 'CONTACT NO.', 'SURNAME', 'FIRST NAME',
+                    'MIDDLE NAME', 'DIAGNOSIS', 'HOSPITAL', 'BIRTHDATE', 'AGE',
+                    'STREET', 'BRGY.', 'TOWN', 'PROVINCE', 'TYPE OF REQUEST', 'AMOUNT'
+                ]);
+                columnHeaderRow.eachCell(cell => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFF00'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                        wrapText: true
+                    };
+                    cell.height = 60;
+                    cell.font = {
+                        bold: true
+                    };
+                });
+                worksheet.columns = [{
+                        width: 25
+                    }, {
+                        width: 18
+                    }, {
+                        width: 10
+                    }, {
+                        width: 18
+                    },
+                    {
+                        width: 18
+                    }, {
+                        width: 45
+                    }, {
+                        width: 40
+                    }, {
+                        width: 25
+                    },
+                    {
+                        width: 30
+                    }, {
+                        width: 25
+                    }, {
+                        width: 40
+                    }, {
+                        width: 15
+                    },
+                    {
+                        width: 20
+                    }, {
+                        width: 10
+                    }, {
+                        width: 13
+                    }, {
+                        width: 20
+                    },
+                    {
+                        width: 20
+                    }, {
+                        width: 25
+                    }, {
+                        width: 25
+                    }, {
+                        width: 25
+                    }
+                ];
+                worksheet.eachRow(row => {
+                    row.eachCell(cell => {
+                        cell.border = {
                             top: {
                                 style: 'thin'
                             },
@@ -608,24 +538,169 @@ export default {
                             }
                         };
                     });
-                    workbook.xlsx.writeBuffer().then((buffer) => {
-                        const blob = new Blob([buffer], {
-                            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                        });
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        const monthName = earliestDate.toLocaleString('en-us', {
-                            month: 'long'
-                        });
-                        const filename = `MAIP month of ${monthName}.xlsx`;
-                        a.download = filename;
-                        a.click();
-                        window.URL.revokeObjectURL(url);
+                });
+                let rowIndex = 4;
+                let totalAmount = 0;
+                hospitalData.forEach(item => {
+                    const formattedAmount = parseFloat(item.amount).toLocaleString();
+                    const rowData = [
+                        item.Hor_code, item.created_at.split(' ')[0], '', item.created_at.split(' ')[0], '', item.representativefullname,
+                        item.contactnumber, item.lastname, item.firstname, item.middlename,
+                        item.diagnosis, item.hospital, item.birthday, item.age,
+                        '', item.barangay, item.municipality, item.province,
+                        item.request, formattedAmount
+                    ];
+                    const row = worksheet.getRow(rowIndex++);
+                    row.values = rowData;
+                    row.eachCell(cell => {
+                        cell.border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                        cell.alignment = {
+                            vertical: 'middle',
+                            horizontal: 'center'
+                        };
                     });
+                    row.height = 20;
+                    totalAmount += Number(item.amount);
+                    const itemDate = new Date(item.created_at);
+                    if (itemDate < earliestDate) {
+                        earliestDate = itemDate;
+                    }
+                    if (itemDate > latestDate) {
+                        latestDate = itemDate;
+                    }
+                });
+                const formattedTotalAmount = totalAmount.toLocaleString();
+                const totalAmountRow = worksheet.getRow(rowIndex);
+                totalAmountRow.getCell('T').value = `Total Amount: ${formattedTotalAmount}`;
+                totalAmountRow.getCell('T').font = {
+                    bold: true
+                };
+                totalAmountRow.getCell('T').fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: {
+                        argb: 'FFFF00'
+                    }
+                };
+                totalAmountRow.getCell('T').border = {
+                    top: {
+                        style: 'thin'
+                    },
+                    left: {
+                        style: 'thin'
+                    },
+                    bottom: {
+                        style: 'thin'
+                    },
+                    right: {
+                        style: 'thin'
+                    }
+                };
+            });
+            workbook.xlsx.writeBuffer().then((buffer) => {
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const url = window.URL.createObjectURL(blob);
+                const earliestMonth = earliestDate.toLocaleString('en-us', {
+                    month: 'long'
+                });
+                const latestMonth = latestDate.toLocaleString('en-us', {
+                    month: 'long'
+                });
+                const earliestYear = earliestDate.getFullYear();
+                const latestYear = latestDate.getFullYear();
+                let filename;
+                if (earliestMonth === latestMonth && earliestYear === latestYear) {
+                    filename = `MAIP month of ${earliestMonth} ${earliestYear}.xlsx`;
+                } else if (earliestYear === latestYear) {
+                    filename = `MAIP month of ${earliestMonth}-${latestMonth} ${earliestYear}.xlsx`;
+                } else {
+                    filename = `MAIP month of ${earliestMonth} ${earliestYear} - ${latestMonth} ${latestYear}.xlsx`;
+                }
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }).catch(error => {
+                console.error('Error generating Excel file:', error);
+            });
+        },
+        handleMonthChange(dates, dateStrings) {
+            let startDate = null;
+            let endDate = null;
+            if (dates && dates.length === 2) {
+                startDate = dates[0].startOf('month').format('YYYY-MM-DD');
+                endDate = dates[1].endOf('month').format('YYYY-MM-DD');
+            }
+            this.fetchApproveForGenerate(startDate, endDate);
+            this.fetchMedicalRequests(startDate, endDate);
+            this.fetchDeclineMedicalRequests(startDate, endDate);
+            this.fetchApproveMedicalRequests(startDate, endDate);
+        },
+        fetchMedicalRequests(startDate, endDate) {
+            axios.get('/api/medical-requests/get-all', {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.items = Array.isArray(response.data) ? response.data : [];
                 })
                 .catch(error => {
                     console.error('Error fetching medical requests:', error);
+                });
+        },
+        fetchDeclineMedicalRequests(startDate, endDate) {
+            axios.get('/api/medical-requests/get-all-decline', {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.Declineitems = Array.isArray(response.data) ? response.data : [];
+                })
+                .catch(error => {
+                    console.error('Error fetching declined medical requests:', error);
+                });
+        },
+        fetchApproveMedicalRequests(startDate, endDate) {
+            axios.get('/api/medical-requests/get-all-approve', {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.Approveitems = Array.isArray(response.data) ? response.data : [];
+                })
+                .catch(error => {
+                    console.error('Error fetching approved medical requests:', error);
                 });
         },
         amountModal(itemId) {
@@ -661,7 +736,7 @@ export default {
                     if (error.response && error.response.data && error.response.data.error) {
                         toastr.error(error.response.data.error);
                     } else {
-                    toastr.error("Please input the amount value.");
+                        toastr.error("Please input the amount value.");
                     }
                     console.error(error.response ? error.response.data : error);
                 });
@@ -678,19 +753,6 @@ export default {
             document.getElementById('preview-modal').classList.add('hidden');
             document.getElementById('RequirementsModal').classList.remove('hidden');
             this.previewedImage.url = '';
-        },
-        fetchMedicalRequests() {
-            axios.get('/api/medical-requests/get-all', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.items = Array.isArray(response.data) ? response.data : [];
-                })
-                .catch(error => {
-                    console.error('Error fetching medical requests:', error);
-                });
         },
         DeclineModal(itemId) {
             this.itemId = itemId;
@@ -751,6 +813,9 @@ export default {
                     console.error('Error fetching medical request data:', error);
                 });
         },
+        created() {
+            this.handleMonthChange();
+        }
     }
 };
 </script>

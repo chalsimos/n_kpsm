@@ -3,7 +3,10 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <a-button class="text-white" type="primary" @click="generateExcel">Generate Approve Excel</a-button>
+            <div class="flex items-center justify-between mb-4">
+                <a-button class="text-white bg-blue-500 hover:bg-blue-600" type="primary" @click="generateExcelFiles">Generate Approve Excel</a-button>
+                <a-range-picker class="w-64" v-model="monthYearRange" format="MM/YYYY" picker="month" @change="handleMonthChange" />
+            </div>
             <a-tabs default-active-key="1" @change="handleTabChange">
                 <a-tab-pane key="1" tab="Pending List">
                     <v-card flat>
@@ -389,6 +392,8 @@ import ExcelJS from 'exceljs';
 export default {
     data() {
         return {
+            monthYearRange: [],
+            ApproveForGenerate: [],
             search: '',
             Approvesearch: '',
             Declinesearch: '',
@@ -430,28 +435,63 @@ export default {
         this.fetchEducationalAssistance();
         this.fetchDeclineEducationalAssistance();
         this.fetchApprovedEducationalAssistance();
+        this.fetchApproveForGenerate();
     },
     methods: {
-        async generateExcel() {
-            try {
-                const response = await axios.get('/api/educational-assistance/get-all-approved_shcolarship-request-smart-grant', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                const data = response.data;
-                const workbook = new ExcelJS.Workbook();
-                const groupedData = {};
-                data.forEach(item => {
-                    const municipality = item.municipality;
-                    if (!groupedData[municipality]) {
-                        groupedData[municipality] = [];
-                    }
-                    groupedData[municipality].push(item);
-                });
-                Object.keys(groupedData).forEach(municipality => {
+        fetchApproveForGenerate(startDate, endDate) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/educational-assistance/get-all-approved_shcolarship-request-smart-grant', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        this.ApproveForGenerate = response.data;
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching approved educational assistance:', error);
+                        reject(error);
+                    });
+            });
+        },
+        handleMonthChange(dates, dateStrings) {
+            let startDate = null;
+            let endDate = null;
+            if (dates && dates.length === 2) {
+                startDate = dates[0].startOf('month').format('YYYY-MM-DD');
+                endDate = dates[1].endOf('month').format('YYYY-MM-DD');
+            }
+            this.fetchApproveForGenerate(startDate, endDate);
+            this.fetchEducationalAssistance(startDate, endDate);
+            this.fetchDeclineEducationalAssistance(startDate, endDate);
+            this.fetchApprovedEducationalAssistance(startDate, endDate);
+        },
+        async generateExcelFiles() {
+            if (!Array.isArray(this.ApproveForGenerate) || this.ApproveForGenerate.length === 0) {
+                toastr.error('No data available to generate Excel file.');
+                return;
+            }
+            const workbook = new ExcelJS.Workbook();
+            const groupedData = {};
+            this.ApproveForGenerate.forEach(item => {
+                const municipality = item.municipality;
+                if (!groupedData[municipality]) {
+                    groupedData[municipality] = [];
+                }
+                groupedData[municipality].push(item);
+            });
+            let earliestDate = new Date();
+            let latestDate = new Date(0);
+            Object.keys(groupedData).forEach(municipality => {
+                const data = groupedData[municipality];
+                if (Array.isArray(data) && data.length > 0) {
                     const worksheet = workbook.addWorksheet(municipality);
-                    worksheet.addRow(['', 'Representative Data', '', '', '', '', 'Beneficiary Data Data', '', '', '', '', '']).font = {
+                    worksheet.addRow(['', 'Representative Data', '', '', '', '', 'Beneficiary Data', '', '', '', '', '']).font = {
                         bold: true
                     };
                     worksheet.addRow(['No.', 'Last Name', 'Middle Name', 'First Name', 'Birthday', 'Age', 'Last Name', 'Middle Name', 'First Name', 'Birthday', 'Age', 'Relationship to Beneficiaries', 'Province', 'Municipality', 'Barangay', 'Sitio', 'College', 'Remarks', 'School', 'Contact Number']).font = {
@@ -487,7 +527,7 @@ export default {
                         };
                         headerCell.font = {
                             bold: true
-                        }
+                        };
                     }
                     for (let col = 7; col <= 11; col++) {
                         const headerCell = worksheet.getCell(1, col);
@@ -500,7 +540,7 @@ export default {
                         };
                         headerCell.font = {
                             bold: true
-                        }
+                        };
                     }
                     for (let col = 1; col <= 6; col++) {
                         worksheet.getCell(2, col).fill = {
@@ -606,8 +646,8 @@ export default {
                             top: null
                         };
                     }
-                    groupedData[municipality].forEach(item => {
-                        worksheet.addRow([
+                    data.forEach((item, index) => {
+                        const row = worksheet.addRow([
                             item.id,
                             item.representative_lastname,
                             item.representative_middlename,
@@ -629,6 +669,31 @@ export default {
                             item.school,
                             item.contact_number
                         ]);
+                        row.eachCell({
+                            includeEmpty: true
+                        }, (cell) => {
+                            cell.border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                        });
+                        const itemDate = new Date(item.created_at);
+                        if (itemDate < earliestDate) {
+                            earliestDate = itemDate;
+                        }
+                        if (itemDate > latestDate) {
+                            latestDate = itemDate;
+                        }
                     });
                     worksheet.columns.forEach(column => {
                         column.width = 28;
@@ -641,22 +706,42 @@ export default {
                             horizontal: 'center'
                         };
                     });
+                } else {
+                    console.error(`Data for municipality '${municipality}' is not an array or is empty:`, data);
+                }
+            });
+            workbook.xlsx.writeBuffer()
+                .then(buffer => {
+                    const blob = new Blob([buffer], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    const earliestMonth = earliestDate.toLocaleString('en-us', {
+                        month: 'long'
+                    });
+                    const latestMonth = latestDate.toLocaleString('en-us', {
+                        month: 'long'
+                    });
+                    const earliestYear = earliestDate.getFullYear();
+                    const latestYear = latestDate.getFullYear();
+                    let filename;
+                    if (earliestMonth === latestMonth && earliestYear === latestYear) {
+                        filename = `Smart Grant month of ${earliestMonth} ${earliestYear}.xlsx`;
+                    } else if (earliestYear === latestYear) {
+                        filename = `Smart Grant month of ${earliestMonth}-${latestMonth} ${earliestYear}.xlsx`;
+                    } else {
+                        filename = `Smart Grant month of ${earliestMonth} ${earliestYear} - ${latestMonth} ${latestYear}.xlsx`;
+                    }
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error generating Excel file:', error);
+                    toastr.error('Error generating Excel file. Please try again.');
                 });
-                const buffer = await workbook.xlsx.writeBuffer();
-                const blob = new Blob([buffer], {
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'smart_grant.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            } catch (error) {
-                console.error('Error generating Excel:', error);
-            }
         },
         RequirementsModal(itemId) {
             axios.get(`/api/educational-assistance/requirements-path/${itemId}`, {
@@ -708,8 +793,12 @@ export default {
                 day: 'numeric'
             });
         },
-        fetchDeclineEducationalAssistance() {
+        fetchDeclineEducationalAssistance(startDate, endDate) {
             axios.get('/api/educational-assistance/get-all-decline_shcolarship-request-smart-grant', {
+                params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -721,8 +810,12 @@ export default {
                     console.error('Error fetching medical requests:', error);
                 });
         },
-        fetchApprovedEducationalAssistance() {
+        fetchApprovedEducationalAssistance(startDate, endDate) {
             axios.get('/api/educational-assistance/get-all-approved_shcolarship-request-smart-grant', {
+                params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -734,8 +827,12 @@ export default {
                     console.error('Error fetching medical requests:', error);
                 });
         },
-        fetchEducationalAssistance() {
+        fetchEducationalAssistance(startDate, endDate) {
             axios.get('/api/educational-assistance/get-all-pending_shcolarship-request-smart-grant', {
+                params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -956,6 +1053,9 @@ export default {
             return this.checkedIdsForDecline.length === this.Declineitems.length && this.checkedIdsForDecline.length > 0;
         },
     },
+    created() {
+        this.handleMonthChange();
+    }
 };
 </script>
 

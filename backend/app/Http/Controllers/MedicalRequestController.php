@@ -12,7 +12,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class MedicalRequestController extends Controller
 {
@@ -46,11 +47,13 @@ class MedicalRequestController extends Controller
     {
         try {
             $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             if ($user->type == 'superadmin') {
-                $medicalRequests = MedicalRequest::where('status', 'pending')->get();
+                $query = MedicalRequest::where('status', 'pending');
             } else {
                 $district = $user->district;
-                $medicalRequests = DB::table('medical_requests')
+                $query = DB::table('medical_requests')
                     ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
                     ->where('medical_requests.status', 'pending')
                     ->where(function ($query) use ($district) {
@@ -60,9 +63,15 @@ class MedicalRequestController extends Controller
                             $query->where('hospitals.assist_by_staff_from', '2nd');
                         }
                     })
-                    ->select('medical_requests.*')
-                    ->get();
+                    ->select('medical_requests.*');
             }
+            if ($startDate && $endDate) {
+                $query->whereBetween('medical_requests.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('medical_requests.created_at', date('Y'))
+                    ->whereMonth('medical_requests.created_at', date('m'));
+            }
+            $medicalRequests = $query->get();
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -73,11 +82,13 @@ class MedicalRequestController extends Controller
     {
         try {
             $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             if ($user->type == 'superadmin') {
-                $medicalRequests = MedicalRequest::where('status', 'approve')->get();
+                $query = MedicalRequest::where('status', 'approve');
             } else {
                 $district = $user->district;
-                $medicalRequests = DB::table('medical_requests')
+                $query = DB::table('medical_requests')
                     ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
                     ->where('medical_requests.status', 'approve')
                     ->where(function ($query) use ($district) {
@@ -87,57 +98,31 @@ class MedicalRequestController extends Controller
                             $query->where('hospitals.assist_by_staff_from', '2nd');
                         }
                     })
-                    ->select('medical_requests.*')
-                    ->get();
+                    ->select('medical_requests.*');
             }
-            return response()->json($medicalRequests, 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-    public function GenerateApprove(Request $request)
-    {
-        try {
-            $user = $this->validateAdminAndSuperAdmin($request);
-            if ($user->type == 'superadmin') {
-                $medicalRequests = DB::table('medical_requests')
-                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
-                    ->where('medical_requests.status', 'approve')
-                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
-                    ->get()
-                    ->groupBy('hospital_acronym');
+            if ($startDate && $endDate) {
+                $query->whereBetween('medical_requests.created_at', [$startDate, $endDate]);
             } else {
-                $district = $user->district;
-                $medicalRequests = DB::table('medical_requests')
-                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
-                    ->where('medical_requests.status', 'approve')
-                    ->where(function ($query) use ($district) {
-                        if ($district == '1st') {
-                            $query->where('hospitals.assist_by_staff_from', '1st');
-                        } else if ($district == '2nd') {
-                            $query->where('hospitals.assist_by_staff_from', '2nd');
-                        }
-                    })
-                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
-                    ->get()
-                    ->groupBy('hospital_acronym');
+                $query->whereYear('medical_requests.created_at', date('Y'))
+                    ->whereMonth('medical_requests.created_at', date('m'));
             }
+            $medicalRequests = $query->get();
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-
     public function Declineindex(Request $request)
     {
         try {
             $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             if ($user->type == 'superadmin') {
-                $medicalRequests = MedicalRequest::where('status', 'decline')->get();
+                $query = MedicalRequest::where('status', 'decline');
             } else {
                 $district = $user->district;
-                $medicalRequests = DB::table('medical_requests')
+                $query = DB::table('medical_requests')
                     ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
                     ->where('medical_requests.status', 'decline')
                     ->where(function ($query) use ($district) {
@@ -147,8 +132,55 @@ class MedicalRequestController extends Controller
                             $query->where('hospitals.assist_by_staff_from', '2nd');
                         }
                     })
-                    ->select('medical_requests.*')
-                    ->get();
+                    ->select('medical_requests.*');
+            }
+            if ($startDate && $endDate) {
+                $query->whereBetween('medical_requests.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('medical_requests.created_at', date('Y'))
+                    ->whereMonth('medical_requests.created_at', date('m'));
+            }
+            $medicalRequests = $query->get();
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function GenerateApprove(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if (!$startDate || !$endDate) {
+                $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+                $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+            }
+            if ($user->type == 'superadmin') {
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->whereBetween('medical_requests.created_at', [$startDate, $endDate])
+                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
+                    ->get()
+                    ->groupBy('hospital_acronym');
+            } else {
+                $district = $user->district;
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->whereBetween('medical_requests.created_at', [$startDate, $endDate])
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
+                    ->get()
+                    ->groupBy('hospital_acronym');
             }
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
