@@ -205,11 +205,12 @@ class DoleController extends Controller
         }
     }
 
-
     public function getTupadsPerCaptain(Request $request)
     {
         try {
-            $tupads = Tupad::leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query = Tupad::leftJoin('users', 'tupads.given_by_captainID', '=', 'users.id')
                 ->select(
                     'tupads.*',
                     'users.firstname as captain_firstname',
@@ -217,8 +218,14 @@ class DoleController extends Controller
                     'users.lastname as captain_lastname',
                     'users.municipality as captain_municipality',
                     'users.barangay as captain_barangay'
-                )
-                ->get();
+                );
+            if ($startDate && $endDate) {
+                $query->whereBetween('tupads.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('tupads.created_at', date('Y'))
+                    ->whereMonth('tupads.created_at', date('m'));
+            }
+            $tupads = $query->get();
             $organizedData = [];
             foreach ($tupads as $tupad) {
                 $municipality = $tupad->captain_municipality;
@@ -242,7 +249,6 @@ class DoleController extends Controller
                 }
                 $filteredTupad = $tupad->toArray();
                 unset($filteredTupad['id']);
-                unset($filteredTupad['created_at']);
                 unset($filteredTupad['updated_at']);
                 unset($filteredTupad['used_code_id']);
                 unset($filteredTupad['given_by_captainID']);
@@ -262,6 +268,7 @@ class DoleController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     public function accept_tupad_invites(Request $request, $id)
     {

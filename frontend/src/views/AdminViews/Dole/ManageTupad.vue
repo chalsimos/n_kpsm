@@ -300,7 +300,7 @@ export default {
             tupad_memberSearch: '',
             month_year_available: '',
             slot_get: '',
-            tupadRequest: [],   
+            tupadRequest: [],
             tupad_member: [],
             dynamicHeaders: [],
             checkedIdsForApproved: [],
@@ -340,39 +340,18 @@ export default {
         }
     },
     methods: {
-        fetchApproveForGenerate(startDate, endDate) {
-            return new Promise((resolve, reject) => {
-                axios.get('/api/dole/get-invites-per-captain', {
-                        params: {
-                            start_date: startDate,
-                            end_date: endDate
-                        },
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem('token')}`
-                        }
-                    })
-                    .then(response => {
-                        this.ApproveForGenerate = response.data;
-                        resolve();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching approved educational assistance:', error);
-                        reject(error);
-                    });
-            });
-        },
         handleRangeMonthChange(dates, dateStrings) {
-        if (dates && dates.length === 2) {
-            this.startDate = dates[0].startOf('month').format('YYYY-MM-DD');
-            this.endDate = dates[1].endOf('month').format('YYYY-MM-DD');
-        } else {
-            this.startDate = null;
-            this.endDate = null;
-        }
-        this.fetchApproveForGenerate(this.startDate, this.endDate);
-        this.fetchSlotlist(this.startDate, this.endDate);
-        this.fetchTupadMember(this.startDate, this.endDate);
-    },
+            if (dates && dates.length === 2) {
+                this.startDate = dates[0].startOf('month').format('YYYY-MM-DD');
+                this.endDate = dates[1].endOf('month').format('YYYY-MM-DD');
+            } else {
+                this.startDate = null;
+                this.endDate = null;
+            }
+            this.fetchApproveForGenerate(this.startDate, this.endDate);
+            this.fetchSlotlist(this.startDate, this.endDate);
+            this.fetchTupadMember(this.startDate, this.endDate);
+        },
         viewExcel(itemId) {
             axios.get(`/api/dole/get-excel-path/${itemId}`, {
                     headers: {
@@ -429,238 +408,280 @@ export default {
             };
             return new Intl.DateTimeFormat('en-US', options).format(date);
         },
+        fetchApproveForGenerate(startDate, endDate) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/dole/get-invites-per-captain', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        console.log(response.data.data)
+                        this.ApproveForGenerate = response.data.data;
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching approved educational assistance:', error);
+                        reject(error);
+                    });
+            });
+        },
         async generateExcelFiles() {
             try {
-                const response = await axios.get('/api/dole/get-invites-per-captain');
-                const data = response.data.data;
-                const workbook = new ExcelJS.Workbook();
-                for (const municipality in data) {
-                    if (data.hasOwnProperty(municipality)) {
-                        const municipalitiesData = data[municipality];
-                        const worksheet = workbook.addWorksheet(municipality);
-                        let rowIndex = 1;
-                        for (const barangay in municipalitiesData) {
-                            if (municipalitiesData.hasOwnProperty(barangay)) {
-                                const captainsData = municipalitiesData[barangay];
-                                worksheet.getCell(`A${rowIndex}`).value = 'BARANGAY';
-                                worksheet.getCell(`A${rowIndex}`).fill = {
-                                    type: 'pattern',
-                                    pattern: 'solid',
-                                    fgColor: {
-                                        argb: 'FFFF00'
-                                    }
-                                };
-                                worksheet.getCell(`A${rowIndex}`).font = {
-                                    bold: true
-                                };
-                                worksheet.getCell(`A${rowIndex}`).border = {
-                                    top: {
-                                        style: 'thin'
-                                    },
-                                    left: {
-                                        style: 'thin'
-                                    },
-                                    bottom: {
-                                        style: 'thin'
-                                    },
-                                    right: {
-                                        style: 'thin'
-                                    }
-                                };
-                                worksheet.getCell(`B${rowIndex}`).value = barangay.toUpperCase();
-                                worksheet.getCell(`B${rowIndex}`).border = {
-                                    top: {
-                                        style: 'thin'
-                                    },
-                                    left: {
-                                        style: 'thin'
-                                    },
-                                    bottom: {
-                                        style: 'thin'
-                                    },
-                                    right: {
-                                        style: 'thin'
-                                    }
-                                };
-                                worksheet.getCell(`B${rowIndex}`).fill = {
-                                    type: 'pattern',
-                                    pattern: 'solid',
-                                    fgColor: {
-                                        argb: 'FFFF00'
-                                    }
-                                };
-                                worksheet.getCell(`B${rowIndex}`).font = {
-                                    bold: true
-                                };
-                                worksheet.getCell(`B${rowIndex}`).border = {
-                                    top: {
-                                        style: 'thin'
-                                    },
-                                    left: {
-                                        style: 'thin'
-                                    },
-                                    bottom: {
-                                        style: 'thin'
-                                    },
-                                    right: {
-                                        style: 'thin'
-                                    }
-                                };
-                                rowIndex++;
-                                worksheet.addRow([]);
-                                rowIndex++;
-                                for (const captainId in captainsData) {
-                                    if (captainsData.hasOwnProperty(captainId)) {
-                                        const captainDetails = captainsData[captainId].captain_details;
-                                        const tupads = captainsData[captainId].tupads;
-                                        worksheet.getCell(`A${rowIndex}`).value = 'CAPTAIN NAME';
-                                        worksheet.getCell(`A${rowIndex}`).fill = {
-                                            type: 'pattern',
-                                            pattern: 'solid',
-                                            fgColor: {
-                                                argb: 'FFFF00'
-                                            }
-                                        };
-                                        worksheet.getCell(`A${rowIndex}`).font = {
-                                            bold: true
-                                        };
-                                        worksheet.getCell(`A${rowIndex}`).border = {
-                                            top: {
-                                                style: 'thin'
-                                            },
-                                            left: {
-                                                style: 'thin'
-                                            },
-                                            bottom: {
-                                                style: 'thin'
-                                            },
-                                            right: {
-                                                style: 'thin'
-                                            }
-                                        };
-                                        worksheet.getCell(`B${rowIndex}`).value = captainDetails.captain_name.toUpperCase();
-                                        worksheet.getCell(`B${rowIndex}`).border = {
-                                            top: {
-                                                style: 'thin'
-                                            },
-                                            left: {
-                                                style: 'thin'
-                                            },
-                                            bottom: {
-                                                style: 'thin'
-                                            },
-                                            right: {
-                                                style: 'thin'
-                                            }
-                                        };
-                                        worksheet.getCell(`B${rowIndex}`).fill = {
-                                            type: 'pattern',
-                                            pattern: 'solid',
-                                            fgColor: {
-                                                argb: 'FFFF00'
-                                            }
-                                        };
-                                        worksheet.getCell(`B${rowIndex}`).font = {
-                                            bold: true
-                                        };
-                                        worksheet.getCell(`B${rowIndex}`).border = {
-                                            top: {
-                                                style: 'thin'
-                                            },
-                                            left: {
-                                                style: 'thin'
-                                            },
-                                            bottom: {
-                                                style: 'thin'
-                                            },
-                                            right: {
-                                                style: 'thin'
-                                            }
-                                        };
-                                        rowIndex++;
-                                        const headers = Object.keys(tupads[0]);
-                                        headers.forEach((header, columnIndex) => {
-                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).value = header.replace(/_/g, ' ').toUpperCase();
-                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).border = {
-                                                top: {
-                                                    style: 'thin'
-                                                },
-                                                left: {
-                                                    style: 'thin'
-                                                },
-                                                bottom: {
-                                                    style: 'thin'
-                                                },
-                                                right: {
-                                                    style: 'thin'
-                                                }
-                                            };
-                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).fill = {
-                                                type: 'pattern',
-                                                pattern: 'solid',
-                                                fgColor: {
-                                                    argb: 'FFFF00'
-                                                }
-                                            };
-                                            worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).font = {
-                                                bold: true
-                                            };
-                                            worksheet.getColumn(columnIndex + 1).width = (header === 'barangay' || header === 'captain_name') ? 20 : 25; // Set different column width
-                                        });
-                                        rowIndex++;
-                                        tupads.forEach((tupad, dataIndex) => {
-                                            headers.forEach((header, columnIndex) => {
-                                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).value = tupad[header].toUpperCase();
-                                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).border = {
-                                                    top: {
-                                                        style: 'thin'
-                                                    },
-                                                    left: {
-                                                        style: 'thin'
-                                                    },
-                                                    bottom: {
-                                                        style: 'thin'
-                                                    },
-                                                    right: {
-                                                        style: 'thin'
-                                                    }
-                                                };
-                                            });
-                                            rowIndex++;
-                                        });
-                                        rowIndex++;
-                                    }
-                                }
-                            }
-                        }
-                        worksheet.views = [{
-                            state: 'frozen',
-                            xSplit: 0,
-                            ySplit: 1,
-                            activeCell: 'A1'
-                        }];
-                    }
+                if (!this.ApproveForGenerate || Object.keys(this.ApproveForGenerate).length === 0) {
+                    toastr.error('No data available to generate Excel file.');
+                    return;
                 }
+                const workbook = new ExcelJS.Workbook();
+                const createdAtDates = [];
+                Object.keys(this.ApproveForGenerate).forEach(municipality => {
+                    const municipalitiesData = this.ApproveForGenerate[municipality];
+                    const worksheet = workbook.addWorksheet(municipality);
+                    let rowIndex = 1;
+                    Object.keys(municipalitiesData).forEach(barangay => {
+                        const captainsData = municipalitiesData[barangay];
+                        Object.values(captainsData).forEach(captainData => {
+                            captainData.tupads.forEach(tupad => {
+                                if (tupad.created_at) {
+                                    createdAtDates.push(new Date(tupad.created_at));
+                                }
+                            });
+                        });
+                        worksheet.getCell(`A${rowIndex}`).value = 'BARANGAY';
+                        worksheet.getCell(`A${rowIndex}`).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFF00'
+                            }
+                        };
+                        worksheet.getCell(`A${rowIndex}`).font = {
+                            bold: true
+                        };
+                        worksheet.getCell(`A${rowIndex}`).border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                        worksheet.getCell(`B${rowIndex}`).value = barangay.toUpperCase();
+                        worksheet.getCell(`B${rowIndex}`).border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                        worksheet.getCell(`B${rowIndex}`).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFF00'
+                            }
+                        };
+                        worksheet.getCell(`B${rowIndex}`).font = {
+                            bold: true
+                        };
+                        worksheet.getCell(`B${rowIndex}`).border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                        rowIndex++;
+                        worksheet.addRow([]);
+                        rowIndex++;
+                        Object.keys(captainsData).forEach(captainId => {
+                            const captainDetails = captainsData[captainId].captain_details;
+                            const tupads = captainsData[captainId].tupads;
+                            worksheet.getCell(`A${rowIndex}`).value = 'CAPTAIN NAME';
+                            worksheet.getCell(`A${rowIndex}`).fill = {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: 'FFFF00'
+                                }
+                            };
+                            worksheet.getCell(`A${rowIndex}`).font = {
+                                bold: true
+                            };
+                            worksheet.getCell(`A${rowIndex}`).border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                            worksheet.getCell(`B${rowIndex}`).value = captainDetails.captain_name.toUpperCase();
+                            worksheet.getCell(`B${rowIndex}`).border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                            worksheet.getCell(`B${rowIndex}`).fill = {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: 'FFFF00'
+                                }
+                            };
+                            worksheet.getCell(`B${rowIndex}`).font = {
+                                bold: true
+                            };
+                            worksheet.getCell(`B${rowIndex}`).border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                            rowIndex++;
+                            const headers = Object.keys(tupads[0]).filter(header => header !== 'created_at');
+                            headers.forEach((header, columnIndex) => {
+                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).value = header.replace(/_/g, ' ').toUpperCase();
+                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).fill = {
+                                    type: 'pattern',
+                                    pattern: 'solid',
+                                    fgColor: {
+                                        argb: 'FFFF00'
+                                    }
+                                };
+                                worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).font = {
+                                    bold: true
+                                };
+                                worksheet.getColumn(columnIndex + 1).width = (header === 'barangay' || header === 'captain_name') ? 20 : 25; // Set different column width
+                            });
+                            rowIndex++;
+                            tupads.forEach((tupad, dataIndex) => {
+                                headers.forEach((header, columnIndex) => {
+                                    worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).value = tupad[header].toUpperCase();
+                                    worksheet.getCell(`${this.getColumnLetter(columnIndex + 1)}${rowIndex}`).border = {
+                                        top: {
+                                            style: 'thin'
+                                        },
+                                        left: {
+                                            style: 'thin'
+                                        },
+                                        bottom: {
+                                            style: 'thin'
+                                        },
+                                        right: {
+                                            style: 'thin'
+                                        }
+                                    };
+                                });
+                                rowIndex++;
+                            });
+                            rowIndex++;
+                        });
+                        rowIndex++;
+                    });
+                    worksheet.views = [{
+                        state: 'frozen',
+                        xSplit: 0,
+                        ySplit: 1,
+                        activeCell: 'A1'
+                    }];
+                });
                 const buffer = await workbook.xlsx.writeBuffer();
                 const blob = new Blob([buffer], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
-                const fileName = 'tupad_data.xlsx';
-                if (window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveOrOpenBlob(blob, fileName);
-                } else {
+                if (createdAtDates.length > 0) {
+                    const earliestDate = new Date(Math.min(...createdAtDates));
+                    const latestDate = new Date(Math.max(...createdAtDates));
+                    const earliestMonth = earliestDate.toLocaleString('default', {
+                        month: 'long'
+                    });
+                    const latestMonth = latestDate.toLocaleString('default', {
+                        month: 'long'
+                    });
+                    const earliestYear = earliestDate.getFullYear();
+                    const latestYear = latestDate.getFullYear();
+                    let filename;
+                    if (earliestMonth === latestMonth && earliestYear === latestYear) {
+                        filename = `TUPAD month of ${earliestMonth} ${earliestYear}.xlsx`;
+                    } else if (earliestYear === latestYear) {
+                        filename = `TUPAD month of ${earliestMonth}-${latestMonth} ${earliestYear}.xlsx`;
+                    } else {
+                        filename = `TUPAD month of ${earliestMonth} ${earliestYear} - ${latestMonth} ${latestYear}.xlsx`;
+                    }
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
-                    a.style.display = 'none';
                     a.href = url;
-                    a.download = fileName;
-                    document.body.appendChild(a);
+                    a.download = filename;
                     a.click();
                     window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
+                } else {
+                    toastr.error('No valid created_at dates found for generating filename.');
                 }
             } catch (error) {
-                console.error('Error generating Excel:', error);
+                console.error('Error generating Excel file:', error);
+                toastr.error('Error generating Excel file. Please try again.');
             }
         },
         getColumnLetter(index) {
@@ -689,7 +710,7 @@ export default {
             }
         },
         checkSlot(itemId) {
-            this.itemId = itemId; 
+            this.itemId = itemId;
             this.fetchSlotlist(itemId, this.startDate, this.endDate);
             const modal = document.getElementById('checkSlot');
             modal.classList.remove('hidden');
@@ -700,15 +721,14 @@ export default {
                     modal.classList.add('hidden');
                     modal.setAttribute('aria-hidden', 'true');
                 }
-            }); 
-        
+            });
         },
         fetchSlotlist(itemId, startDate, endDate) {
             axios.get(`/api/dole/all-captain-slot/${itemId}`, {
-                        params: {
-                            start_date: startDate,
-                            end_date: endDate
-                        },
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -759,10 +779,10 @@ export default {
 
         fetchTupadMember(startDate, endDate) {
             axios.get('/api/dole/getAll-captains-tupad-invites', {
-                        params: {
-                            start_date: startDate,
-                            end_date: endDate
-                        },
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -905,18 +925,22 @@ export default {
     }
 };
 </script>
+
 <style scoped>
 #excel-modal {
     background-color: rgba(0, 0, 0, 0.5);
 }
+
 #excel-modal>.max-w-2xl {
     width: 100%;
     max-width: 100%;
 }
+
 #excel-modal td,
 #excel-modal th {
     min-width: 100px;
 }
+
 @media (max-width: 768px) {
     #excel-modal>.max-w-2xl {
         max-width: 95%;
