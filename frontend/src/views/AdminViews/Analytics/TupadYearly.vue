@@ -63,7 +63,7 @@ export default defineComponent({
         };
     },
     mounted() {
-        this.fetchData();
+        this.fetchTupadYearlyData();
         this.fetchActiveHeaders().then(keys => {
             this.columns = keys.map(key => ({
                 title: key.charAt(0).toUpperCase() + key.slice(1),
@@ -74,9 +74,13 @@ export default defineComponent({
         });
     },
     methods: {
-        async fetchData() {
+        async fetchTupadYearlyData(startDate, endDate) {
             try {
                 const response = await axios.get('/api/dashboard/getData', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },

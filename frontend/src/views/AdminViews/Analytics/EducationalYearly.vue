@@ -177,12 +177,16 @@ export default defineComponent({
         };
     },
     mounted() {
-        this.fetchData();
+        this.fetchEducationalYearlyData();
     },
     methods: {
-        async fetchData() {
+        async fetchEducationalYearlyData(startDate, endDate) {
             try {
                 const response = await axios.get('/api/dashboard/educational-requests-data', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },

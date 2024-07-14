@@ -252,8 +252,12 @@ export default {
         this.fetchEducationalMunicipalityBarangay();
     },
     methods: {
-        fetchEducationalMunicipalityBarangay() {
+        fetchEducationalMunicipalityBarangay(startDate, endDate) {
             axios.get('/api/dashboard/educational-municipality-barangay', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -313,8 +317,12 @@ export default {
                 }]
             });
         },
-        fetchGenderEducationalRequests() {
+        fetchGenderEducationalRequests(startDate, endDate) {
             axios.get('/api/dashboard/gender-educational-requests', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }

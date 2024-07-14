@@ -29,7 +29,7 @@
                                         Delete
                                     </Button>
                                 </div> -->
-                            <div v-show="item.key !== 'province' && item.key !== 'municipality' && item.key !== 'barangay'">
+                            <div v-show="item.key !== 'province' && item.key !== 'municipality' && item.key !== 'barangay' && item.key !== 'sex' && item.key !== 'birthday' && item.key !== 'age'">
                                 <Button type="primary" primary @click="activateHeader(item.id)" v-show="item.status === 'active'">
                                     Dectivate
                                 </Button>
@@ -116,7 +116,7 @@ export default {
     },
     methods: {
         getStatusDisplay(item) {
-            const protectedKeys = ['province', 'municipality', 'barangay'];
+            const protectedKeys = ['province', 'municipality', 'barangay', 'gender', 'age', 'birthday', 'sex'];
             if (protectedKeys.includes(item.key)) {
                 return 'protected';
             } else {
