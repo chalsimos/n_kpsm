@@ -33,6 +33,7 @@ use App\Http\Controllers\TupadHeader;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/getuser', [AuthController::class, 'getUser']);
@@ -42,28 +43,29 @@ Route::post('/upload-file', [FileController::class, 'uploadFile']);
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 Route::get('/news', [NewsPortal::class, 'index']);
-Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
-Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
-Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
-Route::get('/getMainArticle', [NewsPortal::class, 'getMainArticle']);
-Route::get('/getTrendingArticles', [NewsPortal::class, 'getTrendingArticles']);
-Route::get('/getArticle/{id}', [NewsPortal::class, 'getArticle']);
-Route::post('/articlecounter', [NewsAllPortal::class, 'articlecounter']);
-Route::get('/count-article-views/{articleId}', [NewsPortal::class, 'countArticleView']);
-Route::get('/most-viewed', [NewsPortal::class, 'getMostViewed']);
-Route::get('/news-all', [NewsPortal::class, 'displayAll']);
-Route::post('/news/{id}', [NewsPortal::class, 'update']);
-Route::get('/news-article', [NewsPortal::class, 'news_article']);
-Route::get('/news-events', [NewsPortal::class, 'news_events']);
-Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
-Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
-Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
 
-
-
+Route::prefix('news-portal')->group(function () {
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
+        Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
+        Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
+        Route::get('/getMainArticle', [NewsPortal::class, 'getMainArticle']);
+        Route::get('/getTrendingArticles', [NewsPortal::class, 'getTrendingArticles']);
+        Route::get('/getArticle/{id}', [NewsPortal::class, 'getArticle']);
+        Route::post('/articlecounter', [NewsPortal::class, 'articlecounter']);
+        Route::get('/count-article-views/{articleId}', [NewsPortal::class, 'countArticleView']);
+        Route::get('/most-viewed', [NewsPortal::class, 'getMostViewed']);
+        Route::get('/news-all', [NewsPortal::class, 'displayAll']);
+        Route::post('/news/{id}', [NewsPortal::class, 'update']);
+        Route::get('/news-article', [NewsPortal::class, 'news_article']);
+        Route::get('/news-events', [NewsPortal::class, 'news_events']);
+        Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
+        Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
+        Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
+    });
+});
 
 Route::prefix('budget')->group(function () {
-    //admin
     Route::middleware(['admin'])->group(function () {
         Route::post('/budget-allocations', [BudgetAllocation::class, 'save_budget_allocation']);
         Route::get('/budget-allocations', [BudgetAllocation::class, 'get_all_budget_allocations']);
@@ -72,7 +74,6 @@ Route::prefix('budget')->group(function () {
 });
 
 Route::prefix('dashboard')->group(function () {
-    //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/get-hospital-count', [AdminDashboardController::class, 'getAllHospital']);
         Route::get('/get-hospital-service-offer-count', [AdminDashboardController::class, 'getAllHospitalsWithServiceOffers']);
@@ -87,9 +88,7 @@ Route::prefix('dashboard')->group(function () {
 
 });
 
-
 Route::prefix('utility')->group(function () {
-
     Route::middleware(['admin'])->group(function () {
         //Educational Amount
         Route::get('/get-all-amount', [EducationalAssistanceController::class, 'index']);
@@ -132,12 +131,10 @@ Route::prefix('utility')->group(function () {
     });
 });
 Route::prefix('educational-assistance')->group(function () {
-    //no need authentication
     Route::post('/submit-educational-assistance-tulong-dunong', [EducationalAssistanceController::class, 'apply_educational_assistance_tulong_dunong']);
     Route::post('/submit-educational-assistance-smart-grant', [EducationalAssistanceController::class, 'apply_educational_assistance_smart_grant']);
     Route::post('/submit-educational-assistance', [EducationalAssistanceController::class, 'apply_educational_assistance']);
     Route::post('/check-application-status', [EducationalAssistanceController::class, 'check_educational_assistance_application_status']);
-    //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/requirements-path/{id}', [EducationalAssistanceController::class, 'requirementsPath']);
         Route::get('/get-all-approved_shcolarship-request', [EducationalAssistanceController::class, 'get_all_approved_scholarship_request']);
@@ -156,9 +153,7 @@ Route::prefix('educational-assistance')->group(function () {
 });
 
 Route::prefix('medical-requests')->group(function () {
-    //no need authentication
     Route::post('/request', [MedicalRequestController::class, 'store']);
-    //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/show/{id}', [MedicalRequestController::class, 'show']);
         Route::get('/requirements-path/{id}', [MedicalRequestController::class, 'requirementsPath']);
@@ -173,11 +168,9 @@ Route::prefix('medical-requests')->group(function () {
 });
 Route::post('/post-news', [NewsPortal::class, 'addNews']);
 Route::prefix('dole')->group(function () {
-    //no need authentication
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
     Route::post('/tupad-request-status-checker', [DoleController::class, 'tupad_request_status_checker']);
-    //admin
     Route::middleware(['admin'])->group(function () {
         Route::get('/captain-list', [DoleController::class, 'captain_list']);
         Route::post('/give-slot/{id}', [DoleController::class, 'give_slot']);
@@ -188,7 +181,6 @@ Route::prefix('dole')->group(function () {
         Route::get('/get-file-path/{id}', [DoleController::class, 'getImagePaths']);
         Route::get('/get-excel-path/{id}', [DoleController::class, 'getExcelData']);
     });
-    //captain
     Route::middleware(['captain'])->group(function () {
         Route::get('/captain-slot-list', [DoleController::class, 'captain_tupad_slot']);
         Route::post('/generate-code', [DoleController::class, 'generateCodeAndSave']);
@@ -203,5 +195,4 @@ Route::prefix('dole')->group(function () {
         Route::post('/save-captain-tupad-member', [DoleController::class, 'save_tupad_by_captain']);
     });
     Route::get('/get-active-header', [TupadHeader::class, 'fetchActiveHeaders']);
-
 });
