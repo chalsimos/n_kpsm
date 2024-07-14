@@ -78,9 +78,11 @@
             </button>
             <ul id="manage-news" class="hidden py-2 space-y-2">
     <li data-tooltip-target="Education" data-tooltip-placement="right">
-        <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+        <router-link to="admin/add-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
             <i class="fas fa-newspaper"></i>
-            <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span>
+            <span>Post News/Announcement</span>
+            <!-- <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span> -->
+
         </router-link>
     </li>
 
@@ -260,29 +262,8 @@
                 <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
                     With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
                 </p>
-                <!-- <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                    The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
-                </p> -->
-                <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-            <editor
-                api-key="tjh6y7k4ssd8bp02fmeohr8mpccvozf6f0b9pab6qbxqkkte"
-                :init="{
-                height: 500,
-                menubar: false,
-                plugins: [
-                    'a11ychecker','advlist','advcode','advtable','autolink','checklist','export',
-                    'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
-                    'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
-                ],
-                toolbar:
-                    'undo redo | casechange blocks | bold italic backcolor | \
-                    alignleft aligncenter alignright alignjustify | \
-                    bullist numlst checklist outdent indent | removeformat | a11ycheck code table image uploadImage help',
-                image_upload_url: '/upload/image' // Specify the URL for image upload
-                }"
-                initial-value="Enter your news / announcement content here"
-                v-model="editorContent"
-            />
+            <input type="text" v-model="title" placeholder="title">
+            <textarea v-model="content"></textarea>
             </div>
             <!-- Modal footer -->
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
