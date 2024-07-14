@@ -104,7 +104,7 @@ class TupadHeader extends Controller
             if ($nonCaptainDataExists) {
                 return response()->json(['error' => 'Cannot add deactivate header while there are still tupad form that is not submitted by the captain"'], 400);
             }
-            $protectedHeaders = ['province', 'municipality', 'barangay'];
+            $protectedHeaders = ['province', 'municipality', 'barangay', 'gender', 'age', 'birthday', 'sex'];
             if (in_array(strtolower($TupadHeader->header), $protectedHeaders)) {
                 return response()->json(['error' => 'Cannot deactivate protected header'], 400);
             }

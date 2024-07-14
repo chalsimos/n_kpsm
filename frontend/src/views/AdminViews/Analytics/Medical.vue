@@ -364,8 +364,12 @@ export default {
         this.fetchServiceOfferCounts();
     },
     methods: {
-        fetchGenderMedicalRequests() {
+        fetchGenderMedicalRequests(startDate, endDate) {
             axios.get('/api/dashboard/gender-medical-requests', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -396,8 +400,12 @@ export default {
                 labels: labels,
             });
         },
-        fetchMunicipalityBarangay() {
+        fetchMunicipalityBarangay(startDate, endDate) {
             axios.get('/api/dashboard/municipality-barangay', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }

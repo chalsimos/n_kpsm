@@ -146,12 +146,16 @@ export default defineComponent({
         };
     },
     mounted() {
-        this.fetchData();
+        this.fetchDataHospitalYearly();
     },
     methods: {
-        async fetchData() {
+        async fetchDataHospitalYearly(startDate, endDate) {
             try {
                 const response = await axios.get('/api/dashboard/medical-requests-data', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },

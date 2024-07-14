@@ -420,7 +420,6 @@ export default {
                         }
                     })
                     .then(response => {
-                        console.log(response.data.data)
                         this.ApproveForGenerate = response.data.data;
                         resolve();
                     })
@@ -796,7 +795,6 @@ export default {
         },
         handleMonthChange(date, dateString) {
             const formattedDate = moment(dateString, "MM/YYYY").format("YYYY-MM");
-            console.log(date, formattedDate);
             this.month_year_available = formattedDate;
         },
         disabledPastDates(current) {
@@ -920,7 +918,7 @@ export default {
             },
         },
         created() {
-            this.handleMonthChange();
+            this.handleRangeMonthChange();
         }
     }
 };
