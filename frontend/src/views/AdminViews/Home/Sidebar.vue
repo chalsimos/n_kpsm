@@ -79,9 +79,11 @@
             </button>
             <ul id="manage-news" class="hidden py-2 space-y-2">
                 <li data-tooltip-target="Education" data-tooltip-placement="right">
-                    <router-link to="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <router-link to="admin/add-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="fas fa-newspaper"></i>
-                        <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span>
+                        <span>Post News/Announcement</span>
+            <!-- <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span> -->
+
                     </router-link>
                 </li>
 

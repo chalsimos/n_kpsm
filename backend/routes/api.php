@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicalRequestController;
 use App\Http\Controllers\DoleController;
 use App\Http\Controllers\NewsPortal;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\EducationalAssistanceController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\AdminDashboardController;
@@ -36,11 +37,30 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/getuser', [AuthController::class, 'getUser']);
 Route::get('/getUserType', [AuthController::class, 'getUserType']);
+Route::post('/upload-file', [FileController::class, 'uploadFile']);
+
+Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 Route::get('/news', [NewsPortal::class, 'index']);
 Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
 Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
 Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
+Route::get('/getMainArticle', [NewsPortal::class, 'getMainArticle']);
+Route::get('/getTrendingArticles', [NewsPortal::class, 'getTrendingArticles']);
+Route::get('/getArticle/{id}', [NewsPortal::class, 'getArticle']);
+Route::post('/articlecounter', [NewsAllPortal::class, 'articlecounter']);
+Route::get('/count-article-views/{articleId}', [NewsPortal::class, 'countArticleView']);
+Route::get('/most-viewed', [NewsPortal::class, 'getMostViewed']);
+Route::get('/news-all', [NewsPortal::class, 'displayAll']);
+Route::post('/news/{id}', [NewsPortal::class, 'update']);
+Route::get('/news-article', [NewsPortal::class, 'news_article']);
+Route::get('/news-events', [NewsPortal::class, 'news_events']);
+Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
+Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
+Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
+
+
+
 
 Route::prefix('budget')->group(function () {
     //admin
