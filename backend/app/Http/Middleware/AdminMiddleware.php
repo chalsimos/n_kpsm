@@ -25,7 +25,7 @@ class AdminMiddleware
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        if ($user->type !== 'admin') {
+        if ($user->type !== 'admin' && $user->type !== 'superadmin') {
             return response()->json(['error' => 'User is not an admin'], 403);
         }
         return $next($request);

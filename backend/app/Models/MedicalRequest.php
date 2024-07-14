@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class MedicalRequest extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -32,6 +33,16 @@ class MedicalRequest extends Model
         'decline_reason',
         'barangay_clearance_imagepath',
         'hospital_document_imagepath',
-        'valid_id_imagepath'
+        'valid_id_imagepath',
+        'amount'
     ];
+    public function budgetAllocation()
+    {
+        return $this->belongsTo(BudgetAllocation::class, 'hospital', 'budget_to_hospital');
+    }
+    public function hospital()
+    {
+        return $this->belongsTo(Hospital::class, 'hospital', 'hospital_acronym');
+    }
+
 }

@@ -14,6 +14,10 @@ const router = createRouter({
         // { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
         { path:'/test', name:'test', component:() => import('../views/test.vue')},
         { path:'/tupad', name:'Tupad', component:() => import('../views/UserView/Dole/Tupad.vue')},
+        { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
+        { path:'/educational-assistance', name:'Scholarship Request', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue')},
+        { path:'/smart-grant', name:'Smart Grant Request', component:() => import('../views/UserView/Scholarship/SmartGrant.vue')},
+        { path:'/tulong-dunong', name:'Tulong Dunong Request', component:() => import('../views/UserView/Scholarship/TulongDunong.vue')},
         //Account
         { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') },
         { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') },
@@ -22,7 +26,7 @@ const router = createRouter({
 
         //User Side
         { path:'/', name:'HomePage', component:() => import('../views/UserView/Home/HomePage.vue')},
-        { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue'),meta: { requiresClient: true}},
+        // { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue'),meta: { requiresClient: true}},
         { path:'/scholarship', name:'scholarship', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue'),meta: { requiresClient: true}},
 
         // Brgy. Captain Side
@@ -37,6 +41,8 @@ const router = createRouter({
         { path:'/medical-request', name:'Medical Request', component:() => import('../views/UserView/Medical/MedicalRequest.vue')},
         { path:'/educational-assistance', name:'Scholarship Request', component:() => import('../views/UserView/Scholarship/ScholarRequest.vue')},
     
+        { path:'/tupad-slot', name:'Tupad Slot', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
+
         //Brgy. Captain Side
         { path:'/gip', name:'GIP', component:() => import('../views/UserView/Dole/GIP.vue'),meta: {  requiresCaptain: true }},
         { path:'/tupad-slot', name:'GIP', component:() => import('../views/UserView/Dole/TupadSlot.vue'),meta: {  requiresCaptain: true }},
@@ -56,11 +62,25 @@ const router = createRouter({
 
         { path: '/admin/add-news', name: 'Home', component: () => import('../views/AdminViews/News/AddNews.vue') ,meta: {  requiresAdmin: true }},
 
+        { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-scholarship', name: 'Manage Scholarship', component: () => import('../views/AdminViews/Education/ManageScholar.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-smart-grant', name: 'Manage Smart Grant', component: () => import('../views/AdminViews/Education/ManageSmartGrant.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-tulong-dunong', name: 'Manage Tulong Dunong', component: () => import('../views/AdminViews/Education/ManageTulongDunong.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-medical-request', name: 'Manage Medical Request', component: () => import('../views/AdminViews/Medical/ManageMedicalRequest.vue') ,meta: {   }},
+        { path: '/manage-logo', name: 'Manage Logo', component: () => import('../views/AdminViews/Utility/Logo.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-emails', name: 'Emails', component: () => import('../views/AdminViews/Utility/Email.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-tupad-headers', name: 'Tupad Header', component: () => import('../views/AdminViews/Utility/TupadHeader.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-budget', name: 'Budget Allocation', component: () => import('../views/AdminViews/Utility/Budget.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-educational-amount', name: 'Manage Educational Amount', component: () => import('../views/AdminViews/Utility/EducationalAmount.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/manage-hospital', name: 'Manage Hospital', component: () => import('../views/AdminViews/Utility/ManageHospital.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/hospital-request', name: 'Manage Hospital Request', component: () => import('../views/AdminViews/Utility/ManageHospitalRequest.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+
     ]
 });
-
 router.beforeEach(async (to, from, next) => {
-    if (to.meta.requiresAdmin || to.meta.requiresCaptain || to.meta.requiresClient) {
+    document.title = to.name || 'Default Title';
+    if (to.meta.requiresAdminOrSuperAdmin || to.meta.requiresCaptain || to.meta.requiresClient ) {
         const token = localStorage.getItem('token');
         if (!token) {
             next('/login');
@@ -73,8 +93,8 @@ router.beforeEach(async (to, from, next) => {
                 }
             });
             const userType = response.data.type;
-            if (to.meta.requiresAdmin && userType !== 'admin') {
-                toastr.error('Sorry but this page is only for ADMIN.');
+            if (to.meta.requiresAdminOrSuperAdmin && userType !== 'admin' && userType !== 'superadmin' ) {
+                toastr.error('Sorry but this page is only for ADMIN or SUPERADMIN.');
                 next('/login');
             } else if (to.meta.requiresCaptain && userType !== 'captain') {
                 toastr.error('Sorry but this page is only for BRGY. CAPTAIN.');
@@ -82,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
             } else if (to.meta.requiresClient && userType !== 'client') {
                 toastr.error('Sorry but this page is only for Client.');
                 next('/login');
-            }else {
+            } else {
                 next();
             }
         } catch (error) {

@@ -3,7 +3,7 @@
 <nav class="fixed top-0 z-50 w-full bg-white border-b-2 border-orange-200 dark:bg-gray-800 dark:border-gray-700 ">
     <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
         <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse mr-1">
-            <img :src="logoUrl" class="h-8" alt="Flowbite Logo" />
+            <img :src="logoUrl" class="h-8" alt="KPSM" />
             <span class="self-center text-2xl font-semibold whitespace-nowrap hover:text-orange-400 dark:text-white">KPSM</span>
         </router-link>
         <div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse md:mt-3 ">
@@ -12,7 +12,7 @@
                 <button id="dropdownAvatarNameButton" data-dropdown-toggle="dropdownAvatarName" class="flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white" type="button">
                     <span class="sr-only">Open user menu</span>
                     <img class="w-12 h-12 rounded-full" src="../../../assets/kpms.png" alt="user photo">
-                    <p class="hover:text-orange-400">{{ information.name }}</p>
+                    <p class="hover:text-orange-400">{{ information.username }}</p>
                     <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                     </svg>
@@ -68,14 +68,14 @@
                 <li>
                     <router-link to="/" class="block py-2 px-3 border-b border-gray-100 hover:text-orange-300 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-blue-500 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700 test-class" aria-current="page">Home</router-link>
                 </li>
-                <li v-show="this.information.type === 'client'">
+                <li>
                     <button id="mega-menu-dropdown-button" data-dropdown-toggle="mega-menu-dropdown" class="flex items-center justify-between w-full py-2 px-3 font-medium border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
-                        Assistance
+                        Request
                         <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                         </svg>
                     </button>
-                    <div id="mega-menu-dropdown" class="absolute z-10 grid hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700">
+                    <div id="mega-menu-dropdown" class="absolute z-10 hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700">
                         <div class="p-4 pb-0 text-black md:pb-4 dark:text-white">
                             <ul class="space-y-4" aria-labelledby="mega-menu-dropdown-button">
                                 <li>
@@ -84,8 +84,23 @@
                                     </router-link>
                                 </li>
                                 <li>
-                                    <router-link to="/scholarship" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
-                                        Scholarship
+                                    <router-link to="/educational-assistance" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Scholarship Assistance
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link to="/smart-grant" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Smart Grant Scholarship Assistance
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link to="/tulong-dunong" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Tulong Dunong Scholarship Assistance
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link to="/tupad" class="text-gray-500 dark:text-gray-400  hover:text-orange-400  dark:hover:text-blue-500">
+                                        Tupad
                                     </router-link>
                                 </li>
                             </ul>
@@ -256,6 +271,7 @@ export default {
             this.getUser();
         }
     },
+
     computed: {
   },
     methods: {
@@ -288,18 +304,20 @@ export default {
                 });
         },
         fetchActiveLogos() {
-            axios.get('/api/active-logos')
-                .then(response => {
-                    if (response.data && response.data.image_url) {
-                        this.logoUrl = axios.defaults.baseURL + response.data.image_url;
-                    } else {
-                        console.error('Invalid response data:', response.data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching active logos:', error);
-                });
-        },
+      axios.get('/api/active-logos')
+        .then(response => {
+          if (response.data && response.data.image_url) {
+            
+            const baseURL = axios.defaults.baseURL;
+            this.logoUrl = new URL(response.data.image_url, baseURL).href;
+          } else {
+            console.error('Invalid response data:', response.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching active logos:', error);
+        });
+    },
         logout() {
             localStorage.removeItem('token');
             this.isLoggedIn = false;

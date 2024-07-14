@@ -17,4 +17,5 @@ class TupadCode extends Model
     {
         return $this->belongsTo(TupadSlot::class, 'slot_id');
     }
+
 }

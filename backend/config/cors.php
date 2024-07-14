@@ -15,11 +15,12 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'storage/*', 'public/*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:9000'],
+    'allowed_origins' => ['http://localhost:8080'],
+    // 'allowed_origins' => ['https://kpsm.online'],
 
     'allowed_origins_patterns' => [],
 

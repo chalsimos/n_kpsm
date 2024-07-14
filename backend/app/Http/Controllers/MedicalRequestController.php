@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BudgetAllocation;
+use App\Models\Hospital;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MedicalRequest;
@@ -10,22 +12,198 @@ use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class MedicalRequestController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    public function hospitalsWithServiceOffers()
     {
         try {
-            $medicalRequests = MedicalRequest::get();
+            $hospitals = Hospital::with('hospitalRequests')
+                ->where('status', 'active')
+                ->whereNull('deleted_at')
+                ->orderBy('status', 'asc')
+                ->get();
+            $formattedHospitals = $hospitals->map(function ($hospital) {
+                return [
+                    'id' => $hospital->id,
+                    'hospital_name' => $hospital->hospital_name,
+                    'hospital_acronym' => $hospital->hospital_acronym,
+                    'service_offers' => $hospital->hospitalRequests->where('status', 'active')->pluck('service_offer')
+                ];
+            });
+            return response()->json($formattedHospitals, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function index(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if ($user->type == 'superadmin') {
+                $query = MedicalRequest::where('status', 'pending');
+            } else {
+                $district = $user->district;
+                $query = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'pending')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*');
+            }
+            if ($startDate && $endDate) {
+                $query->whereBetween('medical_requests.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('medical_requests.created_at', date('Y'))
+                    ->whereMonth('medical_requests.created_at', date('m'));
+            }
+            $medicalRequests = $query->get();
             return response()->json($medicalRequests, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function Approveindex(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if ($user->type == 'superadmin') {
+                $query = MedicalRequest::where('status', 'approve');
+            } else {
+                $district = $user->district;
+                $query = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*');
+            }
+            if ($startDate && $endDate) {
+                $query->whereBetween('medical_requests.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('medical_requests.created_at', date('Y'))
+                    ->whereMonth('medical_requests.created_at', date('m'));
+            }
+            $medicalRequests = $query->get();
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function Declineindex(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if ($user->type == 'superadmin') {
+                $query = MedicalRequest::where('status', 'decline');
+            } else {
+                $district = $user->district;
+                $query = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'decline')
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*');
+            }
+            if ($startDate && $endDate) {
+                $query->whereBetween('medical_requests.created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereYear('medical_requests.created_at', date('Y'))
+                    ->whereMonth('medical_requests.created_at', date('m'));
+            }
+            $medicalRequests = $query->get();
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function GenerateApprove(Request $request)
+    {
+        try {
+            $user = $this->validateAdminAndSuperAdmin($request);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if (!$startDate || !$endDate) {
+                $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+                $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+            }
+            if ($user->type == 'superadmin') {
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->whereBetween('medical_requests.created_at', [$startDate, $endDate])
+                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
+                    ->get()
+                    ->groupBy('hospital_acronym');
+            } else {
+                $district = $user->district;
+                $medicalRequests = DB::table('medical_requests')
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->where('medical_requests.status', 'approve')
+                    ->whereBetween('medical_requests.created_at', [$startDate, $endDate])
+                    ->where(function ($query) use ($district) {
+                        if ($district == '1st') {
+                            $query->where('hospitals.assist_by_staff_from', '1st');
+                        } else if ($district == '2nd') {
+                            $query->where('hospitals.assist_by_staff_from', '2nd');
+                        }
+                    })
+                    ->select('medical_requests.*', 'hospitals.hospital_acronym')
+                    ->get()
+                    ->groupBy('hospital_acronym');
+            }
+            return response()->json($medicalRequests, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+
+    private function validateAdminAndSuperAdmin(Request $request)
+    {
+        $token = $request->bearerToken();
+        if (!$token) {
+            throw new \Exception('Unauthorized', 401);
+        }
+        $decryptedId = Crypt::decrypt($token);
+        $user = User::find($decryptedId);
+        if (!$user || $user->type !== 'admin' && $user->type !== 'superadmin') {
+            throw new \Exception('User is not an admin', 400);
+        }
+        return $user;
+    }
+
     public function requirementsPath(Request $request, $id)
     {
         try {
@@ -39,7 +217,7 @@ class MedicalRequestController extends Controller
             foreach ($imageUrls as $key => $imagePaths) {
                 $imagePaths = explode(',', $requestData[$key]);
                 foreach ($imagePaths as $imagePath) {
-                    $imageUrl = asset($imagePath);
+                    $imageUrl = Storage::url($imagePath);
                     $imageUrls[$key][] = $imageUrl;
                 }
             }
@@ -96,11 +274,16 @@ class MedicalRequestController extends Controller
             $data->hospital = $request->input('hospital');
             $data->request = $request->input('request');
             $data->status = 'pending';
+            $latestRecord = MedicalRequest::where('hospital', $request->input('hospital'))
+                ->orderBy('id', 'desc')
+                ->first();
+            $count = ($latestRecord) ? intval(explode('-', $latestRecord->Hor_code)[3]) + 1 : 1;
+
             $data->save();
             $basePath = 'Request/Medical Request/' . now()->year . '/' . now()->format('F') . '/';
-            $directoryPath = public_path($basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/');
-            if (!File::isDirectory($directoryPath)) {
-                File::makeDirectory($directoryPath, 0700, true);
+            $directoryPath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/';
+            if (!Storage::exists('public/' . $directoryPath)) {
+                Storage::makeDirectory('public/' . $directoryPath);
             }
             $brgyClearanceImagePaths = [];
             $validIdImagePaths = [];
@@ -108,31 +291,25 @@ class MedicalRequestController extends Controller
             if ($request->hasFile('brgy_ClearanceImages')) {
                 foreach ($request->file('brgy_ClearanceImages') as $image) {
                     $imageName = 'brgy_Clearance_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
-                    if (!in_array($imagePath, $brgyClearanceImagePaths)) {
-                        $image->move($directoryPath, $imageName);
-                        $brgyClearanceImagePaths[] = $imagePath;
-                    }
+                    $imagePath = $directoryPath . $imageName;
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $brgyClearanceImagePaths[] = $imagePath;
                 }
             }
             if ($request->hasFile('valid_IdImages')) {
                 foreach ($request->file('valid_IdImages') as $image) {
                     $imageName = 'valid_id_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
-                    if (!in_array($imagePath, $validIdImagePaths)) {
-                        $image->move($directoryPath, $imageName);
-                        $validIdImagePaths[] = $imagePath;
-                    }
+                    $imagePath = $directoryPath . $imageName;
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $validIdImagePaths[] = $imagePath;
                 }
             }
             if ($request->hasFile('hospital_DocumentImages')) {
                 foreach ($request->file('hospital_DocumentImages') as $image) {
                     $imageName = 'hospital_documents_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $basePath . $request->input('municipality') . '/' . $request->input('barangay') . '/' . $request->input('hospital') . '/' . $request->input('request') . '/' . $data->lastname . ' ' . $data->middlename . ' ' . $data->firstname . '/' . now()->year . ' ' . now()->format('F') . ' ' . now()->format('d') . '/' . $imageName;
-                    if (!in_array($imagePath, $hospitalDocumentImagePaths)) {
-                        $image->move($directoryPath, $imageName);
-                        $hospitalDocumentImagePaths[] = $imagePath;
-                    }
+                    $imagePath = $directoryPath . $imageName;
+                    Storage::putFileAs('public/' . $directoryPath, $image, $imageName);
+                    $hospitalDocumentImagePaths[] = $imagePath;
                 }
             }
             $data->update([
@@ -140,7 +317,7 @@ class MedicalRequestController extends Controller
                 'valid_id_imagepath' => implode(',', $validIdImagePaths),
                 'hospital_document_imagepath' => implode(',', $hospitalDocumentImagePaths),
             ]);
-            $horCode = 'AVU-' . now()->year . '-' . str_replace(' ', '-', $request->input('hospital')) . '-' . $data->id;
+            $horCode = 'AVU-' . now()->year . '-' . str_replace(' ', '-', $request->input('hospital')) . '-' . $count;
             $data->update(['Hor_code' => $horCode]);
             DB::commit();
             return response()->json(['message' => 'Medical Request saved successfully'], 201);
@@ -168,37 +345,41 @@ class MedicalRequestController extends Controller
     public function approve_amount(Request $request, $id)
     {
         try {
-            $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
                 'amount' => 'required|numeric',
             ]);
-            $medicalRequest->amount = $validatedData['amount'];
-            if ($medicalRequest->save()) {
-                $medicalRequest->status = 'approve';
-                $medicalRequest->save();
-                return response()->json(['data' => $medicalRequest], 200);
-            } else {
-                return response()->json(['error' => 'Failed to update amount'], 500);
+            $medicalRequest = MedicalRequest::findOrFail($id);
+            $amount = $validatedData['amount'];
+            $hospital = $medicalRequest->hospital;
+            $currentYear = date('Y');
+            $budgetAllocation = BudgetAllocation::where('budget_to_hospital', $hospital)
+                ->where('year', $currentYear)
+                ->first();
+            if (!$budgetAllocation) {
+                return response()->json(['error' => 'No budget allocation found for the specified hospital'], 404);
             }
+            if ($budgetAllocation->budget_left < $amount) {
+                return response()->json(['error' => 'Budget is not enough'], 400);
+            }
+            DB::beginTransaction();
+            $budgetAllocation->budget_left -= $amount;
+            $budgetAllocation->total_expenses += $amount;
+            $budgetAllocation->save();
+            $medicalRequest->amount = $amount;
+            $medicalRequest->status = 'approve';
+            $medicalRequest->save();
+            DB::commit();
+            return response()->json(['data' => $medicalRequest], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
     public function decline(Request $request, $id)
     {
         try {
-            $token = $request->bearerToken();
-            if (!$token) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $decryptedId = Crypt::decrypt($token);
-            $user = User::find($decryptedId);
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            if ($user->type !== 'admin') {
-                return response()->json(['error' => 'User is not a admin'], 400);
-            }
+
             $medicalRequest = MedicalRequest::findOrFail($id);
             $validatedData = $request->validate([
                 'decline_reason' => 'required|string',

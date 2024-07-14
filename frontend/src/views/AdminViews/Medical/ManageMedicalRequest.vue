@@ -3,84 +3,212 @@
 <div>
     <div class="p-4 sm:ml-64 flex-grow overflow-y-auto ">
         <div class="p-2 border-2 border-orange-200 border-solid rounded-lg dark:border-gray-700 mt-14 ">
-            <v-card flat>
-                <v-card-title class="d-flex align-center pe-2 bg-orange-200">
-                    <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Manage Medical Requests
-                    <v-spacer></v-spacer>
-                    <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-data-table v-model:search="search" :items="items" :items-per-page="5">
-                    <template #headers="{ headers }">
-                        <tr class="text-center whitespace-nowrap">
-                            <th>Hor Code</th>
-                            <th>Firstname</th>
-                            <th>Middlename</th>
-                            <th>Lastname</th>
-                            <th>Age</th>
-                            <th>Birthday</th>
-                            <th>Gender</th>
-                            <th>Province</th>
-                            <th>Municipality</th>
-                            <th>Barangay</th>
-                            <th>Representative Fullname</th>
-                            <th>Contact Number</th>
-                            <th>Diagnosis</th>
-                            <th>Hospital</th>
-                            <th>Request</th>
-                            <th>Status</th>
-                            <th>Decline Reason</th>
-                            <th>Amount</th>
-                            <th class="requirements-column">Check Requirements</th>
-                            <th class="action-column">Action</th>
-                        </tr>
-                    </template>
-                    <template v-slot:item="{ item }">
-                        <tr class="h-[12vh] text-center">
-                            <td class="whitespace-nowrap uppercase">{{ item.Hor_code }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.lastname }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.age }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.birthday }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.gender }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.province }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.municipality }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.barangay }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.representativefullname }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.contactnumber }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.diagnosis }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.decline_reason || '' }}</td>
-                            <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
-                            <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase requirements-column">
-                                <button  @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
-                                    Requiements
-                                </button>
-                            </td>
-                            <td class="whitespace-nowrap uppercase action-column">
-                                <button @click="amountModal(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="!item.amount">
-                                    Input Amount
-                                </button>
-                                <button @click="DeclineModal(item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-7 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="!item.amount">
-                                    Decline
-                                </button>
-                            </td>
-                        </tr>
-                    </template>
-                </v-data-table>
-            </v-card>
+            <div class="flex items-center justify-between mb-4">
+                <a-button class="text-white bg-blue-500 hover:bg-blue-600" type="primary" @click="generateExcelFiles">Generate Approve Excel</a-button>
+                <a-range-picker class="w-64" v-model="monthYearRange" format="MM/YYYY" picker="month" @change="handleMonthChange" />
+            </div>
+            <a-tabs default-active-key="1" @change="handleTabChange">
+                <a-tab-pane key="1" tab="Pending List">
+                    <v-card flat>
+                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Pending Medical Requests
+                            <v-spacer></v-spacer>
+                            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-data-table v-model:search="search" :items="items" :items-per-page="5">
+                            <template #headers="{ headers }">
+                                <tr class="text-center whitespace-nowrap">
+                                    <th>Hor Code</th>
+                                    <th>Firstname</th>
+                                    <th>Middlename</th>
+                                    <th>Lastname</th>
+                                    <th>Age</th>
+                                    <th>Birthday</th>
+                                    <th>Gender</th>
+                                    <th>Province</th>
+                                    <th>Municipality</th>
+                                    <th>Barangay</th>
+                                    <th>Representative Fullname</th>
+                                    <th>Contact Number</th>
+                                    <th>Diagnosis</th>
+                                    <th>Hospital</th>
+                                    <th>Request</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Check Requirements</th>
+                                    <th>Action</th>
+                                </tr>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <tr class="h-[12vh] text-center">
+                                    <td class="whitespace-nowrap uppercase">{{ item.Hor_code }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.lastname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.age }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.birthday }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.gender }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.province }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.municipality }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.barangay }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.representativefullname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.contactnumber }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.diagnosis }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
+                                    <td class="whitespace-nowrap uppercase ">
+                                        <button @click="amountModal(item.id)" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" v-show="!item.amount">
+                                            Input Amount
+                                        </button>
+                                        <button @click="DeclineModal(item.id)" class="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm mt-1 px-7 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button" v-show="!item.amount">
+                                            Decline
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </a-tab-pane>
+                <a-tab-pane key="2" tab="Approve List">
+                    <v-card flat>
+                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Approve Medical Requests
+                            <v-spacer></v-spacer>
+                            <v-text-field v-model="Approvesearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-data-table v-model:search="Approvesearch" :items="Approveitems" :items-per-page="5">
+                            <template #headers="{ headers }">
+                                <tr class="text-center whitespace-nowrap">
+                                    <th>Hor Code</th>
+                                    <th>Firstname</th>
+                                    <th>Middlename</th>
+                                    <th>Lastname</th>
+                                    <th>Age</th>
+                                    <th>Birthday</th>
+                                    <th>Gender</th>
+                                    <th>Province</th>
+                                    <th>Municipality</th>
+                                    <th>Barangay</th>
+                                    <th>Representative Fullname</th>
+                                    <th>Contact Number</th>
+                                    <th>Diagnosis</th>
+                                    <th>Hospital</th>
+                                    <th>Request</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Check Requirements</th>
+                                </tr>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <tr class="h-[12vh] text-center">
+                                    <td class="whitespace-nowrap uppercase">{{ item.Hor_code }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.lastname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.age }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.birthday }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.gender }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.province }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.municipality }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.barangay }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.representativefullname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.contactnumber }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.diagnosis }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.amount ? '₱' + parseFloat(item.amount).toFixed(2) : '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </a-tab-pane>
+                <a-tab-pane key="3" tab="Decline List">
+                    <v-card flat>
+                        <v-card-title class="d-flex align-center pe-2 bg-orange-200">
+                            <v-icon icon="mdi-hospital-box-outline"></v-icon> &nbsp; Decline Medical Requests
+                            <v-spacer></v-spacer>
+                            <v-text-field v-model="Declinesearch" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-data-table v-model:search="Declinesearch" :items="Declineitems" :items-per-page="5">
+                            <template #headers="{ headers }">
+                                <tr class="text-center whitespace-nowrap">
+                                    <th>Hor Code</th>
+                                    <th>Firstname</th>
+                                    <th>Middlename</th>
+                                    <th>Lastname</th>
+                                    <th>Age</th>
+                                    <th>Birthday</th>
+                                    <th>Gender</th>
+                                    <th>Province</th>
+                                    <th>Municipality</th>
+                                    <th>Barangay</th>
+                                    <th>Representative Fullname</th>
+                                    <th>Contact Number</th>
+                                    <th>Diagnosis</th>
+                                    <th>Hospital</th>
+                                    <th>Request</th>
+                                    <th>Status</th>
+                                    <th>Decline Reason</th>
+                                    <th>Check Requirements</th>
+                                    <th>Decline Reason</th>
+                                </tr>
+                            </template>
+                            <template v-slot:item="{ item }">
+                                <tr class="h-[12vh] text-center">
+                                    <td class="whitespace-nowrap uppercase">{{ item.Hor_code }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.firstname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.middlename }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.lastname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.age }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.birthday }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.gender }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.province }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.municipality }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.barangay }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.representativefullname }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.contactnumber }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.diagnosis }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.hospital }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.request }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.status }}</td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.decline_reason || '' }}</td>
+                                    <td style="margin-left: .8vw;" class="whitespace-nowrap uppercase ">
+                                        <button @click="RequirementsModal(item.id)" class="block text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm mt-1 px-2 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800" type="button">
+                                            Requiements
+                                        </button>
+                                    </td>
+                                    <td class="whitespace-nowrap uppercase">{{ item.decline_reason }}</td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card>
+                </a-tab-pane>
+            </a-tabs>
         </div>
     </div>
 </div>
 <div id="declineModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
-    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Decline Tupad Request
+                    Decline Medical Request
                 </h3>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="declineModal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -89,7 +217,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <form @submit.prevent="DeclineRequest" class="max-w-sm mx-auto mt-5 mb-5">
+            <form @submit.prevent="DeclineRequest" class="max-w-sm mx-auto mt-5 mb-5 ml-10">
                 <label for="Reason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Decline Reason</label>
                 <input type="text" id="Reason" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Reason here.">
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
@@ -100,7 +228,7 @@
     </div>
 </div>
 <div id="amountModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
-    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -113,9 +241,9 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <form @submit.prevent="updateAmount" class="max-w-sm mx-auto mt-5 mb-5">
+            <form @submit.prevent="updateAmount" class="max-w-sm mx-auto mt-5 mb-5 ml-10">
                 <label for="Amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Input Amount</label>
-                <input type="number" id="Amount" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
+                <input type="number" id="AmountInput" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="eg. 1000">
                 <div class="flex justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button data-modal-hide="amountModal" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Approved</button>
                 </div>
@@ -124,7 +252,7 @@
     </div>
 </div>
 <div id="RequirementsModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen md:inset-0">
-    <div class="relative p-4 w-[30vw] max-w-2xl max-h-full">
+    <div class="relative p-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10 w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -196,7 +324,7 @@ import {
     Tooltip,
     initTWE
 } from "tw-elements";
-
+import ExcelJS from 'exceljs';
 import {
     initFlowbite
 } from 'flowbite'
@@ -206,13 +334,20 @@ import {
     useToast
 } from 'vue-toastification'
 const toastr = useToast()
+import moment from 'moment';
 export default {
     data() {
         return {
+            monthYearRange: [],
             imagePath: '',
             search: '',
+            Declinesearch: '',
+            Approvesearch: '',
             items: [],
             medicalRequest: [],
+            Approveitems: [],
+            Declineitems: [],
+            ApproveForGenerate: [],
             contentStyle: {
                 margin: 0,
                 height: '160px',
@@ -239,10 +374,374 @@ export default {
 
         });
         initFlowbite();
-        document.title = "Manage Medical Request";
         this.fetchMedicalRequests();
+        this.fetchDeclineMedicalRequests();
+        this.fetchApproveMedicalRequests();
+        this.fetchApproveForGenerate();
     },
     methods: {
+        fetchApproveForGenerate(startDate, endDate) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/medical-requests/generate-all-approve', {
+                        params: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        this.ApproveForGenerate = response.data;
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching approved medical requests:', error);
+                        reject(error);
+                    });
+            });
+        },
+        async generateExcelFiles() {
+            if (!this.ApproveForGenerate || Object.keys(this.ApproveForGenerate).length === 0 || !Object.values(this.ApproveForGenerate).some(arr => arr.length > 0)) {
+                toastr.error('No data available to generate Excel file.');
+                return;
+            }
+            const data = this.ApproveForGenerate;
+            const workbook = new ExcelJS.Workbook();
+            let earliestDate = new Date();
+            let latestDate = new Date(0);
+            const customSort = (a, b) => {
+                const aParts = a.Hor_code.split('-');
+                const bParts = b.Hor_code.split('-');
+                const aNumeric = parseInt(aParts[3]);
+                const bNumeric = parseInt(bParts[3]);
+                return aNumeric - bNumeric;
+            };
+            Object.entries(data).forEach(([hospitalName, hospitalData]) => {
+                hospitalData.sort(customSort);
+                const worksheet = workbook.addWorksheet(hospitalName);
+                const medicalAssistanceHeaderRow = worksheet.addRow(['MEDICAL ASSISTANCE']);
+                medicalAssistanceHeaderRow.eachCell(cell => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: '808080'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                });
+                worksheet.mergeCells('A1:T1');
+                const addressHeaderRow = worksheet.getRow(2);
+                addressHeaderRow.getCell('O').value = 'ADDRESS';
+                addressHeaderRow.eachCell(cell => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFF00'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                });
+                worksheet.mergeCells('O2:R2');
+                const columnHeaderRow = worksheet.addRow([
+                    'HOR CODE', 'DATE RECEIVED', 'REQUEST DATE TO DOH', 'GL RELEASE DATE',
+                    'STATUS', 'REPRESENTATIVE', 'CONTACT NO.', 'SURNAME', 'FIRST NAME',
+                    'MIDDLE NAME', 'DIAGNOSIS', 'HOSPITAL', 'BIRTHDATE', 'AGE',
+                    'STREET', 'BRGY.', 'TOWN', 'PROVINCE', 'TYPE OF REQUEST', 'AMOUNT'
+                ]);
+                columnHeaderRow.eachCell(cell => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFF00'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                        wrapText: true
+                    };
+                    cell.height = 60;
+                    cell.font = {
+                        bold: true
+                    };
+                });
+                worksheet.columns = [{
+                        width: 25
+                    }, {
+                        width: 18
+                    }, {
+                        width: 10
+                    }, {
+                        width: 18
+                    },
+                    {
+                        width: 18
+                    }, {
+                        width: 45
+                    }, {
+                        width: 40
+                    }, {
+                        width: 25
+                    },
+                    {
+                        width: 30
+                    }, {
+                        width: 25
+                    }, {
+                        width: 40
+                    }, {
+                        width: 15
+                    },
+                    {
+                        width: 20
+                    }, {
+                        width: 10
+                    }, {
+                        width: 13
+                    }, {
+                        width: 20
+                    },
+                    {
+                        width: 20
+                    }, {
+                        width: 25
+                    }, {
+                        width: 25
+                    }, {
+                        width: 25
+                    }
+                ];
+                worksheet.eachRow(row => {
+                    row.eachCell(cell => {
+                        cell.border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                    });
+                });
+                let rowIndex = 4;
+                let totalAmount = 0;
+                hospitalData.forEach(item => {
+                    const formattedAmount = parseFloat(item.amount).toLocaleString();
+                    const rowData = [
+                        item.Hor_code, item.created_at.split(' ')[0], '', item.created_at.split(' ')[0], '', item.representativefullname,
+                        item.contactnumber, item.lastname, item.firstname, item.middlename,
+                        item.diagnosis, item.hospital, item.birthday, item.age,
+                        '', item.barangay, item.municipality, item.province,
+                        item.request, formattedAmount
+                    ];
+                    const row = worksheet.getRow(rowIndex++);
+                    row.values = rowData;
+                    row.eachCell(cell => {
+                        cell.border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                        cell.alignment = {
+                            vertical: 'middle',
+                            horizontal: 'center'
+                        };
+                    });
+                    row.height = 20;
+                    totalAmount += Number(item.amount);
+                    const itemDate = new Date(item.created_at);
+                    if (itemDate < earliestDate) {
+                        earliestDate = itemDate;
+                    }
+                    if (itemDate > latestDate) {
+                        latestDate = itemDate;
+                    }
+                });
+                const formattedTotalAmount = totalAmount.toLocaleString();
+                const totalAmountRow = worksheet.getRow(rowIndex);
+                totalAmountRow.getCell('T').value = `Total Amount: ${formattedTotalAmount}`;
+                totalAmountRow.getCell('T').font = {
+                    bold: true
+                };
+                totalAmountRow.getCell('T').fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: {
+                        argb: 'FFFF00'
+                    }
+                };
+                totalAmountRow.getCell('T').border = {
+                    top: {
+                        style: 'thin'
+                    },
+                    left: {
+                        style: 'thin'
+                    },
+                    bottom: {
+                        style: 'thin'
+                    },
+                    right: {
+                        style: 'thin'
+                    }
+                };
+            });
+            workbook.xlsx.writeBuffer().then((buffer) => {
+                const blob = new Blob([buffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const url = window.URL.createObjectURL(blob);
+                const earliestMonth = earliestDate.toLocaleString('en-us', {
+                    month: 'long'
+                });
+                const latestMonth = latestDate.toLocaleString('en-us', {
+                    month: 'long'
+                });
+                const earliestYear = earliestDate.getFullYear();
+                const latestYear = latestDate.getFullYear();
+                let filename;
+                if (earliestMonth === latestMonth && earliestYear === latestYear) {
+                    filename = `MAIP month of ${earliestMonth} ${earliestYear}.xlsx`;
+                } else if (earliestYear === latestYear) {
+                    filename = `MAIP month of ${earliestMonth}-${latestMonth} ${earliestYear}.xlsx`;
+                } else {
+                    filename = `MAIP month of ${earliestMonth} ${earliestYear} - ${latestMonth} ${latestYear}.xlsx`;
+                }
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }).catch(error => {
+                console.error('Error generating Excel file:', error);
+            });
+        },
+        handleMonthChange(dates, dateStrings) {
+            let startDate = null;
+            let endDate = null;
+            if (dates && dates.length === 2) {
+                startDate = dates[0].startOf('month').format('YYYY-MM-DD');
+                endDate = dates[1].endOf('month').format('YYYY-MM-DD');
+            }
+            this.fetchApproveForGenerate(startDate, endDate);
+            this.fetchMedicalRequests(startDate, endDate);
+            this.fetchDeclineMedicalRequests(startDate, endDate);
+            this.fetchApproveMedicalRequests(startDate, endDate);
+        },
+        fetchMedicalRequests(startDate, endDate) {
+            axios.get('/api/medical-requests/get-all', {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.items = Array.isArray(response.data) ? response.data : [];
+                })
+                .catch(error => {
+                    console.error('Error fetching medical requests:', error);
+                });
+        },
+        fetchDeclineMedicalRequests(startDate, endDate) {
+            axios.get('/api/medical-requests/get-all-decline', {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.Declineitems = Array.isArray(response.data) ? response.data : [];
+                })
+                .catch(error => {
+                    console.error('Error fetching declined medical requests:', error);
+                });
+        },
+        fetchApproveMedicalRequests(startDate, endDate) {
+            axios.get('/api/medical-requests/get-all-approve', {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    this.Approveitems = Array.isArray(response.data) ? response.data : [];
+                })
+                .catch(error => {
+                    console.error('Error fetching approved medical requests:', error);
+                });
+        },
+        amountModal(itemId) {
+            this.itemId = itemId;
+            const modal = document.getElementById('amountModal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // Add event listener to close modal on close button click
+            modal.addEventListener('click', function (e) {
+                if (e.target && e.target.closest('[data-modal-hide="amountModal"]')) {
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            });
+        },
+        updateAmount() {
+            const itemId = this.itemId;
+            const amount = document.getElementById('AmountInput').value;
+            axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
+                    amount
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    toastr.success("Amount Approved");
+                    this.fetchMedicalRequests();
+                    this.fetchDeclineMedicalRequests();
+                    this.fetchApproveMedicalRequests();
+                })
+                .catch(error => {
+                    if (error.response && error.response.data && error.response.data.error) {
+                        toastr.error(error.response.data.error);
+                    } else {
+                        toastr.error("Please input the amount value.");
+                    }
+                    console.error(error.response ? error.response.data : error);
+                });
+        },
+
         previewImage(imagePath) {
             this.previewedImage.url = imagePath;
             document.getElementById('RequirementsModal').classList.add('hidden');
@@ -254,19 +753,6 @@ export default {
             document.getElementById('preview-modal').classList.add('hidden');
             document.getElementById('RequirementsModal').classList.remove('hidden');
             this.previewedImage.url = '';
-        },
-        fetchMedicalRequests() {
-            axios.get('/api/medical-requests/get-all', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    this.items = response.data;
-                })
-                .catch(error => {
-                    console.error('Error fetching medical requests:', error);
-                });
         },
         DeclineModal(itemId) {
             this.itemId = itemId;
@@ -294,6 +780,8 @@ export default {
                 .then(response => {
                     toastr.success("Request Decline")
                     this.fetchMedicalRequests();
+                    this.fetchDeclineMedicalRequests();
+                    this.fetchApproveMedicalRequests();
                 })
                 .catch(error => {
                     console.error(error.response.data);
@@ -325,37 +813,8 @@ export default {
                     console.error('Error fetching medical request data:', error);
                 });
         },
-        amountModal(itemId) {
-            this.itemId = itemId;
-            const modal = document.getElementById('amountModal');
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden', 'false');
-            // Add event listener to close modal on close button click
-            modal.addEventListener('click', function (e) {
-                if (e.target && e.target.closest('[data-modal-hide="amountModal"]')) {
-                    modal.classList.add('hidden');
-                    modal.setAttribute('aria-hidden', 'true');
-                }
-            });
-        },
-        updateAmount() {
-            const itemId = this.itemId;
-            const amount = parseFloat(document.getElementById('Amount').value);
-            axios.put(`/api/medical-requests/approve-amount/${itemId}`, {
-                    amount
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    toastr.success("Amount Approve")
-                    this.fetchMedicalRequests();
-                })
-                .catch(error => {
-                    console.error(error.response.data);
-                    toastr.error("Please input the amount value.")
-                });
+        created() {
+            this.handleMonthChange();
         }
     }
 };
@@ -369,6 +828,7 @@ export default {
         background-color: rgb(226, 178, 88);
         z-index: 1;
     }
+
     .requirements-column {
         position: sticky;
         right: 7vw;
