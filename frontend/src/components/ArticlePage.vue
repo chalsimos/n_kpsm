@@ -108,7 +108,7 @@ export default {
     async getArticle() {
       try {
         const articleId = this.$route.params.id;
-        const response = await axios.get(`/api/getArticle/${articleId}`);
+        const response = await axios.get(`/api/news-portal/getArticle/${articleId}`);
         this.article = response.data.data;
         this.currentUrl = window.location.href;
         this.articlecounter(articleId);
@@ -118,7 +118,7 @@ export default {
     },
     async getNewsArticles() {
       try {
-        const response = await axios.get('/api/getTrendingArticles');
+        const response = await axios.get('/api/news-portal/getTrendingArticles');
         this.newsArticles = response.data.data;
       } catch (error) {
         console.error('Error fetching news articles:', error);
@@ -126,7 +126,7 @@ export default {
     },
     async articlecounter(articleId) {
       try {
-        await axios.post('/api/articlecounter', { id: articleId });
+        await axios.post('/api/news-portal/articlecounter', { id: articleId });
       } catch (error) {
         console.error('Error posting decrypted ID:', error);
       }

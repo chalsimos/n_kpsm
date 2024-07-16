@@ -123,7 +123,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('/api/news-updates');
+        const response = await axios.get('/api/news-portal/news-updates');
         this.rows = response.data.data.map(item => ({ ...item, showFullContent: false }));
         this.filteredRows = this.rows;
       } catch (error) {
@@ -185,7 +185,7 @@ export default {
             console.log(`${key}: ${value}`);
         }
 
-        const response = await axios.post(`/api/news/${this.selectedItem.id}`, formData, {
+        const response = await axios.post(`/api/news-portal/news/${this.selectedItem.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
