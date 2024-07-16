@@ -33,8 +33,8 @@ const router = createRouter({
         { path: '/admin/manage-events', name: 'EventsPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin/manage-announcement', name: 'AnnouncementPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin/manage-updates', name: 'UpdatesPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
-        { path: '/admin/manage-draft', name: 'DraftPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
-        { path: '/admin/add-news', name: 'Home', component: () => import('../views/AdminViews/News/AddNews.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/admin/manage-draft', name: 'DraftPage', component: () => import('../views/AdminViews/News/NewsManagement.vue')},
+        { path: '/admin/add-news', name: 'AddNews', component: () => import('../views/AdminViews/News/AddNews.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         //Admin
         { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},

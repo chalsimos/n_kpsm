@@ -45,7 +45,7 @@ Route::get('/active-logos', [LogoController::class, 'displayImage']);
 Route::get('/news', [NewsPortal::class, 'index']);
 
 Route::prefix('news-portal')->group(function () {
-    Route::middleware(['admin'])->group(function () {
+    // Route::middleware(['admin'])->group(function () {
         Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
         Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
         Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
@@ -62,7 +62,7 @@ Route::prefix('news-portal')->group(function () {
         Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
         Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
         Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
-    });
+    // });
 });
 
 Route::prefix('budget')->group(function () {
