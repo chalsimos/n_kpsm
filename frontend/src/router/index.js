@@ -13,6 +13,8 @@ const router = createRouter({
         //Account
         { path: '/login', name: 'Login', component: () => import('../views/Account/Login.vue') },
         { path: '/register', name: 'Register', component: () => import('../views/Account/Register.vue') },
+        { path: '/register-admin', name: 'Register Admin', component: () => import('../views/Account/RegisterAdmin.vue')  ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/register-superadmin', name: 'Register Superadmin', component: () => import('../views/Account/RegisterSuperAdmin.vue')  ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/forgot-password', name: 'Forgot Password', component: () => import('../views/Account/ForgotPassword.vue') }, 
         { path: '/change-password', name: 'Change Password', component: () => import('../views/Account/ChangePassword.vue') },
         //User Side
