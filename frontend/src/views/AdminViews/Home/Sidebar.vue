@@ -65,45 +65,58 @@
                 Dashboard
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
-
             <!-- news start here -->
             <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-request" data-collapse-toggle="manage-news">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path d="M18 4h-2V2h-4v2H8c-1.1 0-1.99.9-1.99 2L6 18c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H6V8h12v10zM8 6v2h8V6H8z" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+                    <path fill="#96A9B2" d="M223.308 219.461H25.22v253.083l.066.005c.956 15.068 13.474 26.996 28.783 26.996c13.906 0 25.511-9.839 28.24-22.935l140.999 10.039z" />
+                    <path fill="#E5E4DF" d="M474.925 91.014h-1.366l-49.6-42.842v23.241l.011 19.601h-5.511l-13.962-48.905V20.448a8.655 8.655 0 0 0-8.655-8.655H82.765l.172 458.903l-.019.019c-.01 15.924-12.922 28.83-28.848 28.83h400.66c15.933 0 28.849-12.916 28.849-28.849V99.669a8.655 8.655 0 0 0-8.654-8.655" />
+                    <path fill="#96A9B2" d="M431.531 200.87H134.358v-8.655h297.173zm0 256.587H134.358v8.655h297.173zM177.632 53.691h-43.273v8.655h43.273z" />
+                    <path fill="#BFBCAF" d="M290.716 297.353H134.358v-17.309h156.358zm.059 25.964H134.417v17.309h156.358zm0 43.273H134.417v17.309h156.358zm0 43.273H134.417v17.309h156.358zm140.816 0H316.74v17.309h114.851z" />
+                    <path fill="#597B91" d="M376.688 91.616v35.219h-.061c-.313 4.494-4.019 8.054-8.593 8.054h-225.02c-4.573 0-8.28-3.56-8.594-8.054h-.061V91.616a8.655 8.655 0 0 1 8.655-8.655h225.021a8.653 8.653 0 0 1 8.653 8.655M142.81 254.08h139.515a8.45 8.45 0 0 0 8.451-8.451v-17.716a8.45 8.45 0 0 0-8.451-8.451H142.81a8.45 8.45 0 0 0-8.451 8.451v17.716a8.45 8.45 0 0 0 8.451 8.451m288.781-25.966a8.654 8.654 0 0 0-8.654-8.652l-.014.001l-.001-.001h-97.549l-.001.001a8.654 8.654 0 0 0-8.631 8.651v147.131a8.653 8.653 0 0 0 8.631 8.653l.001.001h97.549l.001-.001l.014.001a8.655 8.655 0 0 0 8.655-8.655z" />
+                    <path fill="#BFBCAF" d="M482.646 95.787h-80.199V14.971l78.464 78.463z" /></svg>
                 <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap hover:text-orange-500">News/Announcement</span>
                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                 </svg>
             </button>
             <ul id="manage-news" class="hidden py-2 space-y-2">
-                <li data-tooltip-target="Education" data-tooltip-placement="right">
-                    <router-link to="admin/add-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="fas fa-newspaper"></i>
-                        <span>Post News/Announcement</span>
-            <!-- <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span> -->
-
+                <li data-tooltip-target="News/Announcement" data-tooltip-placement="right">
+                    <router-link to="/add-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" id="add-news">
+                            <circle cx="23" cy="9" r="7" fill="#f4a261"></circle>
+                            <path fill="#264653" d="M25.9 9.6h-1.7V7a2.81 2.81 0 0 0-2.8-2.8H7.9A2.81 2.81 0 0 0 5.1 7v11.7a1 1 0 0 0 2 0V7a.8.8 0 0 1 .8-.8h13.5a.8.8 0 0 1 .8.8v17.55a3.28 3.28 0 0 0 .25 1.25H9.7a1 1 0 0 0 0 2h15.75a3.26 3.26 0 0 0 3.25-3.25V12.4a2.81 2.81 0 0 0-2.8-2.8Zm.8 15a1.25 1.25 0 0 1-2.5 0v-13h1.7a.8.8 0 0 1 .8.8Z"></path>
+                            <path fill="#264653" d="M9.7 25.1a1 1 0 0 0 0-2H8v-1.7a1 1 0 0 0-2 0v1.7H4.3a1 1 0 0 0 0 2H6v1.7a1 1 0 0 0 2 0v-1.7zm9.9-13.5a1 1 0 0 0 0-2h-7.2a1 1 0 0 0 0 2zM8.7 14.2a1 1 0 0 0 1 1h9.9a1 1 0 0 0 0-2H9.7a1 1 0 0 0-1 1z"></path>
+                        </svg>
+                        <span>Post</span>
+                        <!-- <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span> -->
                     </router-link>
                 </li>
-
-                <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    Add new News or Announcement
+                <div id="News/Announcement" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Post new News or Announcement
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
-                <li data-tooltip-target="Medical" data-tooltip-placement="right">
-                    <router-link to="/admin/all-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <!-- Font Awesome icon for modifying news -->
-                        <i class="fas fa-edit"></i>
-                        <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Modify News</span>
+                <li data-tooltip-target="Modify-News" data-tooltip-placement="right">
+                    <router-link to="/all-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 64 64">
+                            <path fill="#cda1a7" d="M51,25h8a2,2,0,0,1,2,2V53a6,6,0,0,1-6,6h0a6,6,0,0,1-6-6V27a2,2,0,0,1,2-2Z"></path>
+                            <path fill="#faefde" d="M52,59H11a6,6,0,0,1-6-6V8A3,3,0,0,1,8,5H46a3,3,0,0,1,3,3V56Z"></path>
+                            <rect width="44" height="4" x="5" y="5" fill="#fff7f0" rx="2" ry="2"></rect>
+                            <path fill="#efd8be" d="M49,49H5v4a6,6,0,0,0,6,6H52l-3-3Z"></path>
+                            <path fill="#eb9697" d="M33 14h6a1 1 0 0 0 0-2H33a1 1 0 0 0 0 2zM13 14H29a1 1 0 0 0 0-2H13a1 1 0 0 0 0 2zM23 16H13a1 1 0 0 0 0 2H23a1 1 0 0 0 0-2z"></path>
+                            <path fill="#8d6c9f" d="M23 24H13a1 1 0 0 0 0 2H23a1 1 0 0 0 0-2zM23 28H13a1 1 0 0 0 0 2H23a1 1 0 0 0 0-2zM23 32H13a1 1 0 0 0 0 2H23a1 1 0 0 0 0-2zM23 36H13a1 1 0 0 0 0 2H23a1 1 0 0 0 0-2zM23 40H13a1 1 0 0 0 0 2H23a1 1 0 0 0 0-2zM39 24H29a1 1 0 0 0 0 2H39a1 1 0 0 0 0-2zM39 28H29a1 1 0 0 0 0 2H39a1 1 0 0 0 0-2zM39 32H29a1 1 0 0 0 0 2H39a1 1 0 0 0 0-2zM40 37a1 1 0 0 0-1-1H29a1 1 0 0 0 0 2H39A1 1 0 0 0 40 37z"></path>
+                            <path fill="#eb9697" d="M40,17a1,1,0,0,0-1-1H27a1,1,0,0,0,0,2H39A1,1,0,0,0,40,17Z"></path>
+                            <path fill="#8d6c9f" d="M45,48H41a1,1,0,0,0,0,2h4a1,1,0,0,0,0-2Z"></path>
+                            <path fill="#8d6c9f" d="M58,24H50V7a3,3,0,0,0-3-3H7A3,3,0,0,0,4,7V53a7,7,0,0,0,7,7H55a7,7,0,0,0,7-7V28A4,4,0,0,0,58,24ZM11,58a5,5,0,0,1-5-5V50H37a1,1,0,0,0,0-2H6V7A1,1,0,0,1,7,6H47a1,1,0,0,1,1,1V53a7,7,0,0,0,2,5Zm49-5a5,5,0,0,1-5,5,4.84,4.84,0,0,1-5-5V26h4.56A4,4,0,0,0,54,28V45a1,1,0,0,0,2,0V28a2,2,0,0,1,4,0Z"></path>
+                            <path fill="#8d6c9f" d="M10 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 10 52zM15 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 15 52zM20 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 20 52zM25 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 25 52zM30 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 30 52zM35 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 35 52zM40 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 40 52zM45 52a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V53A1 1 0 0 0 45 52z"></path>
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Modify</span>
                     </router-link>
                 </li>
-                <div id="Medical" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    Modify news or announcement
+                <div id="Modify-News" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Modify New's or Announcements
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
             </ul>
-
             <!-- end news -->
             <li>
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="manage-request" data-collapse-toggle="manage-request">
@@ -179,23 +192,23 @@
                         Manage Educational Assistance
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <li data-tooltip-target="Education" data-tooltip-placement="right">
+                    <li data-tooltip-target="SG" data-tooltip-placement="right">
                         <router-link to="/manage-smart-grant" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <img width="32" height="32" src="https://img.icons8.com/stickers/100/school--v1.png" alt="school--v1" />
                             <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Smart Grant</span>
                         </router-link>
                     </li>
-                    <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div id="SG" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Manage Smart Grant
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <li data-tooltip-target="Education" data-tooltip-placement="right">
+                    <li data-tooltip-target="TD" data-tooltip-placement="right">
                         <router-link to="/manage-tulong-dunong" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <img width="32" height="32" src="https://img.icons8.com/dusk/64/school.png" alt="school" />
                             <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Tulong Dunong</span>
                         </router-link>
                     </li>
-                    <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div id="TD" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Manage Tulong Dunong
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
@@ -250,7 +263,6 @@
                 Emails
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
-
             <li v-show="this.information.type === 'superadmin'" data-tooltip-target="Budget-Allocation" data-tooltip-placement="right">
                 <router-link to="/manage-budget" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
@@ -323,7 +335,7 @@
                         Manage Educational Amount
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <li data-tooltip-target="Amount" data-tooltip-placement="right">
+                    <li data-tooltip-target="Hospital-Manage" data-tooltip-placement="right">
                         <router-link to="/manage-hospital" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
                                 <path fill="#45413c" d="M3.5 45.5a20.5 1.5 0 1 0 41 0a20.5 1.5 0 1 0-41 0" opacity=".15" />
@@ -363,11 +375,11 @@
                             <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Hospitals</span>
                         </router-link>
                     </li>
-                    <div id="Amount" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div id="Hospital-Manage" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Manage Hospital
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <li data-tooltip-target="Amount" data-tooltip-placement="right">
+                    <li data-tooltip-target="Hospital-Offer" data-tooltip-placement="right">
                         <router-link to="/hospital-request" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64">
                                 <path fill="#e8e8e8" d="M40 18H14c-2.2 0-4 1.8-4 4v38h34V22c0-2.2-1.8-4-4-4" />
@@ -390,8 +402,8 @@
                             <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Hospital Offers</span>
                         </router-link>
                     </li>
-                    <div id="Amount" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Manage Hospital Available Offers
+                    <div id="Hospital-Offer" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Manage Hospital Offers
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                     <li data-tooltip-target="tupad-header" data-tooltip-placement="right">
@@ -489,6 +501,9 @@
 <script>
 import Editor from '@tinymce/tinymce-vue'
 import axios from '../../../main.js'
+import {
+    initFlowbite
+} from 'flowbite'
 export default {
     data() {
         return {
@@ -500,6 +515,7 @@ export default {
         'editor': Editor
     },
     mounted() {
+        initFlowbite();
         this.token = localStorage.getItem('token');
         if (this.token) {
             this.isLoggedIn = true;
