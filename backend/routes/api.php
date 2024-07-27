@@ -46,23 +46,30 @@ Route::get('/news', [NewsPortal::class, 'index']);
 
 Route::prefix('news-portal')->group(function () {
     // Route::middleware(['admin'])->group(function () {
-        Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
-        Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
-        Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
-        Route::get('/getMainArticle', [NewsPortal::class, 'getMainArticle']);
-        Route::get('/getTrendingArticles', [NewsPortal::class, 'getTrendingArticles']);
-        Route::get('/getArticle/{id}', [NewsPortal::class, 'getArticle']);
-        Route::post('/articlecounter', [NewsPortal::class, 'articlecounter']);
-        Route::get('/count-article-views/{articleId}', [NewsPortal::class, 'countArticleView']);
-        Route::get('/most-viewed', [NewsPortal::class, 'getMostViewed']);
-        Route::get('/news-all', [NewsPortal::class, 'displayAll']);
-        Route::post('/news/{id}', [NewsPortal::class, 'update']);
-        Route::get('/news-article', [NewsPortal::class, 'news_article']);
-        Route::get('/news-events', [NewsPortal::class, 'news_events']);
-        Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
-        Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
-        Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
+    Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
+    Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
+    Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
+    Route::get('/getMainArticle', [NewsPortal::class, 'getMainArticle']);
+    Route::get('/getTrendingArticles', [NewsPortal::class, 'getTrendingArticles']);
+    Route::get('/getArticle/{id}', [NewsPortal::class, 'getArticle']);
+    Route::post('/articlecounter', [NewsPortal::class, 'articlecounter']);
+    Route::get('/count-article-views/{articleId}', [NewsPortal::class, 'countArticleView']);
+    Route::get('/most-viewed', [NewsPortal::class, 'getMostViewed']);
+    Route::get('/news-all', [NewsPortal::class, 'displayAll']);
+    Route::post('/news/{id}', [NewsPortal::class, 'update']);
+    Route::get('/news-article', [NewsPortal::class, 'news_article']);
+    Route::get('/news-events', [NewsPortal::class, 'news_events']);
+    Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
+    Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
+    Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
     // });
+});
+
+Route::prefix('account')->group(function () {
+    Route::middleware(['admin'])->group(function () {
+        Route::post('/register-superadmin', [AuthController::class, 'registerSuperAdmin']);
+        Route::post('/register-admin', [AuthController::class, 'registerAdmin']);
+    });
 });
 
 Route::prefix('budget')->group(function () {
@@ -85,7 +92,6 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/educational-requests-data', [AdminDashboardController::class, 'getEducationalRequestsData']);
         Route::get('/getData', [AdminDashboardController::class, 'getData']);
     });
-
 });
 
 Route::prefix('utility')->group(function () {

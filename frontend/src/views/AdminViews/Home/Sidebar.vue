@@ -438,6 +438,28 @@
                     </div>
                 </ul>
             </li>
+            <li v-show="this.information.type === 'admin'" data-tooltip-target="Add-Account" data-tooltip-placement="right">
+                <router-link to="/register-admin" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                        <path fill="#888888" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5Zm0 3.9a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0 7.9c2 0 6 1.09 6 3.08a7.2 7.2 0 0 1-12 0c0-1.99 4-3.08 6-3.08" /></svg>
+                    <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">New Admin Account</span>
+                </router-link>
+            </li>
+            <div id="Add-Account" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Add New Admin Account
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
+            <li v-show="this.information.type === 'superadmin'" data-tooltip-target="Add-Account" data-tooltip-placement="right">
+                <router-link to="/register-superadmin" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                        <path fill="#888888" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V5Zm0 3.9a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0 7.9c2 0 6 1.09 6 3.08a7.2 7.2 0 0 1-12 0c0-1.99 4-3.08 6-3.08" /></svg>
+                    <span class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">New Superadmin Account</span>
+                </router-link>
+            </li>
+            <div id="Add-Account" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Add New Superadmin Account
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
         </ul>
     </div>
 </aside>
