@@ -12,14 +12,9 @@ import Antd from 'ant-design-vue';
 import axios from 'axios'
 // axios.defaults.baseURL="https://congress.kpsm.online";
 import CKEditor from '@ckeditor/ckeditor5-vue';
-import './assets/tailwind.css';
 
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faFacebookF, faTwitter, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 
 // Add the icons to the library
-library.add(faFacebookF, faTwitter, faLinkedinIn);
 axios.defaults.baseURL="http://127.0.0.1:8000";
 export default axios;
 import VueApexCharts from "vue3-apexcharts";
@@ -34,7 +29,6 @@ const vuetify = createVuetify({
 })
 
 createApp(App)
-.component('font-awesome-icon', FontAwesomeIcon)
 .use(router)
 .use(Antd)
 .use(VueCameraLib)

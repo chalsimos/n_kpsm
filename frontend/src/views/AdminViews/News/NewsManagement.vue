@@ -1,6 +1,6 @@
 <template>
   
-  <div id="app">
+  <div id="news">
     <Side />
     <div class="p-4 sm:ml-64">
         <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
@@ -20,7 +20,6 @@ import Updates from '../../../components/Updates.vue';
 import DraftPage from '../../../components/DraftPage.vue';
 
 export default {
-  name: 'App',
   components: {
     AllNews,
     ManageArticle,
@@ -57,7 +56,7 @@ export default {
 </script>
 
 <style>
-#app {
+#news {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
