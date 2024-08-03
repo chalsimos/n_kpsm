@@ -11,17 +11,17 @@
                         {{ category }}
                     </option>
                 </select>
-                <!-- <select v-model="type" class="flowbite-input mb-4">
+                <select v-model="type" class="flowbite-input mb-4">
                     <option value="" disabled>Select a type</option>
                     <option value="news">News</option>
                     <option value="event">Event</option>
-                </select> -->
-                <!-- <select v-model="ntype" class="flowbite-input mb-4">
+                </select>
+                <select v-model="ntype" class="flowbite-input mb-4">
                     <option value="" disabled>Select a news type</option>
                     <option value="article">Article</option>
                     <option value="breaking">Breaking</option>
                     <option value="regular">Regular</option>
-                </select> -->
+                </select>
                 <select v-model="status" class="flowbite-input mb-4">
                     <option value="" disabled>Select status</option>
                     <option value="draft">Draft</option>
@@ -54,8 +54,8 @@ export default {
             title: '',
             content: '',
             category: '',
-            // type: '',
-            // ntype: '',
+            type: '',
+            ntype: '',
             status: '',
             categories: ['News', 'Events', 'Announcements', 'Updates'],
             message: '', 
@@ -83,8 +83,8 @@ export default {
                 const transformedContent = this.transformOembedToIframe(this.editorData);
                 formData.append('content', transformedContent);
                 formData.append('category', this.category);
-                // formData.append('type', this.type);
-                // formData.append('ntype', this.ntype);
+                formData.append('type', this.type);
+                formData.append('ntype', this.ntype);
                 formData.append('status', this.status);
                 formData.append('imageUrl', this.imageUrl); 
                 const response = await axios.post('/api/post-news', formData, {

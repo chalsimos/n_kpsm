@@ -79,14 +79,38 @@
             </button>
             <ul id="manage-news" class="hidden py-2 space-y-2">
                 <li data-tooltip-target="Education" data-tooltip-placement="right">
-                    <router-link to="admin/add-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <router-link to="/admin/add-news" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="fas fa-newspaper"></i>
                         <span>Post News/Announcement</span>
             <!-- <span data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex-1 ms-3 whitespace-nowrap hover:text-orange-500">Post News/Announcement</span> -->
 
                     </router-link>
                 </li>
-
+                <li>
+                    <router-link to="/admin/manage-article" data-tooltip-placement="right">
+                        <span>Articles</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/manage-events" data-tooltip-placement="right">
+                        <span>Events</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/manage-announcement" data-tooltip-placement="right">
+                        <span>Announcement</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/manage-updates" data-tooltip-placement="right">
+                        <span>Updates</span>
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/admin/manage-draft" data-tooltip-placement="right">
+                        <span>Drafts</span>
+                    </router-link>
+                </li>
                 <div id="Education" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-yellow-400 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                     Add new News or Announcement
                     <div class="tooltip-arrow" data-popper-arrow></div>
@@ -489,6 +513,9 @@
 <script>
 import Editor from '@tinymce/tinymce-vue'
 import axios from '../../../main.js'
+import {
+    initFlowbite
+} from 'flowbite'
 export default {
     data() {
         return {
@@ -500,6 +527,7 @@ export default {
         'editor': Editor
     },
     mounted() {
+        initFlowbite();
         this.token = localStorage.getItem('token');
         if (this.token) {
             this.isLoggedIn = true;

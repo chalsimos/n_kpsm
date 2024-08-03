@@ -22,20 +22,15 @@ class NewsPortal extends Controller
           'title' => 'required|string|max:255',
           'content' => 'required|string',
           'category' => 'required|string',          
+          'ntype' => 'required|in:trending,article',
           'status' => 'required|in:draft,published',
-          // 'imageUrl' => 'required|string'
       ]);
       if ($validatedData->fails()) {
           return response()->json(['error' => $validatedData->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
       }
       $newsData = $validatedData->validated();
       $news = NewsModel::findOrFail($id);
-      // // $newsData['author'] = '1';
-      // // NewsModel::create($newsData);
       $news->update($newsData);
-      // return response()->json(['message' => 'News article updated successfully', 'data' => $news], 200);
-      // return $newsData;
-      
   } catch (QueryException $e) {
       if ($e->getCode() == 23000) {
           return response()->json(['error' => 'Title already exists'], Response::HTTP_CONFLICT);
@@ -45,31 +40,6 @@ class NewsPortal extends Controller
   } catch (\Exception $e) {
       return response()->json(['error' => 'Failed to create news'], Response::HTTP_INTERNAL_SERVER_ERROR);
   }
-
-
-  //   $validatedData = $request->validate([
-  //     'title' => 'required|string|max:255',
-  //     'content' => 'required|string',
-  //     'category' => 'required|string|max:255',
-  //     'status' => 'required|string|in:published,draft',
-  //     'imageUrl' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-  // ]);
-  // $news = NewsModel::findOrFail($id);
-
-  // if ($request->hasFile('imageUrl')) {
-  // //     // Delete the old image if it exists
-  //     if ($news->imageUrl) {
-  //         Storage::delete('public/' . $news->imageUrl);
-  //     }
-
-  // //     // Store the new image
-  // //     $path = $request->file('imageUrl')->store('images', 'public');
-  // //     $validatedData['imageUrl'] = $path;
-  // }
-
-  // // $news->update($validatedData);
-
-  // // return response()->json(['message' => 'News article updated successfully', 'data' => $news], 200);
   }
   public function getMostViewed(){
     $newsWithArticleCount = NewsModel::select('news.*', DB::raw('COUNT(articlecount.articleid) AS article_count'))
@@ -80,6 +50,18 @@ class NewsPortal extends Controller
     ->get();
     return response()->json($newsWithArticleCount);
   }
+  public function getTviewed()
+{
+    $newsWithArticleCount = NewsModel::select('news.*', DB::raw('COUNT(articlecount.articleid) AS article_count'))
+        ->join('articlecount', 'news.id', '=', 'articlecount.articleid')
+      ->groupBy('news.id')
+        ->orderByDesc('article_count')
+        ->limit(2)  // Change the limit to 2 to get the two most viewed news articles
+        ->get();
+
+    return response()->json($newsWithArticleCount);
+}
+
   public function getArticle($id)
   {
       $article = NewsModel::findOrFail($id);
@@ -100,6 +82,11 @@ class NewsPortal extends Controller
     $data = NewsModel::where('status', 'published')->where('ntype', 'article')->get();
     return response()->json(['data' =>$data]);
   }
+  public function news(){
+    $data = NewsModel::where('status', 'published')->get();
+    return response()->json(['data' =>$data]);
+  }
+  
   public function getHeadLine(){
     $data = NewsModel::where('status', 'published')->where('ntype', 'headline')->latest()->first();
     return response()->json(['data' =>$data]);
@@ -122,6 +109,7 @@ class NewsPortal extends Controller
     $offset = ($page - 1) * $perPage;
     $articles = NewsModel::where('status', 'published')
         ->where('ntype', 'article')
+        ->orderBy('updated_at', 'desc')
         ->latest()
         ->skip($offset)
         ->take($perPage)
@@ -160,8 +148,8 @@ class NewsPortal extends Controller
               'title' => 'required|string|max:255|unique:news,title',
               'content' => 'required|string',
               'category' => 'required|string',
-              'type' => 'required|string',
-              'ntype' => 'required|string',
+              // 'type' => 'required|string',
+              // 'ntype' => 'required|string',
               'status' => 'required|in:draft,published',
               'imageUrl' => 'required|string'
           ]);
@@ -169,23 +157,9 @@ class NewsPortal extends Controller
               return response()->json(['error' => $validatedData->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
           }
           $newsData = $validatedData->validated();
-        //   if ($request->hasFile('images')) {
-        //     $imageUrls = [];
-        //     foreach ($request->file('images') as $image) {
-        //         // Generate a unique filename
-        //         // $filename = uniqid() . '.' . $image->getClientOriginalExtension();
-        //         // Save the image to the storage directory
-        //         $path = $image->store('public/uploads');
-        //         // Store the image URL
-        //         $imageUrls[] = $path;
-        //     }
-        //     // Convert image URLs to JSON string
-        //     // $newsData['imagePaths'] = implode(',', $imagePaths);
-        //     // $newsData['imageUrl'] = json_encode($imageUrls);
-        //     $newsData['imageUrl'] = implode(',', $imageUrls);
-        // }
-          // $newsData['imageUrl'] = isset($newsData['imgUrl']) ? json_encode($newsData['imgUrl']) : null;
           $newsData['author'] = '1';
+          $appUrl = env('APP_URL');
+          $newsData['imageUrl'] = $appUrl .'/storage/' . $newsData['imageUrl'];  
           NewsModel::create($newsData);
           return $newsData;
           return response()->json(['message' => 'News created successfully'], Response::HTTP_CREATED);
@@ -201,19 +175,19 @@ class NewsPortal extends Controller
   }
   
 
-    public function removeNews(Request $request)
+    public function removeNews($id)
     {
-       $newsId = $request->input('news_id');
-       $news = NewsModel::find($newsId);
-       if ($news) {
-           $news->delete();
-           return response()->json(['message' => 'News removed successfully']);
-       } else {
-           return response()->json(['error' => 'News not found'], 404);
-       }
+         $newsItem = NewsModel::find($id);
+         if ($newsItem) {
+             $newsItem->delete();             
+             return response()->json(['message' => 'News item deleted successfully.'], 200);
+         } else {
+             return response()->json(['message' => 'News item not found.'], 404);
+         }
    }
+   
    public function news_article(Request $request){
-    $data = NewsModel::where('status', 'published')->where('category', 'article')->get();
+    $data = NewsModel::where('status', 'published')->where('category', 'news')->get();
     return response()->json(['data' =>$data]);
    }
    public function news_events(Request $request){

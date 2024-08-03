@@ -11,6 +11,9 @@
               <transition name="fade-slide">
                 <div v-if="article" class="bg-white rounded-lg shadow-md overflow-hidden">
                   <div class="text-sm text-indigo-600 font-semibold animated-text">{{ article.category }}</div>
+                  <div v-if="headerImageUrl" class="container mx-auto mt-4 px-4">
+                    <img :src="headerImageUrl" alt="Top Image" class="w-full h-64 object-cover">
+                  </div>
                   <h2 class="mt-1 text-6xl font-bold text-gray-800 animated-text">{{ article.title }}</h2>
                   
                   <h2 class="animated-text">Article Views Count: {{ articleViewsCount }}</h2>
@@ -28,17 +31,16 @@
                     </a>
                   </div>
                   <div class="mt-4 text-sm text-gray-500 animated-text">{{ formatDate(article.created_at) }}</div>
-                  <br>
-                  <img class="w-full h-64 object-cover article-image" :src="article.imageUrl || 'https://via.placeholder.com/800x400'" alt="Article Image">
                   <div class="p-4">
                     <h2 class="mt-2 text-2xl font-bold text-gray-800 animated-text">{{ article.title }}</h2>
-                    <p class="mt-2 text-gray-600 animated-text" v-html="article.content"></p>
-                    <!-- <div v-html="article.content"></div> -->
+                    <div class="mt-2 text-gray-600 animated-text" v-html="formattedContent"></div>
+                    <div v-if="bottomImageUrl" class="container mx-auto mt-4 px-4">
+                      <img :src="bottomImageUrl" alt="Top Image" class="w-full h-64 object-cover">
+                    </div>
                     <div class="mt-4 text-sm text-gray-500 animated-text">{{ formatDate(article.created_at) }}</div>
                   </div>
                 </div>
               </transition>
-              
             </div>
             <!-- Right Column for Clickable News List -->
             <div class="lg:col-span-1">
@@ -62,9 +64,9 @@
       </div>
     </div>
     <ModalImage v-if="showModal" :imageSrc="modalImageSrc" @close="showModal = false" />
-
   </div>
 </template>
+
 <script>
 import axios from '../main.js';
 import Header from './Header.vue';
@@ -83,6 +85,11 @@ export default {
       article: null,
       newsArticles: [],
       currentUrl: window.location.href,
+      topImageUrl: '',
+      headerImageUrl: '',
+      middleImageUrl: '',
+      bottomImageUrl: '',
+      middleImageCaption: '',
     };
   },
   watch: {
@@ -92,12 +99,76 @@ export default {
     this.getArticle();
     this.getNewsArticles();
     this.fetchArticleViews();
+    this.fetchImages();
+  },
+  computed: {
+    formattedContent() {
+      if (!this.article || !this.article.content) return '';
+      
+      let content = this.article.content;
+      
+      // Extract and remove <figure> tags with YouTube iframes
+      const figureTags = [];
+      const figureRegex = /<figure class="media"><iframe.*?<\/iframe><\/figure>/g;
+      content = content.replace(figureRegex, (match) => {
+        figureTags.push(match);
+        return '[FIGURE_PLACEHOLDER]';
+      });
+      
+      const middleImageTag = this.middleImageUrl ? `<div style="text-align: center; margin: 20px 0;"><img src="${this.middleImageUrl}" alt="${this.middleImageCaption}"  style="max-width: 100%; height: auto;" /><p>${this.middleImageCaption}</p></div>` : '';
+
+      // Calculate the middle point
+      const middlePoint = Math.floor(content.length / 2);
+      
+      // Find the last space before the middle point to avoid breaking words
+      const splitPoint = content.lastIndexOf(' ', middlePoint);
+      
+      // Split the content and insert the image
+      const beforeImage = content.slice(0, splitPoint);
+      const afterImage = content.slice(splitPoint);
+      
+      let formattedContent = `${beforeImage}${middleImageTag}${afterImage}`;
+      
+      // Reinsert <figure> tags at their original positions
+      figureTags.forEach(tag => {
+        formattedContent = formattedContent.replace('[FIGURE_PLACEHOLDER]', tag);
+      });
+      
+      return formattedContent;
+    }
   },
   methods: {
+    fetchImages() {
+      const encryptedId = this.$route.params.id;
+      axios.get(`/api/news-portal/findimage/${encryptedId}`)
+        .then(response => {
+          const images = response.data;
+          const topImage = images.find(image => image.position === 'top');
+          const headerImage = images.find(image => image.position === 'header');
+          const middleImage = images.find(image => image.position === 'middle');
+          const bottomImage = images.find(image => image.position === 'bottom');
+          if (topImage) {
+            this.topImageUrl = this.getImageUrl(topImage.location);
+          }
+          if (headerImage) {
+            this.headerImageUrl = this.getImageUrl(headerImage.location);
+          }
+          if (middleImage) {
+            this.middleImageUrl = this.getImageUrl(middleImage.location);
+            this.middleImageCaption = middleImage.caption || ''; 
+          }
+          if (bottomImage) {
+            this.bottomImageUrl = this.getImageUrl(bottomImage.location);
+            this.bottomImageCaption = bottomImage.caption || '';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching images:', error);
+        });
+    },
     fetchArticleViews() {
       const encryptedId = this.$route.params.id;
-      //const articleId = this.decrypt(encryptedId);
-      axios.get(`/api/count-article-views/${encryptedId}`)
+      axios.get(`/api/news-portal/count-article-views/${encryptedId}`)
         .then(response => {
           this.articleViewsCount = response.data.count;
         })
@@ -124,6 +195,9 @@ export default {
         console.error('Error fetching news articles:', error);
       }
     },
+    getImageUrl(url) {
+      return url.startsWith('http://') || url.startsWith('https://') ? url : `http://localhost:8000/storage/${url}`;
+    },
     async articlecounter(articleId) {
       try {
         await axios.post('/api/news-portal/articlecounter', { id: articleId });
@@ -148,62 +222,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-/* Scoped styles for ArticlePage.vue can go here */
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-  opacity: 0;
-}
-
-.fade-slide-enter-active, .fade-slide-leave-active {
-  transition: all 0.5s ease;
-}
-.fade-slide-enter, .fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.article-image {
-  animation: imageLoadAnimation 1s ease forwards;
-  transition: transform 0.3s ease;
-}
-.article-image:hover {
-  transform: scale(1.05);
-}
-
-@keyframes imageLoadAnimation {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animated-text {
-  opacity: 0;
-  animation: textLoadAnimation 1s ease forwards;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-  opacity: 0;
-}
-
-@keyframes textLoadAnimation {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>

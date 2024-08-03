@@ -43,6 +43,8 @@ Route::post('/upload-file', [FileController::class, 'uploadFile']);
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
 Route::get('/news', [NewsPortal::class, 'index']);
+Route::get('/getnews', [NewsPortal::class, 'news']);
+
 
 Route::prefix('news-portal')->group(function () {
     // Route::middleware(['admin'])->group(function () {
@@ -55,13 +57,23 @@ Route::prefix('news-portal')->group(function () {
         Route::post('/articlecounter', [NewsPortal::class, 'articlecounter']);
         Route::get('/count-article-views/{articleId}', [NewsPortal::class, 'countArticleView']);
         Route::get('/most-viewed', [NewsPortal::class, 'getMostViewed']);
+        Route::get('/getmviewed', [NewsPortal::class, 'getTviewed']);
         Route::get('/news-all', [NewsPortal::class, 'displayAll']);
         Route::post('/news/{id}', [NewsPortal::class, 'update']);
         Route::get('/news-article', [NewsPortal::class, 'news_article']);
+        // Route::get('/news-articles/{id}', [NewsPortal::class, 'news_article']);
         Route::get('/news-events', [NewsPortal::class, 'news_events']);
         Route::get('/news-announcement', [NewsPortal::class, 'news_announcement']);
         Route::get('/news-updates', [NewsPortal::class, 'news_updates']);
         Route::get('/news-draft', [NewsPortal::class, 'news_draft']);
+        Route::post('/upload-file', [FileController::class, 'uploadFile']);
+        Route::get('/images', [FileController::class, 'getImages']);
+        Route::get('/findimage/{id}', [FileController::class, 'findimage']);    
+        Route::put('/images/{id}', [FileController::class, 'update']);
+        Route::delete('/news-delete/{id}', [NewsPortal::class, 'removeNews']);
+        
+
+        
     // });
 });
 

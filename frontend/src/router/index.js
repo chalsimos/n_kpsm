@@ -28,13 +28,17 @@ const router = createRouter({
         // news
         // { path: '/article/:id', name: 'ArticlePage', component:() => import('../components/ArticlePage.vue') },
         { path:'/arts/:id', name:'Article', component:() => import('../components/ArticlePage.vue')},
+        { path:'/preview/:id', name:'Preview', component:() => import('../components/PreviewPage.vue')},
         { path: '/admin/all-news', name: 'NewsPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin/manage-article', name: 'ArticlePage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/edit-article/:id', name: 'EditArticle', component: () => import('@/components/EditArticle.vue') },
         { path: '/admin/manage-events', name: 'EventsPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin/manage-announcement', name: 'AnnouncementPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin/manage-updates', name: 'UpdatesPage', component: () => import('../views/AdminViews/News/NewsManagement.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin/manage-draft', name: 'DraftPage', component: () => import('../views/AdminViews/News/NewsManagement.vue')},
         { path: '/admin/add-news', name: 'AddNews', component: () => import('../views/AdminViews/News/AddNews.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        { path: '/admin/multimedia-manager', name: 'MultiMediaManager', component: () => import('../views/AdminViews/News/MultiMediaManager.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
+        
         //Admin
         { path: '/manage-tupad', name: 'Manage Tupad', component: () => import('../views/AdminViews/Dole/ManageTupad.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
         { path: '/admin', name: 'Home', component: () => import('../views/AdminViews/Home/HomeView.vue') ,meta: {  requiresAdminOrSuperAdmin: true }},
