@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     getMostViewed(){
-      axios.get('/api/most-viewed')
+      axios.get('/api/news-portal/most-viewed')
       .then(response => {
         this.articles = response.data;
       })

@@ -83,7 +83,7 @@ export default {
   methods: {
     async getMainArticle() {
       try {
-        const response = await axios.get('/api/getMainArticle');
+        const response = await axios.get('/api/news-portal/getMainArticle');
         this.mainArticle = response.data.data;
       } catch (error) {
         console.error('Error fetching main article:', error);
@@ -91,7 +91,7 @@ export default {
     },
     async getTrendingArticles() {
       try {
-        const response = await axios.get('/api/getTrendingArticles');
+        const response = await axios.get('/api/news-portal/getTrendingArticles');
         const articles = response.data.data;
         this.trendingArticles = articles.slice(0, 4);
         this.moreTrendingArticles = articles.slice(4, 6); // Adjust the slice range as needed

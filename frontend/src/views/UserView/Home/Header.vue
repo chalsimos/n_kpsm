@@ -69,6 +69,9 @@
                     <router-link to="/" class="block py-2 px-3 border-b border-gray-100 hover:text-orange-300 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-blue-500 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700 test-class" aria-current="page">Home</router-link>
                 </li>
                 <li>
+                    <a href="https://drive.google.com/drive/folders/1pXy_4LQbXrjlpRQIzLpzPkOlFEeoHVEA?usp=sharing" class="block py-2 px-3 border-b border-gray-100 hover:text-orange-300 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-blue-500 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700 test-class" >Downloadable Forms</a>
+                </li>
+                <li>
                     <button id="mega-menu-dropdown-button" data-dropdown-toggle="mega-menu-dropdown" class="flex items-center justify-between w-full py-2 px-3 font-medium border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
                         Request
                         <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -156,7 +159,6 @@
                 </li>
                 <li>
                     <a href="#" class="block py-2 px-3 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-orange-400 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">Announcement</a>
-
                 </li>
             </ul>
         </div>
@@ -254,6 +256,9 @@
 <script>
 import axios from '../../../main.js'; // use main.js instead of axios para magamit yung base.url at sa axios e hindi na ilalagay doamin ng backend api link nalang
 
+import {
+    initFlowbite
+} from 'flowbite'
 export default {
     data() {
         return {
@@ -264,6 +269,7 @@ export default {
         };
     },
     mounted() {
+        initFlowbite();
         this.fetchActiveLogos();
         this.token = localStorage.getItem('token');
         if (this.token) {

@@ -2,7 +2,7 @@
 <template>
   <div>
     <Header />
-    <div class="pt-16"> <!-- Add padding top to offset the fixed header height -->
+    <div class="pt-32"> <!-- Add padding top to offset the fixed header height -->
       <TrendingSection /> 
       <FeatureNews />
       <MainArticle />
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Header from '../../../components/Header.vue';
+import Header from '../Home/Header.vue';
 import TrendingSection from '../../../components/TrendingSection.vue';
 import FeatureNews from '../../../components/FeatureNews.vue';
 import MainArticle from '../../../components/MainArticle.vue';

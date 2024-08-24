@@ -2,148 +2,181 @@
 <div>
     <div class="flex justify-center">
         <div class="w-full py-10 bg-gray-50 dark:bg-gray-800 rounded px-4">
-            <div class="collapse-wrapper">
-                <a-collapse accordion>
-                    <a-collapse-panel show-arrow="false" v-for="year in yearsData" :key="year.year" :header="`Year: ${year.year} - Total: ${year.total_per_year}`">
-                        <div class="custom-content">
-                            <a-collapse accordion>
-                                <a-collapse-panel show-arrow="false" v-for="month in year.months" :key="month.month" :header="`Month: ${month.month} - Total: ${month.total_per_month}`">
-                                    <div class="custom-content">
-                                        <a-collapse accordion>
-                                            <a-collapse-panel show-arrow="false" v-for="hospital in month.hospitals" :key="hospital.hospital" :header="`Hospital: ${hospital.hospital} - Total: ${hospital.total_per_hospital}`">
-                                                <div class="custom-content">
-                                                    <a-collapse accordion>
-                                                        <a-collapse-panel show-arrow="false" v-for="municipality in hospital.municipalities" :key="municipality.municipality" :header="`Municipality: ${municipality.municipality} - Total: ${municipality.total_per_municipality}`">
-                                                            <div class="custom-content">
-                                                                <a-collapse accordion>
-                                                                    <a-collapse-panel show-arrow="false" v-for="barangay in municipality.barangays" :key="barangay.barangay" :header="`Barangay: ${barangay.barangay} - Total: ${barangay.total_per_barangay}`">
-                                                                        <a-table :columns="columns" :dataSource="barangay.details" rowKey="id" :scroll="{ x: 'max-content' }" />
-                                                                    </a-collapse-panel>
-                                                                </a-collapse>
-                                                            </div>
-                                                        </a-collapse-panel>
-                                                    </a-collapse>
-                                                </div>
-                                            </a-collapse-panel>
-                                        </a-collapse>
-                                    </div>
-                                </a-collapse-panel>
-                            </a-collapse>
-                        </div>
-                    </a-collapse-panel>
-                </a-collapse>
-            </div>
+            <apexchart type="pie" :options="yearOptions" :series="yearSeries" @dataPointSelection="(event, chartContext, config) => openYearModal(yearsData[config.dataPointIndex])" class="w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto" />
+
+            <a-modal v-if="selectedYear" v-model:visible="isYearModalVisible" title="Monthly Data" @ok="handleYearOk" @cancel="handleYearCancel">
+                <apexchart type="pie" :options="monthOptions" :series="monthSeries" @dataPointSelection="(event, chartContext, config) => openMonthModal(selectedYear.months[config.dataPointIndex])" />
+            </a-modal>
+
+            <a-modal v-if="selectedMonth" v-model:visible="isMonthModalVisible" title="Hospital Data" @ok="handleMonthOk" @cancel="handleMonthCancel">
+                <apexchart type="pie" :options="hospitalOptions" :series="hospitalSeries" @dataPointSelection="(event, chartContext, config) => openHospitalModal(selectedMonth.hospitals[config.dataPointIndex])" />
+            </a-modal>
+
+            <a-modal v-if="selectedHospital" v-model:visible="isHospitalModalVisible" title="Municipality Data" @ok="handleHospitalOk" @cancel="handleHospitalCancel">
+                <apexchart type="pie" :options="municipalityOptions" :series="municipalitySeries" @dataPointSelection="(event, chartContext, config) => openMunicipalityModal(selectedHospital.municipalities[config.dataPointIndex])" />
+            </a-modal>
+
+            <a-modal v-if="selectedMunicipality" v-model:visible="isMunicipalityModalVisible" title="Barangay Data" @ok="handleMunicipalityOk" @cancel="handleMunicipalityCancel">
+                <apexchart type="pie" :options="barangayOptions" :series="barangaySeries" @dataPointSelection="(event, chartContext, config) => openBarangayModal(selectedMunicipality.barangays[config.dataPointIndex])" />
+            </a-modal>
+
+            <a-modal v-if="selectedBarangay" v-model:visible="isBarangayModalVisible" title="Barangay Details" @ok="handleBarangayOk" @cancel="handleBarangayCancel">
+                <a-table :columns="columns" :dataSource="selectedBarangay.details" rowKey="id" :scroll="{ x: 'max-content' }" />
+            </a-modal>
         </div>
     </div>
 </div>
 </template>
 
 <script>
+import VueApexCharts from 'vue3-apexcharts';
 import {
-    defineComponent,
-    h
+    defineComponent
 } from 'vue';
 import {
-    Collapse,
-    Input,
-    Button,
-    Space,
+    Modal,
     Table
 } from 'ant-design-vue';
-import {
-    SearchOutlined
-} from '@ant-design/icons-vue';
-import axios from "../../../main.js";
+import axios from '../../../main.js';
 
 export default defineComponent({
     components: {
-        'a-collapse': Collapse,
-        'a-collapse-panel': Collapse.Panel,
-        'a-input': Input,
-        'a-button': Button,
-        'a-space': Space,
+        apexchart: VueApexCharts,
+        'a-modal': Modal,
         'a-table': Table,
-        'search-outlined': SearchOutlined,
     },
     data() {
         return {
             yearsData: [],
-            searchText: '',
-            searchedColumn: '',
+            selectedYear: null,
+            selectedMonth: null,
+            selectedHospital: null,
+            selectedMunicipality: null,
+            selectedBarangay: null,
+            isYearModalVisible: false,
+            isMonthModalVisible: false,
+            isHospitalModalVisible: false,
+            isMunicipalityModalVisible: false,
+            isBarangayModalVisible: false,
             columns: [{
                     title: 'Hor Code',
                     dataIndex: 'Hor_code',
-                    key: 'Hor_code',
-                    ...this.getColumnSearchProps('Hor_code')
+                    key: 'Hor_code'
                 },
                 {
                     title: 'First Name',
                     dataIndex: 'firstname',
-                    key: 'firstname',
-                    ...this.getColumnSearchProps('firstname')
+                    key: 'firstname'
                 },
                 {
                     title: 'Middle Name',
                     dataIndex: 'middlename',
-                    key: 'middlename',
-                    ...this.getColumnSearchProps('middlename')
+                    key: 'middlename'
                 },
                 {
                     title: 'Last Name',
                     dataIndex: 'lastname',
-                    key: 'lastname',
-                    ...this.getColumnSearchProps('lastname')
+                    key: 'lastname'
                 },
                 {
                     title: 'Age',
                     dataIndex: 'age',
-                    key: 'age',
-                    ...this.getColumnSearchProps('age')
+                    key: 'age'
                 },
                 {
                     title: 'Birthday',
                     dataIndex: 'birthday',
-                    key: 'birthday',
-                    ...this.getColumnSearchProps('birthday')
+                    key: 'birthday'
                 },
                 {
                     title: 'Gender',
                     dataIndex: 'gender',
-                    key: 'gender',
-                    ...this.getColumnSearchProps('gender')
+                    key: 'gender'
                 },
                 {
                     title: 'Representative Full Name',
                     dataIndex: 'representativefullname',
-                    key: 'representativefullname',
-                    ...this.getColumnSearchProps('representativefullname')
+                    key: 'representativefullname'
                 },
                 {
                     title: 'Contact Number',
                     dataIndex: 'contactnumber',
-                    key: 'contactnumber',
-                    ...this.getColumnSearchProps('contactnumber')
+                    key: 'contactnumber'
                 },
                 {
                     title: 'Diagnosis',
                     dataIndex: 'diagnosis',
-                    key: 'diagnosis',
-                    ...this.getColumnSearchProps('diagnosis')
+                    key: 'diagnosis'
                 },
                 {
                     title: 'Hospital',
                     dataIndex: 'hospital',
-                    key: 'hospital',
-                    ...this.getColumnSearchProps('hospital')
+                    key: 'hospital'
                 },
                 {
                     title: 'Request',
                     dataIndex: 'request',
-                    key: 'request',
-                    ...this.getColumnSearchProps('request')
+                    key: 'request'
                 },
             ],
         };
+    },
+    computed: {
+        yearOptions() {
+            return {
+                chart: {
+                    type: 'pie',
+                },
+                labels: this.yearsData.map((year) => `Year: ${year.year} - Total: ${year.total_per_year}`),
+            };
+        },
+        yearSeries() {
+            return this.yearsData.map((year) => year.total_per_year);
+        },
+        monthOptions() {
+            return {
+                chart: {
+                    type: 'pie',
+                },
+                labels: this.selectedYear ? this.selectedYear.months.map((month) => `Month: ${month.month} - Total: ${month.total_per_month}`) : [],
+            };
+        },
+        monthSeries() {
+            return this.selectedYear ? this.selectedYear.months.map((month) => month.total_per_month) : [];
+        },
+        hospitalOptions() {
+            return {
+                chart: {
+                    type: 'pie',
+                },
+                labels: this.selectedMonth ? this.selectedMonth.hospitals.map((hospital) => `Hospital: ${hospital.hospital} - Total: ${hospital.total_per_hospital}`) : [],
+            };
+        },
+        hospitalSeries() {
+            return this.selectedMonth ? this.selectedMonth.hospitals.map((hospital) => hospital.total_per_hospital) : [];
+        },
+        municipalityOptions() {
+            return {
+                chart: {
+                    type: 'pie',
+                },
+                labels: this.selectedHospital ? this.selectedHospital.municipalities.map((municipality) => `Municipality: ${municipality.municipality} - Total: ${municipality.total_per_municipality}`) : [],
+            };
+        },
+        municipalitySeries() {
+            return this.selectedHospital ? this.selectedHospital.municipalities.map((municipality) => municipality.total_per_municipality) : [];
+        },
+        barangayOptions() {
+            return {
+                chart: {
+                    type: 'pie',
+                },
+                labels: this.selectedMunicipality ? this.selectedMunicipality.barangays.map((barangay) => `Barangay: ${barangay.barangay} - Total: ${barangay.total_per_barangay}`) : [],
+            };
+        },
+        barangaySeries() {
+            return this.selectedMunicipality ? this.selectedMunicipality.barangays.map((barangay) => barangay.total_per_barangay) : [];
+        },
     },
     mounted() {
         this.fetchDataHospitalYearly();
@@ -152,152 +185,85 @@ export default defineComponent({
         async fetchDataHospitalYearly(startDate, endDate) {
             try {
                 const response = await axios.get('/api/dashboard/medical-requests-data', {
-                        params: {
-                            start_date: startDate,
-                            end_date: endDate
-                        },
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate,
+                    },
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
                 this.yearsData = response.data;
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error('Error fetching data:', error);
             }
         },
-        handleSearch(selectedKeys, confirm, dataIndex) {
-            confirm();
-            this.searchText = selectedKeys[0];
-            this.searchedColumn = dataIndex;
+        openYearModal(year) {
+            this.selectedYear = year;
+            this.isYearModalVisible = true;
         },
-        handleReset(clearFilters, confirm) {
-            clearFilters();
-            this.searchText = '';
-            this.searchedColumn = '';
-            confirm();
+        handleYearOk() {
+            this.isYearModalVisible = false;
+            this.selectedYear = null;
         },
-        renderColumn({
-            text
-        }, dataIndex) {
-            if (dataIndex === 'birthday') {
-                const birthday = new Date(text);
-                const options = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-                return h('span', birthday.toLocaleDateString('en-US', options));
-            } else {
-                return h(
-                    'span',
-                    this.searchedColumn === dataIndex && this.searchText ? [
-                        h('span', {
-                            style: {
-                                backgroundColor: '#ffc069',
-                                padding: 0
-                            }
-                        }, this.searchText),
-                        text.replace(new RegExp(this.searchText, 'i'), ''),
-                    ] :
-                    text
-                );
-            }
+        handleYearCancel() {
+            this.isYearModalVisible = false;
+            this.selectedYear = null;
         },
-
-        getColumnSearchProps(dataIndex) {
-            return {
-                filterDropdown: ({
-                        setSelectedKeys,
-                        selectedKeys,
-                        confirm,
-                        clearFilters,
-                        close
-                    }) =>
-                    h(
-                        'div', {
-                            style: {
-                                padding: 8
-                            }
-                        },
-                        [
-                            h(Input, {
-                                placeholder: `Search ${dataIndex}`,
-                                value: selectedKeys[0],
-                                onInput: e => setSelectedKeys(e.target.value ? [e.target.value] : []),
-                                onPressEnter: () => this.handleSearch(selectedKeys, confirm, dataIndex),
-                                style: {
-                                    marginBottom: 8,
-                                    display: 'block'
-                                },
-                            }),
-                            h(
-                                Space,
-                                [
-                                    h(
-                                        Button, {
-                                            type: 'primary',
-                                            icon: h(SearchOutlined),
-                                            size: 'small',
-                                            style: {
-                                                width: 90
-                                            },
-                                            onClick: () => this.handleSearch(selectedKeys, confirm, dataIndex),
-                                        },
-                                        'Search'
-                                    ),
-                                    h(
-                                        Button, {
-                                            onClick: () => this.handleReset(clearFilters, confirm),
-                                            size: 'small',
-                                            style: {
-                                                width: 90
-                                            },
-                                        },
-                                        'Reset'
-                                    ),
-                                    h(
-                                        Button, {
-                                            size: 'small',
-                                            style: {
-                                                width: 90
-                                            },
-                                            onClick: close,
-                                        },
-                                        'Close'
-                                    ),
-                                ]
-                            ),
-                        ]
-                    ),
-                filterIcon: filtered => h(SearchOutlined, {
-                    style: {
-                        color: filtered ? '#1890ff' : undefined
-                    }
-                }),
-                onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-                customRender: ({
-                    text
-                }) => this.renderColumn({
-                    text
-                }, dataIndex),
-            };
+        openMonthModal(month) {
+            this.selectedMonth = month;
+            this.isMonthModalVisible = true;
+        },
+        handleMonthOk() {
+            this.isMonthModalVisible = false;
+            this.selectedMonth = null;
+        },
+        handleMonthCancel() {
+            this.isMonthModalVisible = false;
+            this.selectedMonth = null;
+        },
+        openHospitalModal(hospital) {
+            this.selectedHospital = hospital;
+            this.isHospitalModalVisible = true;
+        },
+        handleHospitalOk() {
+            this.isHospitalModalVisible = false;
+            this.selectedHospital = null;
+        },
+        handleHospitalCancel() {
+            this.isHospitalModalVisible = false;
+            this.selectedHospital = null;
+        },
+        openMunicipalityModal(municipality) {
+            this.selectedMunicipality = municipality;
+            this.isMunicipalityModalVisible = true;
+        },
+        handleMunicipalityOk() {
+            this.isMunicipalityModalVisible = false;
+            this.selectedMunicipality = null;
+        },
+        handleMunicipalityCancel() {
+            this.isMunicipalityModalVisible = false;
+            this.selectedMunicipality = null;
+        },
+        openBarangayModal(barangay) {
+            this.selectedBarangay = barangay;
+            this.isBarangayModalVisible = true;
+        },
+        handleBarangayOk() {
+            this.isBarangayModalVisible = false;
+            this.selectedBarangay = null;
+        },
+        handleBarangayCancel() {
+            this.isBarangayModalVisible = false;
+            this.selectedBarangay = null;
         },
     },
 });
 </script>
 
 <style scoped>
-.collapse-wrapper .ant-collapse {
-    display: flex;
-    flex-direction: column;
-}
-
 .custom-content {
-    width: 100%;
-}
-
-/* Hide the arrow icon */
-.ant-collapse-arrow {
-    display: none;
+    margin-bottom: 10px;
 }
 </style>

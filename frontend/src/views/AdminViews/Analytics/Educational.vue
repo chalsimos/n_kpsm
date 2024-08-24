@@ -1,85 +1,82 @@
 <template>
-    <div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-                    <apexchart type="pie" :options="genderEducationalOptions" :series="genderEducationalSeries"></apexchart>
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-                    <apexchart type="bar" :options="Educationalbarangay_per_municipality" :series="Educationalmunicipality_count"></apexchart>
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-                </div>
+<div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+                <apexchart type="pie" :options="genderEducationalOptions" :series="genderEducationalSeries"></apexchart>
             </div>
         </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-                </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+                <apexchart type="bar" :options="Educationalbarangay_per_municipality" :series="Educationalmunicipality_count"></apexchart>
             </div>
         </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-        </div>
-        <div class="flex items-center justify-center h-[50vh] mb-4 rounded bg-gray-50 dark:bg-gray-800">
-
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
-            </div>
-            <div class="flex items-center justify-center w-full h-full">
-                <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
-
-                </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
             </div>
         </div>
     </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 mb-4">
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+                <apexchart type="bar" :options="ageOptions" :series="ageSeries"></apexchart>
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[60vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+    </div>
+    <div class="flex items-center justify-center h-[50vh] mb-4 rounded bg-gray-50 dark:bg-gray-800">
+
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="w-full h-[50vh] py-10 bg-gray-50 dark:bg-gray-800 rounded">
+
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -117,6 +114,83 @@ export default {
     },
     data() {
         return {
+            ageOptions: {
+        chart: {
+          type: 'bar',
+          height: '100%',
+          width: '100%',
+          toolbar: {
+            show: true
+          },
+          id: 'ageOptions'
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: (val) => val ? val.toFixed(0) : '0',
+          style: {
+            fontSize: '12px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            colors: ["#000000"]
+          },
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            endingShape: 'rounded'
+          },
+        },
+        title: {
+          text: 'Number of Patients by Age',
+          align: 'left',
+        },
+        xaxis: {
+          categories: [], // Will be dynamically updated with school names
+          title: {
+            text: 'Schools',
+          },
+          labels: {
+            show: true,
+            rotate: -45, // Rotate labels if needed
+            style: {
+              colors: '#000',
+              fontSize: '14px',
+            },
+          }
+        },
+        yaxis: {
+          labels: {
+            formatter: (val) => val ? val.toFixed(0) : '0',
+          }
+        },
+        tooltip: {
+          shared: false,
+          intersect: true,
+          custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+            const school = w.config.xaxis.categories[dataPointIndex];
+            const municipalities = this.detailedMunicipalityData[school] || [];
+            let tooltipContent = `<div class="p-4 bg-orange-300">`;
+            tooltipContent += `<div class="font-bold text-lg mb-2">${school}</div>`;
+            if (municipalities.length) {
+              municipalities.forEach((item) => {
+                tooltipContent += `<div>${item.age} - ${item.municipality}: ${item.count}</div>`;
+              });
+            } else {
+              tooltipContent += `<div>No data available</div>`;
+            }
+            tooltipContent += `</div>`;
+            return tooltipContent;
+          }
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'right',
+        },
+        fill: {
+          opacity: 1
+        }
+      },
+      ageSeries: [],
+      detailedMunicipalityData: {},
             EducationaldetailedMunicipalityData: {},
             genderEducationalOptions: {
                 chart: {
@@ -250,14 +324,81 @@ export default {
         initFlowbite();
         this.fetchGenderEducationalRequests();
         this.fetchEducationalMunicipalityBarangay();
+        this.fetchAgeBracketMedicalRequests();
     },
     methods: {
+        fetchAgeBracketMedicalRequests(startDate, endDate) {
+      axios.get('/api/dashboard/age-bracket-educational-requests', {
+        params: {
+          start_date: startDate,
+          end_date: endDate
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        const data = response.data;
+        this.processAgeBracketData(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    },
+    processAgeBracketData(data) {
+  const schools = Object.keys(data); // Extract school names from the keys
+  const seriesData = [];
+  const detailedMunicipalityData = {};
+
+  // Prepare data for series and detailedMunicipalityData
+  schools.forEach((school) => {
+    console.log("Processing School:", school); // Log to check if the school name is retrieved correctly
+
+    let totalCount = 0;
+    const municipalities = [];
+    if (data[school] && data[school].length) {
+      data[school].forEach(item => {
+        totalCount += item.count;
+        municipalities.push({
+          age: item.age,
+          municipality: item.municipality,
+          count: item.count
+        });
+      });
+    }
+
+    // Push series data for each school
+    seriesData.push(totalCount); // Total count for each school
+    detailedMunicipalityData[school] = municipalities;
+  });
+
+  console.log("Final Schools Array:", schools); // Log to check the final schools array
+  console.log("Series Data Array:", seriesData); // Log to check the final series data
+
+  // Set chart series data
+  this.ageSeries = [{
+    name: 'Total Patients',
+    data: seriesData // Pass the total counts for each school
+  }];
+
+  // Update chart options with new categories (school names)
+  this.ageOptions = {
+    ...this.ageOptions,
+    xaxis: {
+      categories: schools, // Set school names as categories
+    }
+  };
+
+  // Store detailed data for tooltips
+  this.detailedMunicipalityData = detailedMunicipalityData;
+},
+
         fetchEducationalMunicipalityBarangay(startDate, endDate) {
             axios.get('/api/dashboard/educational-municipality-barangay', {
-                        params: {
-                            start_date: startDate,
-                            end_date: endDate
-                        },
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -319,10 +460,10 @@ export default {
         },
         fetchGenderEducationalRequests(startDate, endDate) {
             axios.get('/api/dashboard/gender-educational-requests', {
-                        params: {
-                            start_date: startDate,
-                            end_date: endDate
-                        },
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }

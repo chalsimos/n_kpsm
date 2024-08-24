@@ -38,7 +38,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/getuser', [AuthController::class, 'getUser']);
 Route::get('/getUserType', [AuthController::class, 'getUserType']);
-Route::post('/upload-file', [FileController::class, 'uploadFile']);
 
 Route::post('/logos', [LogoController::class, 'store']);
 Route::get('/active-logos', [LogoController::class, 'displayImage']);
@@ -46,6 +45,8 @@ Route::get('/news', [NewsPortal::class, 'index']);
 
 Route::prefix('news-portal')->group(function () {
     // Route::middleware(['admin'])->group(function () {
+    Route::post('/post-news', [NewsPortal::class, 'addNews']);
+    Route::post('/upload-file', [FileController::class, 'uploadFile']);
     Route::get('/headline', [NewsPortal::class, 'getHeadLine']);
     Route::get('/featured-news', [NewsPortal::class, 'featuredNews']);
     Route::get('/featured-article', [NewsPortal::class, 'featuredArticle']);
@@ -91,6 +92,8 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/medical-requests-data', [AdminDashboardController::class, 'getMedicalRequestsData']);
         Route::get('/educational-requests-data', [AdminDashboardController::class, 'getEducationalRequestsData']);
         Route::get('/getData', [AdminDashboardController::class, 'getData']);
+        Route::get('/age-bracket-medical-requests', [AdminDashboardController::class, 'getAgeBracketMedicalRequest']);
+        Route::get('/age-bracket-educational-requests', [AdminDashboardController::class, 'getAgeEducationalAgeRequest']);
     });
 });
 
@@ -172,7 +175,6 @@ Route::prefix('medical-requests')->group(function () {
         Route::get('/generate-all-approve', [MedicalRequestController::class, 'GenerateApprove']);
     });
 });
-Route::post('/post-news', [NewsPortal::class, 'addNews']);
 Route::prefix('dole')->group(function () {
     Route::post('/add-tupad', [DoleController::class, 'save_tupad']);
     Route::post('/code-checker', [DoleController::class, 'code_checker']);
