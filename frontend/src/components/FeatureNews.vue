@@ -48,7 +48,7 @@ export default {
   methods: {
     async getFeatured() {
       try {
-        const response = await axios.get(`/api/featured-article?page=${this.currentPage}`);
+        const response = await axios.get(`/api/news-portal/featured-article?page=${this.currentPage}`);
         console.log('API response:', response.data);
         this.articles = response.data.articles;
         this.totalPages = response.data.totalPages;

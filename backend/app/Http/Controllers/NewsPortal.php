@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Validator; 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
 use App\Models\NewsModel;
 use App\Models\ArticleViewCounter;
@@ -21,7 +21,7 @@ class NewsPortal extends Controller
       $validatedData = Validator::make($request->all(), [
           'title' => 'required|string|max:255',
           'content' => 'required|string',
-          'category' => 'required|string',          
+          'category' => 'required|string',
           'status' => 'required|in:draft,published',
           // 'imageUrl' => 'required|string'
       ]);
@@ -35,7 +35,7 @@ class NewsPortal extends Controller
       $news->update($newsData);
       // return response()->json(['message' => 'News article updated successfully', 'data' => $news], 200);
       // return $newsData;
-      
+
   } catch (QueryException $e) {
       if ($e->getCode() == 23000) {
           return response()->json(['error' => 'Title already exists'], Response::HTTP_CONFLICT);
@@ -117,8 +117,8 @@ class NewsPortal extends Controller
   //   return response()->json(['data' => ['article' => $articles]]);
   // }
   public function featuredArticle(Request $request) {
-    $page = $request->query('page', 1); 
-    $perPage = 4; 
+    $page = $request->query('page', 1);
+    $perPage = 4;
     $offset = ($page - 1) * $perPage;
     $articles = NewsModel::where('status', 'published')
         ->where('ntype', 'article')
@@ -195,11 +195,9 @@ class NewsPortal extends Controller
           } else {
               return response()->json(['error' => 'Failed to create news'], Response::HTTP_INTERNAL_SERVER_ERROR);
           }
-      } catch (\Exception $e) {
-          return response()->json(['error' => 'Failed to create news'], Response::HTTP_INTERNAL_SERVER_ERROR);
       }
   }
-  
+
 
     public function removeNews(Request $request)
     {
@@ -232,7 +230,7 @@ class NewsPortal extends Controller
     $data = NewsModel::where('status', 'draft')->get();
     return response()->json(['data' =>$data]);
    }
-   
+
     public function displayAll(Request $request){
       $data = NewsModel::where('status', 'published')->get();
       return response()->json(['data' =>$data]);

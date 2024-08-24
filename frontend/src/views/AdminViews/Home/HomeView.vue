@@ -111,10 +111,12 @@ export default {
                         case 'educationalChartComponent':
                             this.$refs[refName].fetchGenderEducationalRequests(startDate, endDate);
                             this.$refs[refName].fetchEducationalMunicipalityBarangay(startDate, endDate);
+                            this.$refs[refName].fetchAgeBracketMedicalRequests(startDate, endDate);
                             break;
                         case 'medicalChartComponent':
                             this.$refs[refName].fetchGenderMedicalRequests(startDate, endDate);
                             this.$refs[refName].fetchMunicipalityBarangay(startDate, endDate);
+                            this.$refs[refName].fetchAgeBracketMedicalRequests(startDate, endDate);
                             break;
                         default:
                             break;

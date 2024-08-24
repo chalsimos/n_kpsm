@@ -70,7 +70,7 @@ export default {
     methods: {
         async fetchAuthor() {
             try {
-                const response = await axios.get('/api/get-author');
+                const response = await axios.get('/api/news-portal/get-author');
                 this.author = response.data.author;
             } catch (error) {
                 console.log('Error fetching author:', error);
@@ -87,7 +87,7 @@ export default {
                 formData.append('ntype', this.ntype);
                 formData.append('status', this.status);
                 formData.append('imageUrl', this.imageUrl); 
-                const response = await axios.post('/api/post-news', formData, {
+                const response = await axios.post('/api/news-portal/post-news', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -127,7 +127,7 @@ export default {
         initDropzone() {
             const dropzoneElement = this.$refs.dropzone;
             const defaultOptions = {
-                url: 'http://localhost:8000/api/upload-file',
+                url: 'http://127.0.0.1:8000/api/news-portal/upload-file',
                 maxFilesize: 2,
                 acceptedFiles: 'image/*',
             };

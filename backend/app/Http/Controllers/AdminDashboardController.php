@@ -22,6 +22,137 @@ use Illuminate\Validation\ValidationException;
 
 class AdminDashboardController extends Controller
 {
+    public function getAgeEducationalAgeRequest(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        if (!$startDate && !$endDate) {
+            $startDate = Carbon::now()->startOfMonth()->toDateString();
+            $endDate = Carbon::now()->endOfMonth()->toDateString();
+        }
+
+        return DB::transaction(function () use ($request, $startDate, $endDate) {
+            try {
+                $user = $this->validateAdminAndSuperAdmin($request);
+
+                // Define districts based on user type and district
+                $districts = ($user->type == 'superadmin')
+                    ? null
+                    : (($user->district == '1st')
+                        ? ['Baco', 'City Of Calapan (Capital)', 'Naujan', 'Pola', 'Puerto Galera', 'San Teodoro', 'Socorro', 'Victoria']
+                        : ['Bansud', 'Bongabong', 'Bulalacao (San Pedro)', 'Gloria', 'Mansalay', 'Pinamalayan', 'Roxas']);
+
+                // Query to fetch data
+                $query = EducationalAssistance::whereBetween('created_at', [$startDate, $endDate])
+                    ->selectRaw('school, beneficiary_age as age, municipality, COUNT(*) as count')
+                    ->groupBy('school', 'beneficiary_age', 'municipality');
+
+                if ($districts !== null) {
+                    $query->whereIn('municipality', $districts);
+                }
+
+                $ageSchoolMunicipalityCounts = $query->get();
+
+                // Process the results
+                $result = [];
+                foreach ($ageSchoolMunicipalityCounts as $record) {
+                    $schoolName = $record->school;
+
+                    if (!isset($result[$schoolName])) {
+                        $result[$schoolName] = [];
+                    }
+
+                    $result[$schoolName][] = [
+                        'age' => $record->age . ' years old',
+                        'municipality' => $record->municipality,
+                        'count' => $record->count
+                    ];
+                }
+
+                return response()->json($result);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        });
+    }
+
+
+    public function getAgeBracketMedicalRequest(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        if (!$startDate || !$endDate) {
+            $startDate = now()->startOfMonth()->toDateString();
+            $endDate = now()->endOfMonth()->toDateString();
+        }
+
+        return DB::transaction(function () use ($request, $startDate, $endDate) {
+            try {
+                $user = $this->validateAdminAndSuperAdmin($request);
+
+                $query = MedicalRequest::selectRaw("
+                CASE
+                    WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) < 1 THEN 'Newborn'
+                    WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 1 AND 3 THEN 'Baby'
+                    WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 4 AND 17 THEN 'Child'
+                    WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 18 AND 35 THEN 'Young Adult'
+                    WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 36 AND 55 THEN 'Middle Aged Adult'
+                    WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) > 55 THEN 'Old Adult'
+                    ELSE 'Unknown'
+                END as age_bracket,
+                TIMESTAMPDIFF(YEAR, birthday, CURDATE()) as age_years,
+                TIMESTAMPDIFF(MONTH, birthday, CURDATE()) as age_months,
+                medical_requests.municipality,
+                COUNT(*) as count
+            ")
+                    ->join('hospitals', 'medical_requests.hospital', '=', 'hospitals.hospital_acronym')
+                    ->whereDate('medical_requests.created_at', '>=', $startDate)
+                    ->whereDate('medical_requests.created_at', '<=', $endDate)
+                    ->groupBy('age_bracket', 'medical_requests.municipality', 'age_years', 'age_months');
+
+                if ($user->type === 'superadmin') {
+                    $query->whereIn('hospitals.assist_by_staff_from', ['1st', '2nd']);
+                } else {
+                    $hospitals = Hospital::join('medical_requests', 'hospitals.hospital_acronym', '=', 'medical_requests.hospital')
+                        ->where('hospitals.deleted_at', null)
+                        ->pluck('assist_by_staff_from');
+
+                    $districts = [];
+                    foreach ($hospitals as $hospital) {
+                        if ($hospital === '1st' && $user->district === '1st') {
+                            $districts[] = $hospital;
+                        } elseif ($hospital === '2nd' && $user->district === '2nd') {
+                            $districts[] = $hospital;
+                        }
+                    }
+                    $query->whereIn('hospitals.assist_by_staff_from', $districts);
+                }
+
+                $ageBracketMunicipalityCounts = $query->get();
+
+                $result = [];
+                foreach ($ageBracketMunicipalityCounts as $record) {
+                    if (!isset($result[$record->age_bracket])) {
+                        $result[$record->age_bracket] = [];
+                    }
+                    $ageString = $record->age_years < 1
+                        ? "{$record->age_months} month" . ($record->age_months > 1 ? 's' : '') . " old"
+                        : "{$record->age_years} year" . ($record->age_years > 1 ? 's' : '') . " old";
+
+                    $result[$record->age_bracket][] = [
+                        'age' => $ageString,
+                        'municipality' => $record->municipality,
+                        'count' => $record->count
+                    ];
+                }
+
+                return response()->json($result);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        });
+    }
+
     public function getEducationalRequestsData(Request $request)
     {
         $startDate = $request->input('start_date');
