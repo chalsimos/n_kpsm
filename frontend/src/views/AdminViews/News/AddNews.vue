@@ -127,7 +127,11 @@ export default {
         initDropzone() {
             const dropzoneElement = this.$refs.dropzone;
             const defaultOptions = {
+<<<<<<< Updated upstream
                 url: 'http://127.0.0.1:8000/api/news-portal/upload-file',
+=======
+                url: 'https://congress.kpsm.online/api/upload-file',
+>>>>>>> Stashed changes
                 maxFilesize: 2,
                 acceptedFiles: 'image/*',
             };
