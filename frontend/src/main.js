@@ -14,13 +14,8 @@ axios.defaults.baseURL="https://congress.kpsm.online";
 import CKEditor from '@ckeditor/ckeditor5-vue';
 
 
-// Add the icons to the library
-<<<<<<< Updated upstream
-axios.defaults.baseURL="http://127.0.0.1:8000";
-=======
 library.add(faFacebookF, faTwitter, faLinkedinIn);
 // axios.defaults.baseURL="http://localhost:8000/";
->>>>>>> Stashed changes
 export default axios;
 import VueApexCharts from "vue3-apexcharts";
 import 'vuetify/styles'
